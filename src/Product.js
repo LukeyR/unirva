@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import firebase from './firebase';
 import './Product.css';
 
+//Tried to make it nicer
+
 const firestore = firebase.firestore(); // accessing the firestore (database)
 
 // main structure of the Product page
