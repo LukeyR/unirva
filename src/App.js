@@ -4,7 +4,7 @@ import Product from './Product';
 import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
-import {Route} from 'react-router-dom';
+import {Route, Link} from 'react-router-dom';
 import NavBar from './NavBar';
 import Footer from './Footer';
 
