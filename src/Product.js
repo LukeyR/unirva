@@ -64,11 +64,10 @@ function Upload(){
     // the main form
     return(
         <form className = 'form' onSubmit={sendListing}>
-            <label className='label'>Name: <input type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/></label><br/>
-            <label className='label'>Description: <input type="text" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/></label><br/>
-            <label className='label'>Price: <input type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/></label><br/>
-            <label className='label'>Seller: <input type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/></label><br/>
-
+            <label className='label'>Name: <input className="name" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/></label>
+            <label className='label'>Price: <input className="name" type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/></label>
+            <label className='label'>Seller: <input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/></label>
+            <label className='label'>Description: <input className="description" type="text" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/></label>
             <button className= 'button' type="submit">Upload</button>
         </form>
     );
