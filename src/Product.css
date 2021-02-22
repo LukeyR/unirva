@@ -1,0 +1,22 @@
+.Product {
+    background-color: rgb(106, 155, 155);
+}
+
+.product-info {
+    text-align : left;
+}
+
+.form {
+    float:left;
+    width:100px;
+}
+
+.label {
+    float:left;
+    width:150px;
+    margin-bottom:50px;
+}
+
+.button {
+    text-align: center;
+}
