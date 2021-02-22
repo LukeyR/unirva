@@ -1,6 +1,9 @@
 # CM20257
 A Place for our CM20257 Group 25 code
 
+In order for this to work you need to install the following:
+firebase, firebase-tools, react-firebase, react-router-dom
+npm install [package_name]
 ___ 
 
 # Getting Started with Create React App
