@@ -1,7 +1,12 @@
 import React from 'react';
 import './App.css';
 import Product from './Product';
+import Chat from './Chat';
+import Home from './Home';
+import Profile from './Profile';
 import {Route, Link} from 'react-router-dom';
+import NavBar from './NavBar';
+import Footer from './Footer';
 
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching
@@ -13,10 +18,13 @@ function App() {
   // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
   return (
     <div className="App">
-      <>If I understand correctly this is kind of like a default page / section which appears for every tab.</>
-      <br></br>
-      <li><Link to="/Product">Product</Link></li>
-      <Route exact path="/Product" component={Product}/>
+      <NavBar />
+      <>Yes, whatever is put here is displayed on every page.</>
+      <Route exact path="/Profile" component={Profile} />
+      <Route exact path="/Home" component={Home} />
+      <Route exact path="/Product" component={Product} />
+      <Route exact path="/Chat" component={Chat} />
+      <Footer />
     </div>
   );
 }
