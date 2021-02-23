@@ -7,18 +7,20 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 const firestore = firebase.firestore();
 
 function Home(){
-
+    // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt');
+    const query = listingsRef.orderBy('createdAt'); // ordering by time
 
+    // retrieving them
     const [listings, loading] = useCollectionData(query);
 
     const defaultListing = "loading...";
     const defaultPrice = "loading...";
 
     var listing1 = defaultListing, listing2 = defaultListing, listing3 = defaultListing, price1 = defaultPrice, price2 = defaultPrice, price3 = defaultPrice;
-
+    // check if data is still being loaded
     if(!loading){
+        // make sure to take most recent posts
         const length = listings.length;
         listing1 = listings[length - 1].name;
         listing2 = listings[length - 2].name;
