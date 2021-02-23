@@ -1,8 +1,37 @@
 import React from 'react';
 import ReactLogo from './logo.svg';
 import './Home.css';
+import firebase from './firebase';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
+
+const firestore = firebase.firestore();
 
 function Home(){
+
+    const listingsRef = firestore.collection('listings');
+    const query = listingsRef.orderBy('createdAt');
+
+    var [listings, loading] = useCollectionData(query);
+
+    const defaultListing = "Example";
+    const defaultPrice = "0.00";
+
+    var listing1 = defaultListing, listing2 = defaultListing, listing3 = defaultListing, price1 = defaultPrice, price2 = defaultPrice, price3 = defaultPrice;
+
+    if(!loading){
+        listings = listings.reverse();
+        listing1 = listings[0].name;
+        listing2 = listings[1].name;
+        listing3 = listings[2].name;
+
+        price1 = listings[0].price;
+        price2 = listings[1].price;
+        price3 = listings[2].price;
+        
+    } else{
+        console.log("Still loading");
+    }
+
     return(
         <div>
             <h1><code>Testing what would work best. </code></h1>
@@ -22,18 +51,18 @@ function Home(){
             <div className="listingRow">
                 <div className="product">
                     <img src={ReactLogo} alt='react logo' className='productImage' />
-                    <p className='productTitle' >Listing 1</p>
-                    <p className='productPrice' >Price: £0.00</p>
+                    <p className='productTitle' >{listing1}</p>
+                    <p className='productPrice' >Price: £{price1}</p>
                 </div>
                 <div className="product">
                     <img src={ReactLogo} alt='react logo' className='productImage' />
-                    <p className='productTitle' >Listing 2</p>
-                    <p className='productPrice' >Price: £0.00</p>
+                    <p className='productTitle' >{listing2}</p>
+                    <p className='productPrice' >Price: £{price2}</p>
                 </div>
                 <div className="product">
                     <img src={ReactLogo} alt='react logo' className='productImage' />
-                    <p className='productTitle' >Listing 3</p>
-                    <p className='productPrice' >Price: £0.00</p>
+                    <p className='productTitle' >{listing3}</p>
+                    <p className='productPrice' >Price: £{price3}</p>
                 </div>
             </div>
         </div>
