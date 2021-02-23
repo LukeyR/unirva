@@ -11,22 +11,22 @@ function Home(){
     const listingsRef = firestore.collection('listings');
     const query = listingsRef.orderBy('createdAt');
 
-    var [listings, loading] = useCollectionData(query);
+    const [listings, loading] = useCollectionData(query);
 
-    const defaultListing = "Example";
-    const defaultPrice = "0.00";
+    const defaultListing = "loading...";
+    const defaultPrice = "loading...";
 
     var listing1 = defaultListing, listing2 = defaultListing, listing3 = defaultListing, price1 = defaultPrice, price2 = defaultPrice, price3 = defaultPrice;
 
     if(!loading){
-        listings = listings.reverse();
-        listing1 = listings[0].name;
-        listing2 = listings[1].name;
-        listing3 = listings[2].name;
+        const length = listings.length;
+        listing1 = listings[length - 1].name;
+        listing2 = listings[length - 2].name;
+        listing3 = listings[length - 3].name;
 
-        price1 = listings[0].price;
-        price2 = listings[1].price;
-        price3 = listings[2].price;
+        price1 = listings[length - 1].price;
+        price2 = listings[length - 2].price;
+        price3 = listings[length - 3].price;
         
     } else{
         console.log("Still loading");
