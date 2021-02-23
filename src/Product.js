@@ -53,7 +53,8 @@ function Upload(){
             name:nameVal,
             descripion:descriptionVal,
             price:priceVal,
-            seller:sellerVal
+            seller:sellerVal,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         })
         
         // dunno what this does but I assume it resets the text fields
