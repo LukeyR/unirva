@@ -5,8 +5,8 @@ import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
 import {Route} from 'react-router-dom';
-import NavBar from './NavBar';
-import Footer from './Footer';
+import NavBar from './hfRegion/NavBar';
+import Footer from './hfRegion/Footer';
 
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching

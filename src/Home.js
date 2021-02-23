@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactLogo from './logo.svg';
+import ReactLogo from './img/logo.svg';
 import './Home.css';
 import firebase from './firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
