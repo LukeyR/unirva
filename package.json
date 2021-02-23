@@ -7,12 +7,17 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.2",
     "firebase": "^8.2.9",
+    "firebase-tools": "^9.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-firebase": "^2.2.8",
     "react-firebase-hooks": "^2.2.0",
     "react-router-dom": "^5.2.0",
+<<<<<<< HEAD
     "react-scripts": "^2.1.8",
+=======
+    "react-scripts": "^4.0.3",
+>>>>>>> 6c106950715848d7a5fca997bdd409520caf56d2
     "web-vitals": "^1.1.0"
   },
   "scripts": {

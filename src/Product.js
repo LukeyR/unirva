@@ -16,9 +16,9 @@ function Product() {
     return(
         <div className='Product'>
             <h1>This is the Product's page</h1>
-            <>So far let's focuss on uploading new products and making sure these are stored in the database.</>
+            <>So far let's focus on uploading new products and making sure these are stored in the database.</>
             <br/>
-            <>Then we can focuss on viewing each product.</>
+            <>Then we can focus on viewing each product.</>
 
             <h1>Elements of a product</h1>
             <>These should be: photo, name, description, price</>
