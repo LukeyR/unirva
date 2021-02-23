@@ -73,7 +73,7 @@ function Upload(){
             <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
             <label className='label2'>Price: </label><input className="input" type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
             <label className='label3'>Seller: </label><input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/>
-            <label className='label1'>Description: </label><textarea className="description" type="text" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
+            <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
             <button className= 'button' type="submit">Upload</button>
         </form>
     );
