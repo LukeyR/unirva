@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import "firebase/firestore";
+import 'firebase/auth';
 
 /**
  * This file will be used to load and access all firebase components that we use (example firestore, authentication etc)
@@ -18,4 +19,5 @@ firebase.initializeApp({
     measurementId: "G-VF6R3H8V80"
   });
  
+export const auth = firebase.auth(); 
 export default firebase;
