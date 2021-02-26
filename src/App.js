@@ -35,7 +35,7 @@ function App() {
       <Route exact path="/DisplayProduct" component={DisplayProduct} />
       <Route exact path="/SignIn" component={SignIn} />
       <Route exact path="/SignOut" component={SignOut} />
-      (location.pathname !== "") ? <></> : <Home/>
+        {location.pathname === "/" ? <Home/> : <></>}
       <Footer />
     </div>
   );
