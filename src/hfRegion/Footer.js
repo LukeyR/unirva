@@ -7,7 +7,7 @@ function Footer(){
     return(
         <div className="Footer">
             <div className="left">
-                <Link className="link" to="/Home">Home</Link>
+                <Link className="link" to="">Home</Link>
             </div>
             <div className="middle">
                 <Link className="link" to="/Product">Add Listing</Link>

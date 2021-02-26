@@ -4,7 +4,7 @@ import Product from './Product';
 import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
-import {Route} from 'react-router-dom';
+import {Route, useLocation} from 'react-router-dom';
 
 import NavBar from './hfRegion/NavBar';
 import Footer from './hfRegion/Footer';
@@ -20,6 +20,9 @@ import DisplayProduct from './DisplayProduct';
  */
 
 function App() {
+
+    const location = useLocation();
+
   const [user] = useAuthState(auth);
   // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
   return (
@@ -27,7 +30,6 @@ function App() {
       <NavBar />
       <>Yes, whatever is put here is displayed on every page.</>
       <Route exact path="/Profile" component={Profile} />
-      <Route exact path="/Home" component={Home} />
       <Route exact path="/Product" component={Product} />
       <Route exact path="/Chat" component={Chat} />
       <Route exact path="/DisplayProduct" component={DisplayProduct} />
