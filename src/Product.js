@@ -1,10 +1,13 @@
 import React, {useState} from 'react';
 import firebase from './firebase';
+import { storage, auth } from './firebase';
 import './Product.css';
+import {useAuthState} from "react-firebase-hooks/auth";
 
 //Tried to make it nicer
 
 const firestore = firebase.firestore(); // accessing the firestore (database)
+
 
 // main structure of the Product page
 /**
@@ -45,26 +48,50 @@ function Upload(){
     const [descriptionVal, setFormValue2] = useState('');
     const [priceVal, setFormValue3] = useState('');
     const [sellerVal, setFormValue4] = useState('');
+    const [image, setImage] = useState(null);
+    const [url, setUrl] = useState('');
+    const [user] = useAuthState(auth);
+    console.log(user)
+
+    const handleChange = e => {
+        if (e.target.files[0]){
+            setImage(e.target.files[0]);
+        }
+    }
+
+    const uploadImg = () => {
+        const uploadImg = storage.ref('images/' + image.name).put(image);
+
+        uploadImg.on("state_changed", snapshot => {}, error => {console.log(error);},
+            () => {storage.ref('images').child(image.name).getDownloadURL().then(url => {
+                console.log("url: ", url);
+                setUrl(url);
+            });});
+    }
 
     const sendListing = async(e) => {
+        console.log(user.uid)
         e.preventDefault();
 
         await listingsRef.add({
             name:nameVal,
-            descripion:descriptionVal,
+            description:descriptionVal,
             price:priceVal,
-            seller:sellerVal,
+            imgUrl:url,
+            seller:(user ? user.uid : sellerVal),
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        })
+        });
         
         // dunno what this does but I assume it resets the text fields
         setFormValue('');
         setFormValue2('');
         setFormValue3('');
         setFormValue4('');
+        setImage(null);
+        setUrl('');
 
         //Should redirect back to home page
-        window.location.href = "/Home";
+        window.location.href = "";
     }
 
     // the main form
@@ -74,7 +101,10 @@ function Upload(){
             <label className='label2'>Price: </label><input className="input" type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
             <label className='label3'>Seller: </label><input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/>
             <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
-            <button className= 'button' type="submit">Upload</button>
+            <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
+            <button className='fileUploadButton' type="button" onClick={uploadImg}>Upload Image</button>
+            <img src={url} alt='react logo' className='productImage' />
+            <button className='button' type="submit">Post Listing</button>
         </form>
     );
 }
