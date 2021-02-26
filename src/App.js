@@ -7,6 +7,7 @@ import Profile from './Profile';
 import {Route} from 'react-router-dom';
 import NavBar from './NavBar';
 import Footer from './Footer';
+import DisplayProduct from './DisplayProduct';
 
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching
@@ -24,6 +25,7 @@ function App() {
       <Route exact path="/Home" component={Home} />
       <Route exact path="/Product" component={Product} />
       <Route exact path="/Chat" component={Chat} />
+      <Route exact path="/DisplayProduct" component={DisplayProduct} />
       <Footer />
     </div>
   );
