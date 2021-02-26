@@ -17,6 +17,7 @@ function App() {
 
   // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
   return (
+      <div>
     <div className="App">
       <NavBar />
       <>Yes, whatever is put here is displayed on every page.</>
