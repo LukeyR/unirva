@@ -91,7 +91,7 @@ function Upload(){
         setUrl('');
 
         //Should redirect back to home page
-        window.location.href = "/Home";
+        window.location.href = "";
     }
 
     // the main form

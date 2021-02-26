@@ -33,7 +33,7 @@ function App() {
       <Route exact path="/DisplayProduct" component={DisplayProduct} />
       <Route exact path="/SignIn" component={SignIn} />
       <Route exact path="/SignOut" component={SignOut} />
-
+      <Home/>
       <Footer />
     </div>
   );
