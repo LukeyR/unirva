@@ -97,7 +97,8 @@ function Upload(){
             <label className='label3'>Seller: </label><input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/>
             <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
             <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
-            <button className='fileUploadButton' type="button" onClick={uploadImg}>Upload Image (need to press before full upload)</button>
+            <button className='fileUploadButton' type="button" onClick={uploadImg}>Upload Image</button>
+            <img src={url} alt='react logo' className='productImage' />
             <button className='button' type="submit">Post Listing</button>
         </form>
     );
