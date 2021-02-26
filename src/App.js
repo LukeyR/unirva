@@ -7,6 +7,10 @@ import Profile from './Profile';
 import {Route} from 'react-router-dom';
 import NavBar from './hfRegion/NavBar';
 import Footer from './hfRegion/Footer';
+import SignIn from './SignIn';
+import SignOut from './SignOut';
+import {auth} from "./firebase";
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching
@@ -14,7 +18,7 @@ import Footer from './hfRegion/Footer';
  */
 
 function App() {
-
+  const [user] = useAuthState(auth);
   // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
   return (
     <div className="App">
@@ -24,6 +28,8 @@ function App() {
       <Route exact path="/Home" component={Home} />
       <Route exact path="/Product" component={Product} />
       <Route exact path="/Chat" component={Chat} />
+      <Route exact path="/SignIn" component={SignIn} />
+      <Route exact path="/SignOut" component={SignOut} />
       <Footer />
     </div>
   );
