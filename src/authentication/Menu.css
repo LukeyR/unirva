@@ -1,0 +1,78 @@
+/*!**/
+/*.logIn {*/
+/*    position: fixed;*/
+/*    background: white;*/
+/*    top: 50%;*/
+/*    left: 50%;*/
+/*    transform: translate(-50%, -75%);*/
+/*}*/
+
+.customButton {
+
+    margin-left: auto;
+    margin-right: auto;
+
+    min-width: 216px;
+    width: 20%;
+    max-width: 324px;
+    height: 46px;
+
+    text-align: center;
+    cursor: pointer;
+
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 10px;
+}
+
+/*.logIn .buttonExternalService {*/
+/*    margin-left: auto;*/
+/*    margin-right: auto;*/
+
+/*    background: white url("../img/btn_google_light_normal_ios.svg") no-repeat 8px, 11px;*/
+/*    background-size: 18px, 18px;*/
+
+/*    width: 107px;*/
+/*    height: 46px;*/
+
+/*    cursor: pointer;*/
+
+/*    box-shadow: 0 3px 6px #00000029;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+.customButton p {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    margin: 0 -50% 0 0;
+    transform: translate(-50%, -50%)
+}
+
+/*.logIn .buttonExternalService p {*/
+/*    position: relative;*/
+/*    padding-top: 11px;*/
+/*    padding-left: 50px;*/
+/*    text-align: left;*/
+/*}*/
+
+
+/*.logIn img {*/
+/*    margin-top: 130px*/
+/*}*/
+
+/*.customButton + .customButton {*/
+/*    margin-top: 15px;*/
+/*}*/
+
+/*.buttonExternalService + .buttonExternalService {*/
+/*    margin-top: 15px;*/
+/*}*/
+/*.buttonExternalService + .button {*/
+/*    margin-top: 15px;*/
+/*}*/
+
+/*img + .button {*/
+/*    margin-top: 70px;*/
+/*}*/
+
+/**!*/
