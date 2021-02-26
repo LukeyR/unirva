@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
 import firebase from './firebase';
-import { storage } from './firebase';
+import { storage, auth } from './firebase';
 import './Product.css';
+import {useAuthState} from "react-firebase-hooks/auth";
 
 //Tried to make it nicer
 
 const firestore = firebase.firestore(); // accessing the firestore (database)
+
 
 // main structure of the Product page
 /**
@@ -48,6 +50,8 @@ function Upload(){
     const [sellerVal, setFormValue4] = useState('');
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState('');
+    const [user] = useAuthState(auth);
+    console.log(user)
 
     const handleChange = e => {
         if (e.target.files[0]){
@@ -66,6 +70,7 @@ function Upload(){
     }
 
     const sendListing = async(e) => {
+        console.log(user.uid)
         e.preventDefault();
 
         await listingsRef.add({
@@ -73,7 +78,7 @@ function Upload(){
             description:descriptionVal,
             price:priceVal,
             imgUrl:url,
-            seller:sellerVal,
+            seller:(user ? user.uid : sellerVal),
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         
