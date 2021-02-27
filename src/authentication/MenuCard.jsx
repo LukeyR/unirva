@@ -8,6 +8,7 @@ import firebase from "firebase";
 import {auth} from "../firebase";
 import {Redirect} from "react-router-dom"
 import {useAuthState} from "react-firebase-hooks/auth";
+import { useStyles } from "./Menu.js"
 
 let redirect = false;
 
@@ -15,33 +16,7 @@ function loginOnClick(location) {
     alert(`${location} redirect here`)
 }
 
-const useStyles = makeStyles({
-    root: {
-        width: 300,
-        margin: 'auto',
-        border: 0,
-        boxShadow: 0,
-    },
-    cardActions: {
-        justifyContent: 'center',
-        direction: "column",
-    },
-    appleLogo: {},
-    googleButton: {
-        width: 125,
-        marginBottom: 5,
-    },
-    button: {
-        width: 200,
-    },
-    media: {
-        height: 250,
-    },
-    typography: {
-        textAlign: "center",
-        marginBottom: -10,
-    },
-});
+
 
 function googleIcon() {
     return (
@@ -53,6 +28,7 @@ function googleIcon() {
 
 function SignIn() {
     const classes = useStyles();
+    console.log(classes)
 
     const signInWithGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
@@ -87,9 +63,9 @@ function SignIn() {
             {/*sign in with google button*/}
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
-                    <Button startIcon={googleIcon()} onClick={() => {
+                    <Button   startIcon={googleIcon()} onClick={() => {
                         signInWithGoogle()
-                    }} aria-label="Sign in with google" className={classes.googleButton}>
+                    }} aria-label="Sign in with google" className={classes.button} style={{width: 125, marginBottom: 5,}}>
                         Google
                     </Button>
                 </ButtonGroup>
@@ -145,7 +121,6 @@ function SignOut() {
 
 const MenuCard = () => {
     const [user, loading, error] = useAuthState(auth);
-    console.log(loading)
 
     return (
         <>

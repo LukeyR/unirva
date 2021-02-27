@@ -8,24 +8,15 @@ import {Route, useLocation} from 'react-router-dom';
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
-import SignIn from './SignIn';
-import SignOut from './SignOut';
+import Login from "./authentication/Login";
 import DisplayProduct from './DisplayProduct';
 
-function HideHeader() {
-    const location = useLocation();
-    return location.pathname.toString() !== "/menu" ? (
-        <>
-            <Header/>
-            <>Yes, whatever is put here is displayed on every page.</>
-        </>
-    ) : <></>;
-}
+const ignorePages = ["/menu", "/login", "/register", "/signin" ]
 
 function HideFooter() {
     const location = useLocation();
 
-    return location.pathname.toString() !== "/menu" ? (
+    return !ignorePages.includes(location.pathname.toString()) ? (
         <>
             <Footer />
         </>
@@ -45,13 +36,14 @@ function App() {
     return (
         <div>
             <div className="App">
-                {HideHeader()}
+                <Header/>
                 <Route exact path="/Profile" component={Profile}/>
                 <Route exact path="/Product" component={Product}/>
                 <Route exact path="/Chat" component={Chat}/>
                 <Route exact path="/DisplayProduct" component={DisplayProduct}/>
-                <Route exact path="/SignIn" component={SignIn}/>
-                <Route exact path="/SignOut" component={SignOut}/>
+                <Route exact path="/SignIn" component={Login}/>
+                <Route exact path="/LogIn" component={Login}/>
+                <Route exact path="/SignOut" component={Login}/>
                 {location.pathname === "/" ? <Home/> : <></>}
                 {HideFooter()}
             </div>

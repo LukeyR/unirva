@@ -1,17 +1,54 @@
 import React from 'react';
 import "./Menu.css";
 import {Grid} from "@material-ui/core"
-import Header from "../hfRegion/Header";
 import Content from "./MenuContent.jsx";
+import {makeStyles} from "@material-ui/styles";
+
+export const useStyles = makeStyles({
+    root: {
+        width: 500,
+        margin: 'auto',
+        border: 0,
+        boxShadow: 0,
+    },
+    div: {
+        margin: 0,
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+    },
+    cardActions: {
+        justifyContent: 'center',
+        direction: "column",
+    },
+    appleLogo: {},
+    googleButton: {
+        width: 125,
+        marginBottom: 5,
+    },
+    button: {
+        boxShadow: "0 2px 3px #00000029",
+        borderRadius: "10px",
+        width: 200,
+    },
+    media: {
+        height: 250,
+    },
+    typography: {
+        textAlign: "center",
+        marginBottom: -10,
+    },
+});
 
 function Menu() {
+    const classes = useStyles();
+
     return (
-        <div className="Menu">
-            <Header/>
-            <Grid container direction="column">
-                <Grid item container>
-                        <Content/>
-                </Grid>
+        <div>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+            <Grid item container>
+                    <Content/>
             </Grid>
         </div>
 

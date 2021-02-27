@@ -2,16 +2,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/styles";
 import {Grid} from "@material-ui/core";
 import MenuCard from "./MenuCard";
-
-const useStyles = makeStyles({
-    div: {
-        margin: 0,
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-    }
-})
+import { useStyles } from "./Menu";
 
 const Content = () => {
 
