@@ -70,7 +70,7 @@ function Upload(){
     }
 
     const sendListing = async(e) => {
-        console.log(user.uid)
+        console.log("+++" + user.uid)
         e.preventDefault();
 
         await listingsRef.add({

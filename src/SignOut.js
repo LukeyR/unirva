@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import firebase from 'firebase/app';
 import {auth} from "./firebase";
 
 function SignOut(){

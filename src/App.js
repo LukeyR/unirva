@@ -5,28 +5,31 @@ import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
 import {Route, useLocation} from 'react-router-dom';
-import NavBar from './hfRegion/NavBar';
+import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
 import SignIn from './SignIn';
 import SignOut from './SignOut';
-import {auth} from "./firebase";
-import { useAuthState } from 'react-firebase-hooks/auth';
 import DisplayProduct from './DisplayProduct';
 
 function HideHeader() {
     const location = useLocation();
+    return location.pathname.toString() !== "/menu" ? (
+        <>
+            <Header/>
+            <>Yes, whatever is put here is displayed on every page.</>
+        </>
+    ) : <></>;
+}
 
-     if (location.pathname !== "/menu") {
-         return (
-             <>
-                 <NavBar/>
-                 <>Yes, whatever is put here is displayed on every page.</>
-             </>
-         )
-     } else {
-         return <></>
-     }
+function HideFooter() {
+    const location = useLocation();
+
+    return location.pathname.toString() !== "/menu" ? (
+        <>
+            <Footer />
+        </>
+    ) : <></>;
 }
 
 /**
@@ -36,27 +39,25 @@ function HideHeader() {
 
 function App() {
 
-  const location = useLocation();
+    const location = useLocation();
 
-  const [user] = useAuthState(auth);
-  // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
-  return (
-      <div>
-    <div className="App">
-      <NavBar />
-      <>Yes, whatever is put here is displayed on every page.</>
-      <Route exact path="/Profile" component={Profile} />
-      <Route exact path="/Product" component={Product} />
-      <Route exact path="/Chat" component={Chat} />
-      <Route exact path="/DisplayProduct" component={DisplayProduct} />
-      <Route exact path="/SignIn" component={SignIn} />
-      <Route exact path="/SignOut" component={SignOut} />
-        {location.pathname === "/" ? <Home/> : <></>}
-      <Footer />
-    </div>
-          <Route exact path = "/Menu" component={Menu} />
-    </div>
-  );
+    // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
+    return (
+        <div>
+            <div className="App">
+                {HideHeader()}
+                <Route exact path="/Profile" component={Profile}/>
+                <Route exact path="/Product" component={Product}/>
+                <Route exact path="/Chat" component={Chat}/>
+                <Route exact path="/DisplayProduct" component={DisplayProduct}/>
+                <Route exact path="/SignIn" component={SignIn}/>
+                <Route exact path="/SignOut" component={SignOut}/>
+                {location.pathname === "/" ? <Home/> : <></>}
+                {HideFooter()}
+            </div>
+            <Route exact path="/Menu" component={Menu}/>
+        </div>
+    );
 }
 
 export default App;

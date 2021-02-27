@@ -7,7 +7,7 @@ import Content from "./MenuContent.jsx";
 function Menu() {
     return (
         <div className="Menu">
-            {/*<Header/>*/}
+            <Header/>
             <Grid container direction="column">
                 <Grid item container>
                         <Content/>

@@ -1,7 +1,4 @@
 import React from 'react';
-
-import ReactLogo from './img/logo.svg';
-
 import './Home.css';
 import firebase from './firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
@@ -33,7 +30,7 @@ function Home(){
     if(!loading){
         // make sure to take most recent posts
         const length = listings.length;
-        console.log(id);
+        // console.log(id);
         listing1 = listings[length - 1].name;
         listing2 = listings[length - 2].name;
         listing3 = listings[length - 3].name;
@@ -53,7 +50,7 @@ function Home(){
         }
         
     } else{
-        console.log("Still loading");
+        // console.log("Still loading");
     }
 
     return(

@@ -6,7 +6,7 @@ const firestore = firebase.firestore();
 
 function DisplayProduct(){
     let params = useLocation().state[0].index;
-    let id = useLocation().state[0].iD;
+    // let id = useLocation().state[0].iD;
     console.log(params);
     console.log(useLocation())
 
