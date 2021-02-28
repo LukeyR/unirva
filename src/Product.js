@@ -51,7 +51,6 @@ function Upload(){
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState('');
     const [user] = useAuthState(auth);
-    console.log(user)
 
     const handleChange = e => {
         if (e.target.files[0]){
@@ -81,6 +80,7 @@ function Upload(){
             seller:(user ? user.uid : sellerVal),
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
+        console.log("product submitted")
         
         // dunno what this does but I assume it resets the text fields
         setFormValue('');

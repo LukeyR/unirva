@@ -28,7 +28,6 @@ function googleIcon() {
 
 function SignIn() {
     const classes = useStyles();
-    console.log(classes)
 
     const signInWithGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
