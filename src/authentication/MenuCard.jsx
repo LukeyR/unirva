@@ -1,5 +1,4 @@
 import React from "react";
-import {makeStyles} from "@material-ui/styles";
 import {Button, ButtonGroup, Card, CardActions, CardContent, CardMedia, SvgIcon, Typography,} from "@material-ui/core";
 import brandLogo from "../img/Brandlogo.svg";
 import {ReactComponent as GoogleLogo} from "../img/google_g_logo.svg";
@@ -7,6 +6,7 @@ import "./Menu.css"
 import firebase from "firebase";
 import {auth} from "../firebase";
 import {Redirect} from "react-router-dom"
+import {useHistory} from "react-router-dom";
 import {useAuthState} from "react-firebase-hooks/auth";
 import { useStyles } from "./Menu.js"
 
@@ -15,8 +15,6 @@ let redirect = false;
 function loginOnClick(location) {
     alert(`${location} redirect here`)
 }
-
-
 
 function googleIcon() {
     return (
@@ -28,12 +26,12 @@ function googleIcon() {
 
 function SignIn() {
     const classes = useStyles();
-    console.log(classes)
+    const history = useHistory();
 
     const signInWithGoogle = () => {
         const provider = new firebase.auth.GoogleAuthProvider();
         auth.signInWithPopup(provider).then(r => {
-            redirect = true;
+            history.push("/")
         }).catch();
     }
 
@@ -95,6 +93,7 @@ function SignIn() {
 
 function SignOut() {
     const classes = useStyles();
+    const history = useHistory();
 
     return (
         <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
@@ -102,13 +101,22 @@ function SignOut() {
                 <CardMedia className={classes.media} image={brandLogo} title="Brand Logo"/>
             </CardContent>
 
-            {/*log in button*/}
+            {/*profile button*/}
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                        auth.signOut().then(() => {
-                            redirect = true
-                        })
+                        history.push("/Profile")
+                    }} className={classes.button}>
+                        Profile
+                    </Button>
+                </ButtonGroup>
+            </CardActions>
+
+            {/*log out button*/}
+            <CardActions className={classes.cardActions}>
+                <ButtonGroup>
+                    <Button onClick={() => {
+                            history.push("/logout")
                     }} className={classes.button}>
                         Sign Out
                     </Button>
@@ -125,10 +133,6 @@ const MenuCard = () => {
     return (
         <>
             {!loading ? ((!user) ? <SignIn/> : <SignOut/>) : <></>}
-            {redirect ? (
-                redirect = false,
-                    <Redirect to={"/"}/>
-            ) : <></>}
         </>
     )
 

@@ -1,36 +1,34 @@
 import React from 'react';
-import {AppBar, fade, Grid, IconButton, Input, InputAdornment, InputBase, Toolbar, Typography} from "@material-ui/core";
+import {AppBar, fade, Grid, IconButton, InputBase, Toolbar} from "@material-ui/core";
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../firebase";
-import {Link} from "react-router-dom";
-import { useHistory } from 'react-router-dom';
-import {AccountCircle} from "@material-ui/icons";
+import {useHistory} from "react-router-dom";
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 
-const profilePictureSize = "35"
+const profilePictureSize = "35px"
 
-const useStyles = makeStyles( (theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     circle: {
         borderRadius: "50%",
-        height: {profilePictureSize},
-        width: {profilePictureSize},
+        height: "35px",
+        width: "35px",
         overflow: "hidden",
-        display: "flex",
         justifyContent: "center",
         alignItems: "center",
     },
-    link: {
-        textDecoration: "none",
-    },
+    link: {},
     search: {
         flexGrow: 1,
+        maxWidth: "50%",
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -52,9 +50,13 @@ const useStyles = makeStyles( (theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    homeIcon: {
-    },
+    homeIcon: {},
     profileIcon: {
+        margin: 0,
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
     },
     inputRoot: {
         color: 'inherit',
@@ -68,7 +70,7 @@ const useStyles = makeStyles( (theme) => ({
     },
 }));
 
-function search(searchTerm){
+function search(searchTerm) {
     alert(`${searchTerm} was searched.`)
 
 }
@@ -77,6 +79,18 @@ const Header = () => {
     const [user] = useAuthState(auth);
     const classes = useStyles();
     const history = useHistory();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClick = (pageURL) => {
+        history.push(pageURL)
+        setAnchorEl(null)
+    };
 
     const onChange = (event) => {
         console.log(event.target.value);
@@ -94,48 +108,95 @@ const Header = () => {
             <AppBar position="static" elevation={0}>
                 <Toolbar>
                     <Grid
-                        justify="space-between" // Add it here :)
                         container
-                        spacing={2}
+                        spacing={0}
+                        alignItems="center"
+                        align="center"
                     >
-                        <Grid item xs={1}>
-                    <IconButton aria-label="Go to profile" onClick={() => {history.push("/")}} className={classes.homeIcon}>
-                        <HomeIcon style={{fill: "white"}}/>
-                    </IconButton>
+                        <Grid item xs={1}
+                              container
+                              alignItems="flex-start">
+                            <IconButton aria-label="Go to profile" onClick={() => {
+                                history.push("/")
+                            }}>
+                                <HomeIcon style={{fill: "white"}}/>
+                            </IconButton>
                         </Grid>
 
                         <Grid item xs={10}>
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            fullWidth={true}
-                            placeholder="Search…"
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            onKeyPress={onKeyPress}
-                            onChange={onChange}
-                        />
-                    </div>
+                            <div>
+                                <div className={classes.search}>
+                                    <div className={classes.searchIcon}>
+                                        <SearchIcon/>
+                                    </div>
+                                    <InputBase
+                                        fullWidth={true}
+                                        placeholder="Search…"
+                                        classes={{
+                                            root: classes.inputRoot,
+                                            input: classes.inputInput,
+                                        }}
+                                        style={{
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+
+                                        inputProps={{'aria-label': 'search'}}
+                                        onKeyPress={onKeyPress}
+                                        onChange={onChange}
+                                    />
+                                </div>
+                            </div>
+
                         </Grid>
 
-                    <Grid item xs={1}>
-                        {user ? (
-                            <Link className={classes.link} to="/menu">
-                            <div className={classes.circle}>
-                                <img  src={user.photoURL} alt="profile-pict ure" width={profilePictureSize} height={profilePictureSize} />
-                            </div>
-                            </Link>)
-                            : (
-                                <IconButton aria-label="Go to profile" onClick={() => {history.push("/menu")}}>
-                                <AccountCircleTwoToneIcon />
+                        <Grid item xs={1}
+                              container
+                              direction="row"
+                              alignItems="flex-end"
+                              justify="center">
+                            {user ? (
+                                    <IconButton className={classes.circle}
+                                                onClick={
+                                                    handleMenu
+                                                }
+                                    >
+                                        <img src={user.photoURL}
+                                             alt="profile-pict ure"
+                                             width={profilePictureSize}
+                                             height={profilePictureSize}
+                                        />
+                                    </IconButton>
+                                )
+                                : (
+                                    <IconButton className={classes.homeIcon}
+                                                aria-label="Go to profile"
+                                                onClick={() => {
+                                                    history.push("/menu")
+                                                }}
+                                    >
+                                        <AccountCircleTwoToneIcon/>
                                     </IconButton>
                                 )}
-                    </Grid>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={open}
+                                onClose={() => {setAnchorEl(null)}}
+                            >
+                                <MenuItem onClick={() => handleMenuClick("/Profile")}>Profile</MenuItem>
+                                <MenuItem onClick={() => handleMenuClick("/Logout")}>Sign Out</MenuItem>
+                            </Menu>
+                        </Grid>
                     </Grid>
                 </Toolbar>
             </AppBar>
