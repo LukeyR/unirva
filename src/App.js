@@ -11,6 +11,7 @@ import Menu from "./authentication/Menu";
 import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
 import DisplayProduct from './DisplayProduct';
+import EditProduct from "./EditProduct";
 
 const ignorePages = ["/menu", "/login", "/register", "/signin" ]
 
@@ -45,6 +46,7 @@ function App() {
                 <Route exact path="/SignIn" component={Login}/>
                 <Route exact path="/LogIn" component={Login}/>
                 <Route exact path="/SignOut" component={Logout}/>
+                <Route exact path="/EditProduct" component={EditProduct}/>
                 <Route exact path="/Logout" component={Logout}/>
                 {location.pathname === "/" ? <Home/> : <></>}
                 {HideFooter()}

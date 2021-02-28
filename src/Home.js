@@ -1,22 +1,21 @@
 import React from 'react';
 import './Home.css';
 import firebase from './firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import {Link} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
 function Home(){
 
-    //Creating route to DisplayProduct
-    //<Route exact path="/DisplayProduct" component={DisplayProduct} />
-
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt'); // ordering by time
-
+    const query = listingsRef.orderBy('createdAt', "desc").limit(3); // ordering by time
+    var listings = [];
+    var docsID = [];
     // retrieving them
-    const [listings, loading] = useCollectionData(query);
+
+    const [listingsBig, loading] = useCollection(query);
 
     const defaultListing = "loading...";
     const defaultPrice = "loading...";
@@ -25,32 +24,38 @@ function Home(){
     var listing1 = defaultListing, listing2 = defaultListing, listing3 = defaultListing,
         price1 = defaultPrice, price2 = defaultPrice, price3 = defaultPrice,
         url1 = defaultUrl, url2 = defaultUrl, url3 = defaultUrl;
-    var id="default";
+    var id1="default", id2="default", id3="default";
     // check if data is still being loaded
     if(!loading){
         // make sure to take most recent posts
-        const length = listings.length;
-        // console.log(id);
-        listing1 = listings[length - 1].name;
-        listing2 = listings[length - 2].name;
-        listing3 = listings[length - 3].name;
+        var index = 0;
+        listingsBig.forEach(doc => {
+            listings[index] = doc.data();
+            docsID[index] = doc.id;
+            index++;
+        })
+        listing1 = listings[0].name;
+        listing2 = listings[1].name;
+        listing3 = listings[2].name;
 
-        price1 = listings[length - 1].price;
-        price2 = listings[length - 2].price;
-        price3 = listings[length - 3].price;
+        price1 = listings[0].price;
+        price2 = listings[1].price;
+        price3 = listings[2].price;
 
-        if(listings[length - 1].imgUrl != null){
-            url1 = listings[length - 1].imgUrl;
+        if(listings[0].imgUrl != null){
+            url1 = listings[0].imgUrl;
         }
-        if(listings[length - 2].imgUrl != null){
-            url2 = listings[length - 2].imgUrl;
+        if(listings[1].imgUrl != null){
+            url2 = listings[1].imgUrl;
         }
-        if(listings[length - 3].imgUrl != null){
-            url3 = listings[length - 3].imgUrl;
+        if(listings[2].imgUrl != null){
+            url3 = listings[2].imgUrl;
         }
+
+        id1=docsID[0];
+        id2=docsID[1];
+        id3=docsID[2];
         
-    } else{
-        // console.log("Still loading");
     }
 
     return(
@@ -73,7 +78,7 @@ function Home(){
                 <div className="product">
                     <Link to={{
                             pathname:"/DisplayProduct",
-                            state:[{index: 1, iD: id}]
+                            state:[{iD: id1}]
                         }}>
                         <img src={url1} alt='react logo' className='productImage' />
                     </Link>
@@ -83,7 +88,7 @@ function Home(){
                 <div className="product">
                 <Link to={{
                             pathname:"/DisplayProduct",
-                            state:[{index: 2}]
+                            state:[{iD: id2}]
                         }}>
                         <img src={url2} alt='react logo' className='productImage' />
                     </Link>
@@ -93,7 +98,7 @@ function Home(){
                 <div className="product">
                 <Link to={{
                             pathname:"/DisplayProduct",
-                            state:[{index: 3}]
+                            state:[{iD: id3}]
                         }}>
                         <img src={url3} alt='react logo' className='productImage' />
                     </Link>
