@@ -7,6 +7,8 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../firebase";
 import {useHistory} from "react-router-dom";
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 
 const profilePictureSize = "35px"
@@ -77,6 +79,18 @@ const Header = () => {
     const [user] = useAuthState(auth);
     const classes = useStyles();
     const history = useHistory();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClick = (pageURL) => {
+        history.push(pageURL)
+        setAnchorEl(null)
+    };
 
     const onChange = (event) => {
         console.log(event.target.value);
@@ -143,7 +157,9 @@ const Header = () => {
                               justify="center">
                             {user ? (
                                     <IconButton className={classes.circle}
-                                                onClick={() => {history.push("/Menu")}}
+                                                onClick={
+                                                    handleMenu
+                                                }
                                     >
                                         <img src={user.photoURL}
                                              alt="profile-pict ure"
@@ -155,11 +171,31 @@ const Header = () => {
                                 : (
                                     <IconButton className={classes.homeIcon}
                                                 aria-label="Go to profile"
-                                                onClick={() => {history.push("/menu")}}
+                                                onClick={() => {
+                                                    history.push("/menu")
+                                                }}
                                     >
                                         <AccountCircleTwoToneIcon/>
                                     </IconButton>
                                 )}
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={open}
+                                onClose={() => {setAnchorEl(null)}}
+                            >
+                                <MenuItem onClick={() => handleMenuClick("/Profile")}>Profile</MenuItem>
+                                <MenuItem onClick={() => handleMenuClick("/Logout")}>Sign Out</MenuItem>
+                            </Menu>
                         </Grid>
                     </Grid>
                 </Toolbar>
