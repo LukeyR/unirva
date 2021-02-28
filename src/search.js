@@ -10,11 +10,17 @@ function Search(){
 
     let pathLoc = useLocation();
     var searchTerm = pathLoc.pathname.replace('/search=','');
+
+    //TODO: Add listings view of products
+    //TODO: Search through database to find products
     
    
     return(
         <div>
             <h1>Search Results for {searchTerm}</h1> 
+
+
+
         </div>
     )
 }
