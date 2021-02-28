@@ -6,6 +6,7 @@ import Home from './Home';
 import Profile from './Profile';
 import {Route, useLocation} from 'react-router-dom';
 
+import Search from './search'
 import NavBar from './hfRegion/NavBar';
 import Footer from './hfRegion/Footer';
 import SignIn from './SignIn';
@@ -31,6 +32,7 @@ function App() {
       <>Yes, whatever is put here is displayed on every page.</>
       <Route exact path="/Profile" component={Profile} />
       <Route exact path="/Product" component={Product} />
+      <Route exact path="/search=:results" component={Search} />
       <Route exact path="/Chat" component={Chat} />
       <Route exact path="/DisplayProduct" component={DisplayProduct} />
       <Route exact path="/SignIn" component={SignIn} />

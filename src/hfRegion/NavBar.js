@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Link} from 'react-router-dom';
-import "./NavBar.css"
+import "./NavBar.css";
+import Search from "../search";
 
 
 function NavBar(){
 
+    const [inputData, setInputData] = useState(null);
+    const [search, setSearch] = useState(false);
+
+    function getData(val){
+        setInputData(val.target.value);
+        setSearch(false);
+    }
+
     return(
         <div className="NavBar">
             <div className="leftSide">
-                <input type="text" placeholder="Search.."/>
-                <button>Search</button>
-                {/*<Link className="link" to="/Search">Search</Link>*/}
+                <input type="text" className="search-box" placeholder="Search.." onChange={getData} />
+                <Link to={{pathname: `/search=${inputData}`}}>
+                    <button onClick={() => setSearch(true)} type="submit">Search</button>
+                </Link>
             </div>
             <div className="rightSide">
                 <Link className="link" to="/Profile">Profile</Link>
