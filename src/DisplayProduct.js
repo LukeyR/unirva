@@ -56,10 +56,7 @@ function DisplayProduct(){
             <h1> { listingDes} </h1>
             <h1> { userName } </h1>
             <img src={listingUrl} alt='react logo' className='productImage' />
-            <h1> <button onClick={() => {
-                if(match);
-                else {Msg(userName);path = "";} 
-            }}> <Link to={{
+            <h1><Link to={{
                 pathname:path,
                 state:[{
                     iDListing: id,
@@ -68,7 +65,10 @@ function DisplayProduct(){
                     price: listingPrice,
                     url: listingUrl
                 }]
-            }}>{msg}</Link> </button> </h1>
+            }}> <button onClick={() => {
+                if(match);
+                else {Msg(userName);path = "";} 
+            }}>{msg}</button></Link></h1>
         </div>
     )
 }
