@@ -32,7 +32,7 @@ function App() {
       <>Yes, whatever is put here is displayed on every page.</>
       <Route exact path="/Profile" component={Profile} />
       <Route exact path="/Product" component={Product} />
-      <Route exact path="/search=:results" component={Search} />
+      <Route exact path="/search:results" component={Search} />
       <Route exact path="/Chat" component={Chat} />
       <Route exact path="/DisplayProduct" component={DisplayProduct} />
       <Route exact path="/SignIn" component={SignIn} />

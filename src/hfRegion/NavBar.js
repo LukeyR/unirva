@@ -18,6 +18,7 @@ function NavBar(){
         <div className="NavBar">
             <div className="leftSide">
                 <input type="text" className="search-box" placeholder="Search.." onChange={getData} />
+                {/*<Link to={{pathname: `/search=${inputData}`, state:[{index: 1, iD: inputData}]}}> */}
                 <Link to={{pathname: `/search=${inputData}`}}>
                     <button onClick={() => setSearch(true)} type="submit">Search</button>
                 </Link>
