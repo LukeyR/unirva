@@ -6,6 +6,9 @@ import Home from './Home';
 import Profile from './Profile';
 import Register from './authentication/Register';
 import {Route, useLocation} from 'react-router-dom';
+
+import Search from './search'
+import NavBar from './hfRegion/NavBar';
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
@@ -51,6 +54,7 @@ function App() {
         <Route exact path="/Profile" component={Profile} />
         <Route exact path="/Product" component={Product} />
         <Route exact path="/Chat" component={Chat} />
+          <Route exact path="/search:results" component={Search} />
         <Route exact path="/DisplayProduct" component={DisplayProduct} />
         <Route exact path="/SignIn" component={SignIn} />
         <Route exact path="/Register" component={Register} />
