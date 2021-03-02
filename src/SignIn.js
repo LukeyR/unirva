@@ -1,19 +1,35 @@
-import React from 'react';
+import React, {useContext} from "react";
+import { Redirect } from "react-router-dom";
+import { AuthContext } from "./Auth";
 import './App.css';
-import firebase from 'firebase/app';
-import {auth} from "./firebase";
+import firebaseConfig from "./firebase";
 
-function SignIn(){
-    const signInWithGoogle = () => {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider);
-      }
-    return (
-        <div className='App-d'>
-            <h1>Sign in</h1>
-            <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-        </div>
-    )
-}
+const SignIn = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();    
+    const { email, password } = e.target.elements;
+    try {
+      firebaseConfig.auth().signInWithEmailAndPassword(email.value, password.value);      
+    } catch (error) {
+      alert(error);
+    }
+  };
+  const { currentUser } = useContext(AuthContext);
+  if (currentUser) {
+      return <Redirect to="/Profile" />;
+  }
+  return (
+    <div>
+      <h1>Sign In</h1>
+      <form onSubmit={handleSubmit}>
+        <label for="email">Email</label>
+        <input type="email" name="email" placeholder="Email" />
+        <label for="password">Password</label>
+        <input type="password" name="password" placeholder="Password" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+};
 
 export default SignIn;

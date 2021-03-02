@@ -13,7 +13,6 @@ function Home(){
 
     //Creating route to DisplayProduct
     //<Route exact path="/DisplayProduct" component={DisplayProduct} />
-
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     const query = listingsRef.orderBy('createdAt'); // ordering by time
