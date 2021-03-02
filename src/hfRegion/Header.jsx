@@ -71,7 +71,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function search(searchTerm) {
-    alert(`${searchTerm} was searched.`)
+
+    // alert(`${searchTerm} was searched.`)
 
 }
 
@@ -93,13 +94,16 @@ const Header = () => {
     };
 
     const onChange = (event) => {
-        console.log(event.target.value);
+        history.push(`/search=${event.target.value}`)
+        if (event.target.value == "") {
+            history.push("./")
+        }
     };
 
     const onKeyPress = (event) => {
-        console.log(`Pressed keyCode ${event.key}`);
+        // console.log(`Pressed keyCode ${event.key}`);
         if (event.key === 'Enter') {
-            search(event.target.value)
+            history.push(`/search=${event.target.value}`)
         }
     }
 

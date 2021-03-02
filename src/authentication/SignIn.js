@@ -3,8 +3,10 @@ import { Redirect } from "react-router-dom";
 import { AuthContext } from "../Auth";
 import '../App.css';
 import firebaseConfig from "../firebase";
+import {useHistory} from "react-router-dom";
 
 const SignIn = () => {
+  const history = useHistory();
   const handleSubmit = (e) => {
     e.preventDefault();    
     const { email, password } = e.target.elements;
@@ -16,7 +18,7 @@ const SignIn = () => {
   };
   const { currentUser } = useContext(AuthContext);
   if (currentUser) {
-      return <Redirect to="/Profile" />;
+    history.push("./")
   }
   return (
     <div>

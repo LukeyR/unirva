@@ -35,7 +35,7 @@ function Search(){
         var result = [];
         var i = 0;
         for (let index = 0; index < length; index++) {
-            if (listings[index].name == searchTerm) {
+            if (listings[index].name.includes(searchTerm)) {
                 result[i] = listings[index];
                 i++;
             }
@@ -48,6 +48,7 @@ function Search(){
                 url1 = result[0].imgUrl;
             }
         }
+        console.log(result)
         console.log(id);
     } else{
         console.log("Still loading");
