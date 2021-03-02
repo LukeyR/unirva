@@ -6,15 +6,16 @@
   .listingRow {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
   }
   
   .listingRow :hover{
-    flex: 30%;
     background-color: rgb(150, 150, 150);
     border-radius: 15px;
     cursor: pointer;
   }
-  
+
   .productTitle {
     text-decoration: none;
     color: black;
