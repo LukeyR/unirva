@@ -73,10 +73,9 @@ function listingRow(listings){
                 return (
                     <Link to={{
                     pathname:"/DisplayProduct",
-                    state:[{index: index, iD: 'default'}]
+                    state:[{index: index+1, iD: 'default'}]
                     }}>
                         <div key={index.toString()} className="product">
-                            
                             {/* alt='' with a link to default/missing image needed */}
                             <img src={listing.imgUrl} className='productImage' />
                             <p className='productTitle' >{listing.name}</p>
