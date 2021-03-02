@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import ReactLogo from './img/logo.svg';
 
@@ -8,6 +8,9 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 import {Link} from 'react-router-dom';
 
 const firestore = firebase.firestore();
+
+// TEMPORARY VARIABLE TO CHOOSE SORTING ORDER
+var sortNewestToOldest = true;
 
 function Home(){
 
@@ -32,7 +35,6 @@ function Home(){
     if(loading){
         console.log("still loading");
     }
-    
     return(
         <div>
             <h1><code>Testing what would work best. </code></h1>
@@ -41,12 +43,10 @@ function Home(){
             <button>B</button>
             <button>C</button>
             <button>More Categories</button> 
-            <h2>Listings in Bath</h2>
-            <div className="listingRow1">
-                <button>Prod1</button>
-                <button>Prod2</button>
-                <button>Prod3</button>
-                <button>Prod4</button>
+            <h2>Sorting (NOT WORKING FOR NOW)</h2>
+            <div>
+                <button onClick={toggleSort}>Oldest first</button>
+                <button onClick={toggleSort}>Newset first</button>
             </div>
             
             {!loading ? 
@@ -57,10 +57,19 @@ function Home(){
     )
 }
 
+function toggleSort(){
+    sortNewestToOldest = !sortNewestToOldest;
+}
+
+function getListings(listings){
+    return (!sortNewestToOldest ? listings : listings.reverse());
+}
+
 function listingRow(listings){
     return (
         <div className="listingRow">
-            {listings.map((listing, index) =>{
+            {/* .reverse() here to reverse the array (to achieve newest to oldest) */}
+            {getListings(listings).map((listing, index) =>{
                 return (
                     <div key={index.toString()} className="product">
                         <Link to={{
