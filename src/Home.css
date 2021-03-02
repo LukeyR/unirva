@@ -8,11 +8,7 @@
     display: flex;
   }
   
-  .listingRow .product {
-    flex: 30%;
-  }
-  
-  .listingRow .product :hover {
+  .listingRow :hover{
     flex: 30%;
     background-color: rgb(150, 150, 150);
     border-radius: 15px;
