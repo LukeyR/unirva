@@ -3,7 +3,7 @@
     width: 100%;
     height: 80px;
     display: flex;
-    position: absolute;
+    position: sticky;
     bottom: 0;
   }
   
