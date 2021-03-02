@@ -71,17 +71,18 @@ function listingRow(listings){
             {/* .reverse() here to reverse the array (to achieve newest to oldest) */}
             {getListings(listings).map((listing, index) =>{
                 return (
-                    <div key={index.toString()} className="product">
-                        <Link to={{
-                            pathname:"/DisplayProduct",
-                            state:[{index: index, iD: 'default'}]
-                            }}>
-                        {/* alt='' with a link to default/missing image needed */}
-                        <img src={listing.imgUrl} className='productImage' />
-                        </Link>
-                        <p className='productTitle' >{listing.name}</p>
-                        <p className='productPrice' >Price: £{listing.price}</p>
-                    </div>
+                    <Link to={{
+                    pathname:"/DisplayProduct",
+                    state:[{index: index, iD: 'default'}]
+                    }}>
+                        <div key={index.toString()} className="product">
+                            
+                            {/* alt='' with a link to default/missing image needed */}
+                            <img src={listing.imgUrl} className='productImage' />
+                            <p className='productTitle' >{listing.name}</p>
+                            <p className='productPrice' >Price: £{listing.price}</p>    
+                        </div>
+                    </Link>
                 )
             })} 
         </div>
