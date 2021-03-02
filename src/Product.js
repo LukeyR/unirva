@@ -51,7 +51,6 @@ function Upload(){
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState('');
     const [user] = useAuthState(auth);
-    console.log(user)
 
     const handleChange = e => {
         if (e.target.files[0]){
@@ -70,7 +69,7 @@ function Upload(){
     }
 
     const sendListing = async(e) => {
-        console.log(user.uid)
+        console.log("+++" + user.uid)
         e.preventDefault();
 
         await listingsRef.add({
@@ -81,6 +80,7 @@ function Upload(){
             seller:(user ? user.uid : sellerVal),
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
+        console.log("product submitted")
         
         // dunno what this does but I assume it resets the text fields
         setFormValue('');
@@ -91,7 +91,7 @@ function Upload(){
         setUrl('');
 
         //Should redirect back to home page
-        window.location.href = "";
+        window.location.href = "/";
     }
 
     // the main form
