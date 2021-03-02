@@ -1,10 +1,18 @@
 # CM20257
 A Place for our CM20257 Group 25 code
 
-In order for this to work you need to install the following:
-firebase, firebase-tools, react-firebase, react-router-dom
+In order for this to work you need to do the following:
+#### Install node.js
+- Windows (gui): visit https://nodejs.org/en/download/
+- Windows (Command-Line using winget): `winget install node`
+- Mac (gui): visit https://nodejs.org/en/download/
+- Mac (Command-Line using [homebrew](https://brew.sh/)): `brew install node`
+- Linux (Tested on Ubuntu):
+`sudo apt-get install nodejs`
+`sudo apt-get install npm`
+(Note: you may aldo have to run `sudo apt-get update` if nodejs cannot be found)
 
-    npm install firebase firebase-tools react-firebase react-router-dom
+Navigate to the directory containing your copy of `package.json` and run `npm install` to install all dependencies required to run the program.
 ___ 
 
 # Getting Started with Create React App
