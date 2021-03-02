@@ -12,9 +12,10 @@ import { useStyles } from "./Menu.js"
 
 let redirect = false;
 
-function loginOnClick(location) {
-    alert(`${location} redirect here`)
-}
+// function LoginOnClick() {
+//     const history = useHistory();
+//     // alert(`${location} redirect here`)
+// }
 
 function googleIcon() {
     return (
@@ -45,7 +46,7 @@ function SignIn() {
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                        loginOnClick("Log in")
+                        history.push("./signin")
                     }} className={classes.button} style={{marginBottom: -12.5}}>
                         Log In
                     </Button>
@@ -80,7 +81,7 @@ function SignIn() {
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                        loginOnClick("Register")
+                        history.push("./register")
                     }} className={classes.button}>
                         Register
                     </Button>

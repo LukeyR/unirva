@@ -52,8 +52,8 @@ function Chat(){
             <h1>Chat</h1>
             <p>Right, let's get going!</p>
             <h1>You have {myChats} chats open.</h1>
-            <input type="text" placeholder="Search" value={searchVal} onChange={editSearchTerm}></input>
-            <ResultContainer names={search()}></ResultContainer>
+            <input type="text" placeholder="Search" value={searchVal} onChange={editSearchTerm}/>
+            <ResultContainer names={search()}/>
         </div>
     )
 }
