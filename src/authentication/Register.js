@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import { Redirect } from "react-router-dom";
-import './App.css';
+import '../App.css';
 import firebase from 'firebase/app';
-import firebaseConfig from "./firebase";
+import firebaseConfig from "../firebase";
 
 const Register = () => {
   const [currentUser, setCurrentUser] = useState(null);    
