@@ -23,10 +23,6 @@ function Search(){
     // retrieving them
     const [listingsBig, loading] = useCollection(query);
 
-    const defaultListing = "loading...";
-    const defaultPrice = "loading...";
-    const defaultUrl = "https://via.placeholder.com/150.jpg";
-
     // check if data is still being loaded
     if(!loading){
         var index = 0;
@@ -45,15 +41,15 @@ function Search(){
    
     return(
         <div>
-            {foundResults ? (<h1>Search result for "{searchTerm}"</h1> ) : (<h1>Could not find Search Results for "{searchTerm}"</h1>)}
             {foundResults ? (
                 <div>
+                    <h1>Search results for '{searchTerm}'</h1>
                     {!loading ? 
                     listingsRow(listings)
                     : <h1>Listings Loading...</h1>
                     }
                 </div>
-                ) : (<></>)}
+                ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
         </div>
     )
 }
