@@ -10,7 +10,7 @@ In order for this to work you need to do the following:
 - Linux (Tested on Ubuntu):
 `sudo apt-get install nodejs`
 `sudo apt-get install npm`
-(Note: you may aldo have to run `sudo apt-get update` if nodejs cannot be found)
+(Note: you may also have to run `sudo apt-get update` if nodejs cannot be found)
 
 Navigate to the directory containing your copy of `package.json` and run `npm install` to install all dependencies required to run the program.
 ___ 
