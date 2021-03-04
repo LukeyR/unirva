@@ -27,7 +27,7 @@ function Search(){
     if(!loading){
         var index = 0;
         listingsBig.forEach(doc => {
-            if (doc.data().name.includes(searchTerm)){
+            if (doc.data().name.toLowerCase().includes(searchTerm.toLowerCase())){
                 foundResults = true;
                 listings[index] = doc.data();
                 docsID[index] = doc.id;
