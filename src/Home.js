@@ -71,8 +71,8 @@ function listingsRow(listings){
             {getOrderedListings(listings).map((listing, index) =>{
                 return (
                     <Link to={{
-                    pathname:"/DisplayProduct",
-                    state:[{iD: docsID[index]}]
+                        pathname:"/DisplayProduct",
+                        state:[{iD: docsID[index]}]
                     }}>
                         <div key={docsID[index].toString()} className="product">    
                             <img src={listing.imgUrl} className='productImage' />

@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+}
+
+.about {
+    border-right: 1px solid black;
+}
+
+.profilePicture {
+    padding: 40px;
+    border: 0px solid black;
+    width: 300px;
+    height: 300px;
+}
+
+.listings {
+    padding: 40px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-content: flex-start;
+}
+
+.listings :hover{
+    background-color: rgb(150, 150, 150);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.productImage {
+    height: 200px;
+    width: 200px;
+}
+
+.productTitle {
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.productPrice {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+}
