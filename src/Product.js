@@ -49,7 +49,6 @@ function Upload(){
     const [priceVal, setFormValue3] = useState('');
     const [sellerVal, setFormValue4] = useState('');
     const [image, setImage] = useState(null);
-    const [url, setUrl] = useState('');
     const [user] = useAuthState(auth);
 
     const handleChange = e => {
@@ -58,52 +57,69 @@ function Upload(){
         }
     }
 
-    const uploadImg = () => {
-        const uploadImg = storage.ref('images/' + image.name).put(image);
-
-        uploadImg.on("state_changed", snapshot => {}, error => {console.log(error);},
-            () => {storage.ref('images').child(image.name).getDownloadURL().then(url => {
-                console.log("url: ", url);
-                setUrl(url);
-            });});
+    // generates random alphanumeric file name of length 25
+    const generateFileName = () => {
+        let fileName = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for(let i=0; i<25; i++){
+            fileName+=characters.charAt(Math.floor(Math.random()*charactersLength));
+        }
+        return fileName;
     }
 
-    const sendListing = async(e) => {
-        console.log("+++" + user.uid)
+    //gets the file extension from the image name
+    const getFileExtension = () => {
+        let fileExtension = '';
+        for(let i=image.name.length; i>0; i--){
+            if(image.name.charAt(i) === '.'){
+                fileExtension = image.name.charAt(i) + fileExtension;
+                break;
+            }else{
+                fileExtension = image.name.charAt(i) + fileExtension;
+            }
+        }
+        return fileExtension;
+    }
+
+    //submits form by getting file name, uploading image, getting url and then submitting listing
+    const submitForm = async(e) => {
+
         e.preventDefault();
 
-        await listingsRef.add({
-            name:nameVal,
-            description:descriptionVal,
-            price:priceVal,
-            imgUrl:url,
-            seller:(user ? user.uid : sellerVal),
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        console.log("product submitted")
-        
-        // dunno what this does but I assume it resets the text fields
-        setFormValue('');
-        setFormValue2('');
-        setFormValue3('');
-        setFormValue4('');
-        setImage(null);
-        setUrl('');
+        let fileName = generateFileName();
 
-        //Should redirect back to home page
-        window.location.href = "/";
+        let fileExtension = getFileExtension();
+
+        const uploadImg = storage.ref('images/' + fileName + fileExtension).put(image);
+
+        uploadImg.on("state_changed", snapshot => {}, error => {console.log(error);},
+            () => {storage.ref('images').child(fileName + fileExtension).getDownloadURL().then(url => {
+                console.log("url: ", url);
+
+                listingsRef.add({
+                    name:nameVal,
+                    description:descriptionVal,
+                    price:priceVal,
+                    imgUrl:url,
+                    seller:(user ? user.uid : sellerVal),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                }).then(() => {
+                    console.log('product submitted. redirecting...');
+                    window.location.href = "/";
+                });
+
+            });});
     }
 
     // the main form
     return(
-        <form className = 'form' onSubmit={sendListing}>
+        <form className = 'form' onSubmit={submitForm}>
             <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
             <label className='label2'>Price: </label><input className="input" type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
             <label className='label3'>Seller: </label><input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/>
             <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
             <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
-            <button className='fileUploadButton' type="button" onClick={uploadImg}>Upload Image</button>
-            <img src={url} alt='react logo' className='productImage' />
             <button className='button' type="submit">Post Listing</button>
         </form>
     );

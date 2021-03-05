@@ -6,13 +6,15 @@ import {Link} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
+var sortNewestToOldest = true;
+var listings = [];
+var docsID = [];
+
 function Home(){
 
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt', "desc").limit(3); // ordering by time
-    var listings = [];
-    var docsID = [];
+    const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
     // retrieving them
 
     const [listingsBig, loading] = useCollection(query);
@@ -21,10 +23,6 @@ function Home(){
     const defaultPrice = "loading...";
     const defaultUrl = "https://via.placeholder.com/150.jpg";
 
-    var listing1 = defaultListing, listing2 = defaultListing, listing3 = defaultListing,
-        price1 = defaultPrice, price2 = defaultPrice, price3 = defaultPrice,
-        url1 = defaultUrl, url2 = defaultUrl, url3 = defaultUrl;
-    var id1="default", id2="default", id3="default";
     // check if data is still being loaded
     if(!loading){
         // make sure to take most recent posts
@@ -34,27 +32,6 @@ function Home(){
             docsID[index] = doc.id;
             index++;
         })
-        listing1 = listings[0].name;
-        listing2 = listings[1].name;
-        listing3 = listings[2].name;
-
-        price1 = listings[0].price;
-        price2 = listings[1].price;
-        price3 = listings[2].price;
-
-        if(listings[0].imgUrl != null){
-            url1 = listings[0].imgUrl;
-        }
-        if(listings[1].imgUrl != null){
-            url2 = listings[1].imgUrl;
-        }
-        if(listings[2].imgUrl != null){
-            url3 = listings[2].imgUrl;
-        }
-
-        id1=docsID[0];
-        id2=docsID[1];
-        id3=docsID[2];
         
     }
 
@@ -67,45 +44,44 @@ function Home(){
             <button>C</button>
             <button>More Categories</button> 
             <h2>Listings in Bath</h2>
-            <div className="listingRow1">
-                <button>Prod1</button>
-                <button>Prod2</button>
-                <button>Prod3</button>
-                <button>Prod4</button>
+            <h2>Sorting (NOT WORKING FOR NOW)</h2>
+            <div className="sortingRow">
+                <button onClick={toggleSort}>Oldest first</button>
+                <button onClick={toggleSort}>Newset first</button>
             </div>
-            
-            <div className="listingRow">
-                <div className="product">
+            {!loading ? 
+                listingsRow(listings)
+                : <h1>Listings Loading...</h1>
+            }
+        </div>
+    )
+}
+
+function toggleSort(){
+    sortNewestToOldest = !sortNewestToOldest;
+}
+
+function getOrderedListings(listings){
+    return (sortNewestToOldest ? listings : listings.reverse());
+}
+
+function listingsRow(listings){
+    return (
+        <div className="listingRow">
+            {getOrderedListings(listings).map((listing, index) =>{
+                return (
                     <Link to={{
-                            pathname:"/DisplayProduct",
-                            state:[{iD: id1}]
-                        }}>
-                        <img src={url1} alt='react logo' className='productImage' />
+                        pathname:"/DisplayProduct",
+                        state:[{iD: docsID[index]}]
+                    }}>
+                        <div key={docsID[index].toString()} className="product">    
+                            <img src={listing.imgUrl} className='productImage' />
+                            <p className='productTitle' >{listing.name}</p>
+                            <p className='productPrice' >Price: £{listing.price}</p>    
+                        </div>
                     </Link>
-                    <p className='productTitle' >{listing1}</p>
-                    <p className='productPrice' >Price: £{price1}</p>
-                </div>
-                <div className="product">
-                <Link to={{
-                            pathname:"/DisplayProduct",
-                            state:[{iD: id2}]
-                        }}>
-                        <img src={url2} alt='react logo' className='productImage' />
-                    </Link>
-                    <p className='productTitle' >{listing2}</p>
-                    <p className='productPrice' >Price: £{price2}</p>
-                </div>
-                <div className="product">
-                <Link to={{
-                            pathname:"/DisplayProduct",
-                            state:[{iD: id3}]
-                        }}>
-                        <img src={url3} alt='react logo' className='productImage' />
-                    </Link>
-                    <p className='productTitle' >{listing3}</p>
-                    <p className='productPrice' >Price: £{price3}</p>
-                </div>
-            </div>
+                )
+            })} 
         </div>
     )
 }

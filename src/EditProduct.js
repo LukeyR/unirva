@@ -23,6 +23,14 @@ function EditProduct(){
     const [image, setImage] = useState(null);
     const [url, setUrl] = useState(listingUrl);
 
+    //gets image name from stored url
+    const getImageName = () => {
+        let baseUrl = 'https://firebasestorage.googleapis.com/v0/b/ipproject-27ae8.appspot.com/o/images%2F';
+        let imageName = url.replace(baseUrl, '');
+        let indexOfEnd = imageName.indexOf('?');
+        imageName = imageName.substring(0, indexOfEnd);
+        return imageName
+    }
 
     const handleChange = e => {
         if (e.target.files[0]){
@@ -50,7 +58,7 @@ function EditProduct(){
             imgUrl:url
         });
         console.log("product submitted")
-        
+
         // dunno what this does but I assume it resets the text fields
         setFormValue('');
         setFormValue2('');
@@ -62,9 +70,14 @@ function EditProduct(){
         window.location.href = "/";
     }
 
+    //deletes image and listing
     const deleteListing = async(e) => {
-        await listingsRef.delete();
-        window.location.href = "/";
+        let imageName = getImageName();
+        let storageRef = storage.ref('images').child(imageName);
+        await storageRef.delete();
+        await listingsRef.delete().then(() => {
+            window.location.href = "/";
+        });
     }
 
     return(
@@ -76,7 +89,7 @@ function EditProduct(){
             <button className='fileUploadButton' type="button" onClick={uploadImg}>Upload Image</button>
             <img src={url} alt='react logo' className='productImage' />
             <button className='button' type="submit">Update Listing</button>
-            <button onClick={deleteListing}>Delete Listing</button>
+            <button onClick={deleteListing} type={"button"}>Delete Listing</button>
         </form>
     )
 }

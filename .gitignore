@@ -24,3 +24,5 @@ yarn-error.log*
 
 #Just for my vscode users with a custom launch config
 /.vscode
+#And for Webstorm
+/.idea
