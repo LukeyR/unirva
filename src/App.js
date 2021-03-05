@@ -27,8 +27,11 @@ import {createMuiTheme, CssBaseline} from "@material-ui/core";
 import {deepOrange, orange} from "@material-ui/core/colors";
 import lightBlue from "@material-ui/core/colors/lightBlue";
 import pink from "@material-ui/core/colors/pink";
+import {useDocumentData} from "react-firebase-hooks/firestore";
+import firebase from "./firebase";
 
 const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product"]
+
 
 
 function HideFooter() {
@@ -42,6 +45,7 @@ function HideFooter() {
 }
 
 
+
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching
  * between tabs as well as a header (nice design) which we can include on every page.
@@ -51,7 +55,8 @@ function App() {
     const location = useLocation();
     const [user] = useAuthState(auth);
 
-    const [theme, setTheme] = useState({
+
+    const lightTheme = () =>({
         palette: {
             type: "light",
             primary: {
@@ -63,23 +68,32 @@ function App() {
         },
     });
 
-    const toggleDarkTheme = () => {
-        let newPaletteType = theme.palette.type === "light";
-        setTheme({
+
+    const darkTheme = () => ({
             palette: {
-                type: newPaletteType ? "dark" : "light",
+                type: "dark",
                 primary: {
-                    main: newPaletteType ? orange[500] : lightBlue[400],
+                    main: orange[500],
                 },
                 secondary: {
-                    main: newPaletteType ? deepOrange[500] : pink[500],
+                    main: deepOrange[500],
                 },
             },
-        });
-    };
+    });
 
-    const muiTheme = createMuiTheme(theme);
+    const firestore = firebase.firestore();
+    let userID = null;
+    let userDocRef = null;
 
+    if(user != null) {
+        userID = user.uid;
+        const usersRef = firestore.collection("users");
+        userDocRef = usersRef.doc(userID)
+    }
+
+    const [userDoc, loadingUserDoc] = useDocumentData(userDocRef);
+
+    const muiTheme = (user && userDoc.darkModeEnable) ? createMuiTheme(darkTheme) : createMuiTheme(darkTheme)
 
     // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
     return (
@@ -87,7 +101,7 @@ function App() {
             <ThemeProvider theme={muiTheme}>
                 <CssBaseline/>
                 <div className="App">
-                    <Header theme={muiTheme} onToggleDark={toggleDarkTheme}/>
+                    <Header theme={muiTheme}/>
                     {/*<>Yes, whatever is put here is displayed on every page.</>*/}
                     <Route exact path="/Profile" component={Profile}/>
                     <Route exact path="/Product" component={Product}/>

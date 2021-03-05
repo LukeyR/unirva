@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    AppBar,
+    AppBar, Badge,
     Button,
     fade,
     Grid,
@@ -16,7 +16,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import {makeStyles} from "@material-ui/core/styles";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {auth} from "../firebase";
+import firebase, {auth} from "../firebase";
 import {useHistory} from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -30,6 +30,7 @@ import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import App from "../App";
 import {ExitToApp} from "@material-ui/icons";
+import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
 
 
 const profilePictureSize = "35px"
@@ -105,12 +106,32 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const Header = ({theme, onToggleDark}) => {
+const firestore = firebase.firestore();
+
+const Header = ({theme}) => {
     const [user] = useAuthState(auth);
     const classes = useStyles();
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
+    let userID = null;
+
+    if(user != null) userID = user.uid;
+
+    const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
+
+    var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
+
+    const userDocRef = firestore.collection("users").doc(userID)
+    var [userDoc, loadingUserDoc] = useDocumentData(userDocRef)
+
+    const updateDarkModePreference = () => {
+        console.log("herer")
+        firestore.collection("users").doc(userID.toString()).update({
+            darkModeEnable: !userDoc.darkModeEnable,
+        })
+    }
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -195,7 +216,9 @@ const Header = ({theme, onToggleDark}) => {
                                                                 history.push("/chat")
                                                             }}
                                                 >
+                                                    <Badge badgeContent={!loadingMes ? unseenMessages.length : 0} color="secondary" >
                                                     <Forum/>
+                                                    </Badge>
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Profile" aria-label="Profile">
@@ -244,7 +267,7 @@ const Header = ({theme, onToggleDark}) => {
                                         </ListItemIcon>
                                         Profile
                                     </MenuItem>
-                                    <MenuItem onClick={onToggleDark}>
+                                    <MenuItem onClick={() => updateDarkModePreference()}>
                                         <ListItemIcon className={classes.listIcon}>
                                             {theme.palette.type === "dark" ? <Brightness7Icon/> : <Brightness4Icon/>}
                                         </ListItemIcon>

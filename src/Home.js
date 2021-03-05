@@ -11,7 +11,7 @@ var listings = [];
 var docsID = [];
 
 // function HomeListingCard(listingObj) {
-//     const {}
+//     const {name, price, imgUrl, seller, description} = listingObj
 //
 //
 //     return (
