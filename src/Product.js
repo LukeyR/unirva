@@ -3,6 +3,7 @@ import firebase from './firebase';
 import { storage, auth } from './firebase';
 import './Product.css';
 import {useAuthState} from "react-firebase-hooks/auth";
+import {useHistory} from "react-router-dom";
 
 //Tried to make it nicer
 
@@ -16,6 +17,14 @@ const firestore = firebase.firestore(); // accessing the firestore (database)
  * If a user wants to view a product, then we can make a new function preview which displays that product.
  */
 function Product() {
+    const history = useHistory();
+    const [user] = useAuthState(auth);
+
+    if (!user) {
+        console.log("here")
+        history.push("./menu")
+    }
+
     return(
         <div className='Product'>
             <h1>This is the Product's page</h1>

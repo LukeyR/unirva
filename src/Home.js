@@ -10,6 +10,15 @@ var sortNewestToOldest = true;
 var listings = [];
 var docsID = [];
 
+// function HomeListingCard(listingObj) {
+//     const {}
+//
+//
+//     return (
+//
+//     )
+// }
+
 function Home(){
 
     // Getting the listings from the database.
@@ -49,6 +58,9 @@ function Home(){
                 <button onClick={toggleSort}>Oldest first</button>
                 <button onClick={toggleSort}>Newset first</button>
             </div>
+
+
+            {console.log(listings)}
             {!loading ? 
                 listingsRow(listings)
                 : <h1>Listings Loading...</h1>
