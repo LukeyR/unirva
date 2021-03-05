@@ -1,5 +1,16 @@
 import React from 'react';
-import {AppBar, fade, Grid, IconButton, InputBase, Toolbar} from "@material-ui/core";
+import {
+    AppBar,
+    Button,
+    fade,
+    Grid,
+    IconButton,
+    InputBase,
+    ListItemIcon,
+    Toolbar,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
@@ -9,6 +20,16 @@ import {auth} from "../firebase";
 import {useHistory} from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import HideOnScroll from "./HideOnScroll";
+import KeyboardArrowUp from "@material-ui/icons/KeyboardArrowUp";
+import Forum from "@material-ui/icons/Forum";
+import BackToTop from "./BackToTop";
+import Fab from "@material-ui/core/Fab";
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import App from "../App";
+import {ExitToApp} from "@material-ui/icons";
 
 
 const profilePictureSize = "35px"
@@ -28,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     link: {},
     search: {
         flexGrow: 1,
-        maxWidth: "50%",
+        maxWidth: "75%",
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -50,7 +71,10 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    homeIcon: {},
+    homeIcon: {
+        flex: 1,
+        justifyContent: "flex-start"
+    },
     profileIcon: {
         margin: 0,
         position: "absolute",
@@ -68,21 +92,25 @@ const useStyles = makeStyles((theme) => ({
         transition: theme.transitions.create('width'),
         width: '100%',
     },
+    chat: {
+        color: "white",
+    },
+    profile: {
+        "&:hover": {
+            backgroundColor: "transparent"
+        }
+    },
+    listIcon: {
+        minWidth: '40px',
+    },
 }));
 
-function search(searchTerm) {
-
-    // alert(`${searchTerm} was searched.`)
-
-}
-
-const Header = () => {
+const Header = ({theme, onToggleDark}) => {
     const [user] = useAuthState(auth);
     const classes = useStyles();
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -95,7 +123,7 @@ const Header = () => {
 
     const onChange = (event) => {
         history.push(`/search=${event.target.value}`)
-        if (event.target.value == "") {
+        if (event.target.value === "") {
             history.push("./")
         }
     };
@@ -109,101 +137,142 @@ const Header = () => {
 
     return (
         <div className={classes.root}>
-            <AppBar position="static" elevation={0}>
-                <Toolbar>
-                    <Grid
-                        container
-                        spacing={0}
-                        alignItems="center"
-                        align="center"
-                    >
-                        <Grid item xs={1}
-                              container
-                              alignItems="flex-start">
-                            <IconButton aria-label="Go to profile" onClick={() => {
-                                history.push("/")
-                            }}>
-                                <HomeIcon style={{fill: "white"}}/>
-                            </IconButton>
-                        </Grid>
+            <HideOnScroll>
+                <AppBar position="fixed" elevation={0} color="primary">
+                    <Toolbar>
+                        <Grid
+                            container
+                            spacing={0}
+                            alignItems="center"
+                            align="center"
+                        >
+                            <Grid item xs={2} sm={1}
+                                  container
+                                  diaply="flex"
+                                  alignItems="flex-start">
+                                <Tooltip title="Home" aria-label="Home">
+                                    <IconButton aria-label="Go to profile" onClick={() => {
+                                        history.push("/")
+                                    }}>
+                                        <HomeIcon style={{fill: "white"}}/>
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
 
-                        <Grid item xs={10}>
-                            <div>
-                                <div className={classes.search}>
-                                    <div className={classes.searchIcon}>
-                                        <SearchIcon/>
+                            <Grid item xs={7} sm={10}>
+                                <div >
+                                    <div className={classes.search}>
+                                        <div className={classes.searchIcon}>
+                                            <SearchIcon/>
+                                        </div>
+                                        <InputBase
+                                            fullWidth={true}
+                                            placeholder="Search…"
+                                            classes={{
+                                                root: classes.inputRoot,
+                                                input: classes.inputInput,
+                                            }}
+                                            style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+
+                                            inputProps={{'aria-label': 'search'}}
+                                            onKeyPress={onKeyPress}
+                                            onChange={onChange}
+                                        />
                                     </div>
-                                    <InputBase
-                                        fullWidth={true}
-                                        placeholder="Search…"
-                                        classes={{
-                                            root: classes.inputRoot,
-                                            input: classes.inputInput,
-                                        }}
-                                        style={{
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-
-                                        inputProps={{'aria-label': 'search'}}
-                                        onKeyPress={onKeyPress}
-                                        onChange={onChange}
-                                    />
                                 </div>
-                            </div>
 
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={1}
-                              container
-                              direction="row"
-                              alignItems="flex-end"
-                              justify="center">
-                            {user ? (
-                                    <IconButton className={classes.circle}
-                                                onClick={
+                            <Grid item xs={3} sm={1}>
+                                {user ? (
+                                        <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
+                                            <Tooltip title="Chats" aria-label="Chats">
+                                                <IconButton className={classes.chat}
+                                                            onClick={() => {
+                                                                history.push("/chat")
+                                                            }}
+                                                >
+                                                    <Forum/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Profile" aria-label="Profile">
+                                                <IconButton onClick={
                                                     handleMenu
                                                 }
-                                    >
-                                        <img src={user.photoURL}
-                                             alt="profile-pict ure"
-                                             width={profilePictureSize}
-                                             height={profilePictureSize}
-                                        />
-                                    </IconButton>
-                                )
-                                : (
-                                    <IconButton className={classes.homeIcon}
-                                                aria-label="Go to profile"
-                                                onClick={() => {
-                                                    history.push("/menu")
-                                                }}
-                                    >
-                                        <AccountCircleTwoToneIcon/>
-                                    </IconButton>
-                                )}
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={open}
-                                onClose={() => {setAnchorEl(null)}}
-                            >
-                                <MenuItem onClick={() => handleMenuClick("/Profile")}>Profile</MenuItem>
-                                <MenuItem onClick={() => handleMenuClick("/Logout")}>Sign Out</MenuItem>
-                            </Menu>
+                                                            className={classes.profile}
+                                                >
+                                                    <div className={classes.circle}>
+                                                        <img src={user.photoURL}
+                                                             alt="profile-picture"
+                                                             width={profilePictureSize}
+                                                             height={profilePictureSize}
+                                                        />
+                                                    </div>
+                                                    <ArrowDropDownIcon/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    )
+                                    : (
+                                        <Button style={{color: "white", display: "flex", justifyContent: "flex-end"}} onClick={() => {
+                                            history.push("/menu")
+                                        }}>Sign in</Button>
+                                    )}
+                                <Menu
+                                    id="menu-appbar"
+                                    anchorEl={anchorEl}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={open}
+                                    onClose={() => {
+                                        setAnchorEl(null)
+                                    }}
+                                >
+                                    <MenuItem onClick={() => handleMenuClick("/Profile")}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <AccountCircleTwoToneIcon/>
+                                        </ListItemIcon>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem onClick={onToggleDark}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            {theme.palette.type === "dark" ? <Brightness7Icon/> : <Brightness4Icon/>}
+                                        </ListItemIcon>
+                                        <Typography>
+                                            {(theme.palette.type === "dark" ? "Disable" : "Enable") + " Dark Mode"}
+                                        </Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => {
+                                        user ? handleMenuClick("/signout") : handleMenuClick("/menu")
+                                    }}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <ExitToApp/>
+                                        </ListItemIcon>
+                                        {user ? "Sign Out" : "Sign In"}
+                                    </MenuItem>
+                                </Menu>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Toolbar>
-            </AppBar>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
+            <Toolbar id="back-to-top-anchor"/>
+
+            <BackToTop>
+                <Fab color="secondary" size="large" aria-label="scroll back to top">
+                    <KeyboardArrowUp/>
+                </Fab>
+            </BackToTop>
         </div>
     )
 }
