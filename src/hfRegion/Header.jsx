@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     AppBar, Badge,
-    Button,
+    Button, createMuiTheme,
     fade,
     Grid,
     IconButton,
@@ -117,18 +117,25 @@ const Header = ({theme}) => {
 
     let userID = null;
 
-    if(user != null) userID = user.uid;
+    if(user != null) {
+        userID = user.uid;
+    }
 
     const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
-
     var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
-    const userDocRef = firestore.collection("users").doc(userID)
-    var [userDoc, loadingUserDoc] = useDocumentData(userDocRef)
+    let userDocRef = null;
+    if(user) {
+        userID = user.uid;
+        const usersRef = firestore.collection("users");
+        userDocRef = usersRef.doc(userID)
+    }
+
+    const [userDoc, loadingUserDoc] = useDocumentData(userDocRef);
+
 
     const updateDarkModePreference = () => {
-        console.log("herer")
-        firestore.collection("users").doc(userID.toString()).update({
+        if (user && userDoc !== undefined) firestore.collection("users").doc(userID).update({
             darkModeEnable: !userDoc.darkModeEnable,
         })
     }

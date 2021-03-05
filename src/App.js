@@ -45,6 +45,7 @@ function HideFooter() {
 }
 
 
+const firestore = firebase.firestore();
 
 /**
  * This is like a template which will appear on every page of our website. Here we can insert all the backend for switching
@@ -81,11 +82,9 @@ function App() {
             },
     });
 
-    const firestore = firebase.firestore();
     let userID = null;
     let userDocRef = null;
-
-    if(user != null) {
+    if(user) {
         userID = user.uid;
         const usersRef = firestore.collection("users");
         userDocRef = usersRef.doc(userID)
@@ -93,7 +92,8 @@ function App() {
 
     const [userDoc, loadingUserDoc] = useDocumentData(userDocRef);
 
-    const muiTheme = (user && userDoc.darkModeEnable) ? createMuiTheme(darkTheme) : createMuiTheme(darkTheme)
+    let muiTheme = createMuiTheme(lightTheme())
+    if (!loadingUserDoc && user && userDoc !== undefined) muiTheme = (userDoc.darkModeEnable) ? createMuiTheme(darkTheme()) : createMuiTheme(lightTheme())
 
     // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
     return (
