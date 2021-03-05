@@ -47,7 +47,7 @@ function Upload(){
     const [nameVal, setFormValue] = useState('');
     const [descriptionVal, setFormValue2] = useState('');
     const [priceVal, setFormValue3] = useState('');
-    const [sellerVal, setFormValue4] = useState('');
+    //const [sellerVal, setFormValue4] = useState('');
     const [image, setImage] = useState(null);
     const [user] = useAuthState(auth);
 
@@ -102,7 +102,7 @@ function Upload(){
                     description:descriptionVal,
                     price:priceVal,
                     imgUrl:url,
-                    seller:(user ? user.uid : sellerVal),
+                    seller:user.uid,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 }).then(() => {
                     console.log('product submitted. redirecting...');
@@ -117,7 +117,6 @@ function Upload(){
         <form className = 'form' onSubmit={submitForm}>
             <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
             <label className='label2'>Price: </label><input className="input" type="text" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
-            <label className='label3'>Seller: </label><input className="input" type="text" value={sellerVal} onChange={(e) => setFormValue4(e.target.value)}/>
             <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
             <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
             <button className='button' type="submit">Post Listing</button>
