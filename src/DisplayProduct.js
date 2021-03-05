@@ -27,6 +27,7 @@ function DisplayProduct(){
     var userName = "Loading";
     var myListing = null;
     var path="";
+    var state = [];
 
     if(!loading){
         myListing = document.data();
@@ -35,19 +36,41 @@ function DisplayProduct(){
         listingSeller = myListing.seller;
         listingPrice = myListing.price;
         listingUrl = myListing.imgUrl;
-        if(listingSeller == userID) {msg = "Edit details"; match = true; path = "/EditProduct"}
-        else msg = "Message seller";
+        //else msg = "Message seller";
     } else {
         console.log("Still loading");
     }
 
     var userRef = firestore.collection('users').where("ID", "==", listingSeller);
     var [trueSeller, loadingSeller] = useCollection(userRef);
-
+    var SellerID;
     if(!loadingSeller) {
         trueSeller.forEach(seller => {
             userName = seller.data().Name;
+            SellerID = seller.data().ID;
         })
+    }
+
+    if(listingSeller == userID) {
+        msg = "Edit details";
+        match = true; 
+        path = "/EditProduct"
+        state = [{
+            iDListing: id,
+            name: listingName,
+            description: listingDes,
+            price: listingPrice,
+            url: listingUrl
+        }]
+    }
+    else {
+        msg = "Message Seller"
+        path = "/ChatRoom";
+        state = [{
+            targetUserID: SellerID,
+            targetUserName: userName,
+            myUID: userID
+    }]
     }
     return (
         <div>
@@ -58,17 +81,8 @@ function DisplayProduct(){
             <img src={listingUrl} alt='react logo' className='productImage' />
             <h1><Link to={{
                 pathname:path,
-                state:[{
-                    iDListing: id,
-                    name: listingName,
-                    description: listingDes,
-                    price: listingPrice,
-                    url: listingUrl
-                }]
-            }}> <button onClick={() => {
-                if(match);
-                else {Msg(userName);path = "";} 
-            }}>{msg}</button></Link></h1>
+                state:state
+            }}> <button>{msg}</button></Link></h1>
         </div>
     )
 }
@@ -79,8 +93,5 @@ function Edit(){
 }
 */
 
-function Msg(name){
-    return alert("Let's get chatting with " + name);
-}
 
 export default DisplayProduct;

@@ -22,11 +22,19 @@ function Chat(){
     if(user != null) userID = user.uid;
 
     const userRef = firestore.collection('users').where('ID', "==", userID);
+    const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
+
+    var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
     var [me, loading] = useCollectionData(userRef);
     var myChats = "Loading";
     const [searchVal, setSearch] = useState("");
     if(!loading) myChats = me[0].chatsNo;
+    var unseen = 0;
+
+    if(!loadingMes){
+        unseen = unseenMessages.length;
+    }
 
     const [users, loadingUsers] = useCollection(firestore.collection('users'));
 
@@ -42,7 +50,7 @@ function Chat(){
         if(!loadingUsers){
             users.forEach(usr => {
                 let name = usr.data().Name;
-                if(name.includes(searchVal)){
+                if(name.includes(searchVal) && name != me[0].Name){
                     results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID}];
                     numberOfResults++;
                 }
@@ -56,6 +64,7 @@ function Chat(){
             <h1>Chat</h1>
             <p>Right, let's get going!</p>
             <h1>You have {myChats} chats open.</h1>
+            <h1>You have {unseen} unseen messages.</h1>
             <input type="text" placeholder="Search" value={searchVal} onChange={editSearchTerm}/>
             <ResultContainer names={search()}/>
         </div>
@@ -71,7 +80,7 @@ function ResultContainer(names){
 }
 
 function Name(name){
-    console.log(name);
+    var unread = "No new messages"
     return(
         <div>
             <Link to={{
@@ -81,7 +90,7 @@ function Name(name){
                     targetUserName: name.name[0].name,
                     myUID: userID
                 }]
-            }}><button>{name.name[0].name}</button></Link>
+            }}><button>{name.name[0].name}</button></Link> : {unread}
         </div>
     )
 }
