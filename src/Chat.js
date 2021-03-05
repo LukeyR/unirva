@@ -7,6 +7,7 @@ import {useCollectionData, useCollection} from "react-firebase-hooks/firestore";
 import { Link } from "react-router-dom";
 
 // TODO
+//  (still present after pauls update at 2:33 UK)
 //  Catch when user is not logged
 //  Fix bug when user is not signed in with google
 
