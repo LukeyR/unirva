@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom';
 import './Footer.css';
 
 
-function Footer(){
+function OldFooter(){
     return(
         <div className="Footer">
             <div className="left">
@@ -19,4 +19,4 @@ function Footer(){
     )
 }
 
-export default Footer;
+export default OldFooter;

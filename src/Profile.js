@@ -4,7 +4,7 @@ import firebase from 'firebase/app';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
@@ -13,7 +13,7 @@ var listings = [];
 var docsID = [];
 
 function Profile(){
-
+    const history = useHistory();
     const [user] = useAuthState(auth);
 
     // Getting the listings from the database.
@@ -45,10 +45,7 @@ function Profile(){
                         <p>Other information goes here</p>
                     </>
                 :
-                    <>
-                        <img className="profilePicture"/>
-                        <h1>No Username found</h1>
-                    </>
+                    history.push("/menu")
                 }
             </div>
 

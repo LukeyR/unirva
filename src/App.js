@@ -22,8 +22,10 @@ import DisplayProduct from './DisplayProduct';
 import { AuthContext } from './Auth';
 import EditProduct from "./EditProduct";
 import ChatRoom from './ChatRoom';
+import {ThemeProvider} from "@material-ui/styles";
+import theme from "./theme";
 
-const ignorePages = ["/menu", "/login", "/register", "/signin" ]
+const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product" ]
 
 function HideFooter() {
     const location = useLocation();
@@ -48,9 +50,10 @@ function App() {
   // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
   return (
     <AuthProvider>
+        <ThemeProvider theme={theme}>
       <div className="App">
           <Header/>
-        <>Yes, whatever is put here is displayed on every page.</>
+        {/*<>Yes, whatever is put here is displayed on every page.</>*/}
         <Route exact path="/Profile" component={Profile} />
         <Route exact path="/Product" component={Product} />
         <Route exact path="/Chat" component={Chat} />
@@ -61,10 +64,12 @@ function App() {
           <Route exact path="/EditProduct" component={EditProduct}/>
           <Route exact path="/ChatRoom" component={ChatRoom}/>
           <Route exact path="/Logout" component={Logout}/>
+          <Route exact path="/signout" component={Logout}/>
           {location.pathname === "/" ? <Home/> : <></>}
           {HideFooter()}
       </div>
         <Route exact path="/Menu" component={Menu}/>
+    </ThemeProvider>
     </AuthProvider>
   );
 }
