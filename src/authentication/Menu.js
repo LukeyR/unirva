@@ -6,6 +6,7 @@ import {makeStyles} from "@material-ui/styles";
 
 export const useStyles = makeStyles({
     root: {
+        backgroundColor: 'transparent',
         width: 500,
         margin: 'auto',
         border: 0,
@@ -47,7 +48,7 @@ function Menu() {
     return (
         <div>
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-            <Grid item container>
+            <Grid item container display="flex" justifyContent="center">
                     <Content/>
             </Grid>
         </div>

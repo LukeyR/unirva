@@ -6,6 +6,10 @@ import {auth} from "./firebase";
 import {useCollectionData, useCollection} from "react-firebase-hooks/firestore";
 import { Link } from "react-router-dom";
 
+// TODO
+//  Catch when user is not logged
+//  Fix bug when user is not signed in with google
+
 const firestore = firebase.firestore();
 var userID = null;
 

@@ -1,5 +1,16 @@
 import React from 'react';
-import {AppBar, Button, fade, Grid, IconButton, InputBase, Toolbar, Tooltip} from "@material-ui/core";
+import {
+    AppBar,
+    Button,
+    fade,
+    Grid,
+    IconButton,
+    InputBase,
+    ListItemIcon,
+    Toolbar,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
@@ -15,7 +26,10 @@ import Forum from "@material-ui/icons/Forum";
 import BackToTop from "./BackToTop";
 import Fab from "@material-ui/core/Fab";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import theme from "../theme";
+import Brightness7Icon from '@material-ui/icons/Brightness7';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import App from "../App";
+import {ExitToApp} from "@material-ui/icons";
 
 
 const profilePictureSize = "35px"
@@ -35,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
     link: {},
     search: {
         flexGrow: 1,
-        maxWidth: "50%",
+        maxWidth: "75%",
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
         backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -86,15 +100,17 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: "transparent"
         }
     },
+    listIcon: {
+        minWidth: '40px',
+    },
 }));
 
-const Header = () => {
+const Header = ({theme, onToggleDark}) => {
     const [user] = useAuthState(auth);
     const classes = useStyles();
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -130,20 +146,21 @@ const Header = () => {
                             alignItems="center"
                             align="center"
                         >
-                            <Grid item xs={1}
+                            <Grid item xs={2} sm={1}
                                   container
+                                  diaply="flex"
                                   alignItems="flex-start">
                                 <Tooltip title="Home" aria-label="Home">
-                                <IconButton aria-label="Go to profile" onClick={() => {
-                                    history.push("/")
-                                }}>
-                                    <HomeIcon style={{fill: "white"}}/>
-                                </IconButton>
+                                    <IconButton aria-label="Go to profile" onClick={() => {
+                                        history.push("/")
+                                    }}>
+                                        <HomeIcon style={{fill: "white"}}/>
+                                    </IconButton>
                                 </Tooltip>
                             </Grid>
 
-                            <Grid item xs={9}>
-                                <div>
+                            <Grid item xs={7} sm={10}>
+                                <div >
                                     <div className={classes.search}>
                                         <div className={classes.searchIcon}>
                                             <SearchIcon/>
@@ -169,38 +186,38 @@ const Header = () => {
 
                             </Grid>
 
-                            <Grid item xs={2}>
+                            <Grid item xs={3} sm={1}>
                                 {user ? (
-                                    <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
-                                        <Tooltip title="Chats" aria-label="Chats">
-                                        <IconButton className={classes.chat}
-                                                    onClick={() => {
-                                                        history.push("/chat")
-                                                    }}
-                                        >
-                                            <Forum />
-                                        </IconButton>
-                                        </Tooltip>
-                                    <Tooltip title="Profile" aria-label="Profile">
-                                        <IconButton onClick={
-                                                        handleMenu
-                                                    }
-                                                    className={classes.profile}
-                                        >
-                                    <div  className={classes.circle}>
-                                            <img src={user.photoURL}
-                                                 alt="profile-picture"
-                                                 width={profilePictureSize}
-                                                 height={profilePictureSize}
-                                            />
+                                        <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
+                                            <Tooltip title="Chats" aria-label="Chats">
+                                                <IconButton className={classes.chat}
+                                                            onClick={() => {
+                                                                history.push("/chat")
+                                                            }}
+                                                >
+                                                    <Forum/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Profile" aria-label="Profile">
+                                                <IconButton onClick={
+                                                    handleMenu
+                                                }
+                                                            className={classes.profile}
+                                                >
+                                                    <div className={classes.circle}>
+                                                        <img src={user.photoURL}
+                                                             alt="profile-picture"
+                                                             width={profilePictureSize}
+                                                             height={profilePictureSize}
+                                                        />
+                                                    </div>
+                                                    <ArrowDropDownIcon/>
+                                                </IconButton>
+                                            </Tooltip>
                                         </div>
-                                            <ArrowDropDownIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                    </div>
                                     )
                                     : (
-                                        <Button style={{color: "white"}} onClick={() => {
+                                        <Button style={{color: "white", display: "flex", justifyContent: "flex-end"}} onClick={() => {
                                             history.push("/menu")
                                         }}>Sign in</Button>
                                     )}
@@ -221,19 +238,39 @@ const Header = () => {
                                         setAnchorEl(null)
                                     }}
                                 >
-                                    <MenuItem onClick={() => handleMenuClick("/Profile")}>Profile</MenuItem>
-                                    <MenuItem onClick={() => {user ? handleMenuClick("/signout") : handleMenuClick("/menu")}}>{user ? "Sign Out" : "Sign In"}</MenuItem>
+                                    <MenuItem onClick={() => handleMenuClick("/Profile")}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <AccountCircleTwoToneIcon/>
+                                        </ListItemIcon>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem onClick={onToggleDark}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            {theme.palette.type === "dark" ? <Brightness7Icon/> : <Brightness4Icon/>}
+                                        </ListItemIcon>
+                                        <Typography>
+                                            {(theme.palette.type === "dark" ? "Disable" : "Enable") + " Dark Mode"}
+                                        </Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => {
+                                        user ? handleMenuClick("/signout") : handleMenuClick("/menu")
+                                    }}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <ExitToApp/>
+                                        </ListItemIcon>
+                                        {user ? "Sign Out" : "Sign In"}
+                                    </MenuItem>
                                 </Menu>
                             </Grid>
                         </Grid>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
-            <Toolbar id="back-to-top-anchor" />
+            <Toolbar id="back-to-top-anchor"/>
 
             <BackToTop>
                 <Fab color="secondary" size="large" aria-label="scroll back to top">
-                    <KeyboardArrowUp />
+                    <KeyboardArrowUp/>
                 </Fab>
             </BackToTop>
         </div>
