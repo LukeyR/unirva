@@ -5,12 +5,14 @@ import { useLocation } from 'react-router-dom';
 import './ChatRoom.css';
 
 const firestore = firebase.firestore();
-var myID, target, targetID, senderIDDB, receiverIDDB;
+var myID, target, targetID, senderIDDB, receiverIDDB, targetName;
+var oldText = "";
 
 function ChatRoom(){
     myID = useLocation().state[0].myUID;
     target = useLocation().state[0].targetUserName;
     targetID = useLocation().state[0].targetUserID;
+    console.log(myID, target, targetID);
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;
 
@@ -30,6 +32,7 @@ function ChatRoom(){
     if(!loadingRe){
         receiver.forEach(receiver => {
             receiverIDDB = receiver.id;
+            targetName = receiver.data().Name;
         })
     }
 
@@ -48,22 +51,28 @@ function ChatRoom(){
 
 function Chatroom(){
     const dummy = useRef();
-    const messagesRef1 = firestore.collection('users/' + senderIDDB + "/chats");
-    const messagesRef2 = firestore.collection('users/' + receiverIDDB + "/chats");
+    const messagesRef1 = firestore.collection('users/' + senderIDDB + "/chats"); // me
+    const messagesRef2 = firestore.collection('users/' + receiverIDDB + "/chats"); // the other person
     
-    var [messages1, loading] = useCollectionData(messagesRef1.where("SenderID", "==", targetID));
-    var [messages2, loading2] = useCollectionData(messagesRef1.where("ReceiverID", "==", targetID));
+    var [messages1, loading] = useCollection(messagesRef1.where("SenderID", "==", targetID)); // I receive message
+    var [messages2, loading2] = useCollection(messagesRef1.where("ReceiverID", "==", targetID)); // I send message
 
     var messages = [];
     var count = 0;
     if(!loading && !loading2){
         messages1.forEach(msg => {
-            messages[count] = msg;
+            messages[count] = msg.data();
+            console.log(msg.data());
+            var msgID = msg.id;
+            firestore.collection('users/' + senderIDDB + "/chats").doc(msgID).update({
+                seen: "true"
+            })
             count++;
         })
 
         messages2.forEach(msg => {
-            messages[count] = msg;
+            messages[count] = msg.data();
+            //msg.seen = "true";
             count++;
         })
 
@@ -73,26 +82,30 @@ function Chatroom(){
     const [msgVal, setMsgVal] = useState("");
 
     const sendMessage = async(e) => {
-        e.preventDefault();
+            e.preventDefault();
+            if(msgVal != ""){
 
-        const {uid, photoURL} = auth.currentUser;
+            const {uid, photoURL} = auth.currentUser;
 
-        await messagesRef1.add({
-            msg: msgVal,
-            SenderID: uid,
-            ReceiverID: targetID,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
+            await messagesRef1.add({
+                msg: msgVal,
+                SenderID: uid,
+                ReceiverID: targetID,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                seen: "true"
+            })
 
-        await messagesRef2.add({
-            msg: msgVal,
-            SenderID: uid,
-            ReceiverID: targetID,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
+            await messagesRef2.add({
+                msg: msgVal,
+                SenderID: uid,
+                ReceiverID: targetID,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                seen: "false"
+            })
 
-        setMsgVal('');
-        dummy.current.scrollIntoView({behaviour: 'smooth'});
+            setMsgVal('');
+            dummy.current.scrollIntoView({behaviour: 'smooth'});
+        }
     }
 
     return (
@@ -112,17 +125,24 @@ function Chatroom(){
 function ChatMessage(props){
     console.log(props);
     const {msg, SenderID} = props.message;
+    //console.log(myID)
     var text = "";
-    if(SenderID == myID) text = "Me";
-    else text = "Seller";
-    console.log(text);
-  
+    var result = "";
+    if(SenderID == myID) {text = "You"}
+    else{
+
+         text = targetName;
+    }
+    if(text == oldText && oldText != "") result = "";
+    else {
+        result = text + ":";
+        oldText = text;
+    }
     //const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
   
     return (
       <div>
-        <h1>{text}</h1>
-        <p>{msg}</p>
+        {result} {msg}
       </div>
     )
 
