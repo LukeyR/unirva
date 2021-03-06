@@ -6,7 +6,7 @@ import {Box, Card, CardActionArea, CardContent, CardMedia, Divider, makeStyles, 
 
 const useStyles = makeStyles({
     root: {
-        width: "200px",
+        width: "300px",
     },
 })
 

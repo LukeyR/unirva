@@ -2,21 +2,7 @@ import React from 'react';
 import './Home.css';
 import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
-import {Link} from 'react-router-dom';
-import {
-    Box,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardContent,
-    CardMedia,
-    Divider, Grid, IconButton,
-    makeStyles, Paper,
-    Typography
-} from "@material-ui/core";
-import {useAuthState} from "react-firebase-hooks/auth";
-import {auth} from "./firebase";
-import {Comment, Create} from "@material-ui/icons";
+import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
 
 
@@ -67,27 +53,30 @@ function Home() {
     return (
         <div>
             <div style={{textAlign: "center"}}>
-                <h1><code>Testing what would work best. </code></h1>
                 <h2>Categories</h2>
-                <button>A</button>
-                <button>B</button>
-                <button>C</button>
-                <button>More Categories</button>
+                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                        <Button>A</Button>
+                        <Button>B</Button>
+                        <Button>C</Button>
+                        <Button>More Categories</Button>
+                    </ButtonGroup>
                 <h2>Listings in Bath</h2>
                 <h2>Sorting (NOT WORKING FOR NOW)</h2>
                 <div className="sortingRow">
-                    <button onClick={toggleSort}>Oldest first</button>
-                    <button onClick={toggleSort}>Newset first</button>
+                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                        <Button>Oldest First</Button>
+                        <Button>Newest First</Button>
+                    </ButtonGroup>
                 </div>
             </div>
 
 
             {!loading ?
                 (
-                    <Box p={2} m={2}>
-                        <Grid container justify="flex-start" spacing={4}>
+                    <Box p={1} m={1}>
+                        <Grid container justify="center" spacing={4}>
                             {listings.map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
+                                getListingCard(listingObj, docsID[index])
                             )}
                         </Grid>
                     </Box>
