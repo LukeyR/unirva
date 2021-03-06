@@ -3,6 +3,8 @@ import { useLocation, Link } from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
+import {Box, Grid} from "@material-ui/core";
+import HomeListingCard from "./listingCard";
 
 const firestore = firebase.firestore();
 
@@ -38,14 +40,33 @@ function Search(){
     } else{
         console.log("Still loading");
     }
-   
+
+    const getListingCard = (listingObj, iD) => {
+        let props = {
+            listingObj: listingObj,
+            iD: iD,
+        }
+
+        return (
+            <Grid item>
+                <HomeListingCard {...props} />
+            </Grid>
+        )
+    }
+
     return(
         <div>
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
-                    {!loading ? 
-                    listingsRow(listings)
+                    {!loading ?
+                        <Box p={2} m={2}>
+                            <Grid container justify="flex-start" spacing={4}>
+                                {listings.map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                )}
+                            </Grid>
+                        </Box>
                     : <h1>Listings Loading...</h1>
                     }
                 </div>

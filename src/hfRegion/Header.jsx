@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    AppBar, Badge,
+    AppBar, Avatar, Badge,
     Button, createMuiTheme,
     fade,
     Grid,
@@ -31,6 +31,7 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import App from "../App";
 import {ExitToApp} from "@material-ui/icons";
 import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
+import {deepOrange} from "@material-ui/core/colors";
 
 
 const profilePictureSize = "35px"
@@ -103,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
     },
     listIcon: {
         minWidth: '40px',
-    },
+    }
 }));
 
 const firestore = firebase.firestore();
@@ -234,13 +235,10 @@ const Header = ({theme}) => {
                                                 }
                                                             className={classes.profile}
                                                 >
-                                                    <div className={classes.circle}>
-                                                        <img src={user.photoURL}
-                                                             alt="profile-picture"
-                                                             width={profilePictureSize}
-                                                             height={profilePictureSize}
-                                                        />
-                                                    </div>
+                                                    {console.log(theme.palette)}
+                                                    <Avatar alt="Profile Image" src={user.photoURL} style={{backgroundColor: theme.palette.secondary.main}}>
+                                                        {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                                                    </Avatar>
                                                     <ArrowDropDownIcon/>
                                                 </IconButton>
                                             </Tooltip>
