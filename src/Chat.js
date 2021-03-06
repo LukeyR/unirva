@@ -52,7 +52,11 @@ function Chat(){
             users.forEach(usr => {
                 let name = usr.data().Name;
                 if(name.includes(searchVal) && name != me[0].Name){
-                    results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID}];
+                    var count = 0
+                    unseenMessages.forEach(msg => {
+                        if(msg.SenderID == usr.data().ID) count++;
+                    })
+                    results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID, unseenMes:count}];
                     numberOfResults++;
                 }
             })
@@ -91,7 +95,7 @@ function Name(name){
                     targetUserName: name.name[0].name,
                     myUID: userID
                 }]
-            }}><button>{name.name[0].name}</button></Link> : {unread}
+            }}><button>{name.name[0].name}</button></Link> {name.name[0].unseenMes} : {unread}
         </div>
     )
 }
