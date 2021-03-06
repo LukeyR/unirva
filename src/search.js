@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link } from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
@@ -18,7 +18,7 @@ function Search(){
     listings = [];
 
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
+    var query = listingsRef.orderBy('createdAt', "desc"); // sort by time - newest 
     
     // retrieving them
     const [listingsBig, loading] = useCollection(query);
@@ -34,9 +34,38 @@ function Search(){
                 index++;
             }
         })
-
     } else{
         console.log("Still loading");
+    }
+
+    const [showNew, setShowNew] = useState(true);
+    const [showOld, setShowOld] = useState(false);
+    const [showLow, setShowLow] = useState(false);
+    const [showHigh, setShowHigh] = useState(false);
+
+    function refreshTimeNew() {
+        setShowNew(true);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function refreshTimeOld() {
+        setShowNew(false);
+        setShowOld(true);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function refreshPriceLow() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(true);
+        setShowHigh(false);
+    }
+    function refreshPriceHigh() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(true);
     }
    
     return(
@@ -44,10 +73,27 @@ function Search(){
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
-                    {!loading ? 
-                    listingsRow(listings)
-                    : <h1>Listings Loading...</h1>
-                    }
+                    <div className="sortingRow">
+                        <button onClick={refreshTimeNew}>Newest</button>
+                        <button onClick={refreshTimeOld}>Oldest</button>
+                        <button onClick={refreshPriceLow}>£: Low</button>
+                        <button onClick={refreshPriceHigh}>£: High</button>
+                    </div>
+                    {showNew ? 
+                        (<div>
+                            {!loading ? 
+                            listingsRow(listings)
+                            : <h1>Listings Loading...</h1>}
+                        </div>) : <></>}
+                    {showOld ? 
+                        (<div>
+                            {!loading ? 
+                            listingsRow(listings.reverse())
+                            : <h1>Listings Loading...</h1>}
+                        </div>) : <></>}
+                    {showLow ? (<p>working on this</p>) : <></>}
+                    {showHigh ? (<p>working on this</p>) : <></>}
+                    
                 </div>
                 ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
         </div>
