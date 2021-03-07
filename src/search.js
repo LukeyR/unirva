@@ -7,6 +7,7 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 const firestore = firebase.firestore();
 
 var listings = [];
+var listingsPrice = [];
 var docsID = [];
 
 function Search(){
@@ -34,6 +35,23 @@ function Search(){
                 index++;
             }
         })
+
+        // changes string-prices to float-prices. if not parseable, it sets it to 0
+        var index = 0;
+        listings.forEach(doc => {
+            doc.price = parseFloat(doc.price);
+            if (isNaN(doc.price)){
+                doc.price = 0;
+            }
+            listingsPrice[index] = doc;
+            index++;
+        })
+        
+        // sorts listings by price
+        listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
+
+
+
     } else{
         console.log("Still loading");
     }
@@ -91,11 +109,19 @@ function Search(){
                             listingsRow(listings.reverse())
                             : <h1>Listings Loading...</h1>}
                         </div>) : <></>}
-                    {showLow ? (<p>working on this</p>) : <></>}
-                    {showHigh ? (<p>working on this</p>) : <></>}
-                    
-                </div>
-                ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
+                    {showLow ? 
+                        (<div>
+                            {!loading ? 
+                            listingsRow(listingsPrice)
+                            : <h1>Listings Loading...</h1>}
+                        </div>) : <></>}
+                    {showHigh ? 
+                        (<div>
+                            {!loading ? 
+                            listingsRow(listingsPrice.reverse())
+                            : <h1>Listings Loading...</h1>}
+                        </div>) : <></>}
+                </div>) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
         </div>
     )
 }

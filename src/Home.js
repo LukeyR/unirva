@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 const firestore = firebase.firestore();
 
 var listings = [];
+var listingsPrice = [];
 var docsID = [];
 
 function Home(){
@@ -15,32 +16,30 @@ function Home(){
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
 
-    // TODO: Change database-price to integer/float and only allow for that as input <-- can then sort by price as well
-
     const [showNew, setShowNew] = useState(true);
     const [showOld, setShowOld] = useState(false);
-    const [showLow, setShowLow] = useState(false); // TODO: Change database type
-    const [showHigh, setShowHigh] = useState(false); // same ^^
+    const [showLow, setShowLow] = useState(false); 
+    const [showHigh, setShowHigh] = useState(false); 
 
-    function refreshTimeNew() {
+    function listingsTimeNew() {
         setShowNew(true);
         setShowOld(false);
         setShowLow(false);
         setShowHigh(false);
     }
-    function refreshTimeOld() {
+    function listingsTimeOld() {
         setShowNew(false);
         setShowOld(true);
         setShowLow(false);
         setShowHigh(false);
     }
-    function refreshPriceLow() {
+    function listingsPriceLow() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(true);
         setShowHigh(false);
     }
-    function refreshPriceHigh() {
+    function listingsPriceHigh() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(false);
@@ -62,7 +61,21 @@ function Home(){
             docsID[index] = doc.id;
             index++;
         })
+
+        // changes string-prices to float-prices. if not parseable, it sets it to 0
+        var index = 0;
+        listings.forEach(doc => {
+            doc.price = parseFloat(doc.price);
+            if (isNaN(doc.price)){
+                doc.price = 0;
+            }
+            listingsPrice[index] = doc;
+            index++;
+        })
         
+        // sorts price listing. 
+        listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
+
     }
 
     return(
@@ -76,12 +89,11 @@ function Home(){
             <h2>Listings in Bath</h2>
             <h2>Sorting cost not implemented (need to change type in database first)</h2>
             <div className="sortingRow">
-                <button onClick={refreshTimeNew}>Newest</button>
-                <button onClick={refreshTimeOld}>Oldest</button>
-                <button onClick={refreshPriceLow}>£: Low</button>
-                <button onClick={refreshPriceHigh}>£: High</button>
+                <button onClick={listingsTimeNew}>Newest</button>
+                <button onClick={listingsTimeOld}>Oldest</button>
+                <button onClick={listingsPriceLow}>£: Low</button>
+                <button onClick={listingsPriceHigh}>£: High</button>
             </div>
-
             {showNew ? 
                 (<div>
                     {!loading ? 
@@ -95,9 +107,17 @@ function Home(){
                     : <h1>Listings Loading...</h1>}
                 </div>) : <></>}
             {showLow ? 
-                (<p>working on this</p>) : <></>}
+                (<div>
+                    {!loading ? 
+                    listingsRow(listingsPrice)
+                    : <h1>Listings Loading...</h1>}
+                </div>) : <></>}
             {showHigh ? 
-                (<p>working on this</p>) : <></>}
+                (<div>
+                    {!loading ? 
+                    listingsRow(listingsPrice.reverse())
+                    : <h1>Listings Loading...</h1>}
+                </div>) : <></>}
         </div>
     )
 }
