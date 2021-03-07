@@ -73,21 +73,20 @@ function Home(){
             index++;
         })
         
-        // sorts price listing. 
+        // sorts listings by price 
         listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     }
 
     return(
         <div>
-            <h1><code>Testing what would work best. </code></h1>
             <h2>Categories</h2>
             <button>A</button>
             <button>B</button>
             <button>C</button>
             <button>More Categories</button> 
-            <h2>Listings in Bath</h2>
-            <h2>Sorting cost not implemented (need to change type in database first)</h2>
+            <h1>Listings in Bath</h1>
+            <h2>Sorting</h2>
             <div className="sortingRow">
                 <button onClick={listingsTimeNew}>Newest</button>
                 <button onClick={listingsTimeOld}>Oldest</button>
