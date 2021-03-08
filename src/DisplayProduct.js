@@ -8,8 +8,13 @@ import {Link} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
+
+var globalID = null;
+var globalUserID = null;
+var oldVal = null;
 function DisplayProduct(){
     let id = useLocation().state[0].iD;
+    globalID = id;
     const [user] = useAuthState(auth);
     var userID = null;
     var match = false;
@@ -17,7 +22,18 @@ function DisplayProduct(){
     if(user != null){
         userID = user.uid;
     }
+    globalUserID = userID;
 
+    const currentUserRef = firestore.collection('users').where("ID", "==", userID);
+    var [currentUserRef2, loadingUserName] = useCollection(currentUserRef);
+
+    if(!loadingUserName){
+        currentUserRef2.forEach(doc => {
+            oldVal = doc.data().interestedUsers
+        })
+    }
+
+    console.log(currentUserRef.Name)
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings').doc(id);
     var [document, loading] = useCollection(listingsRef);
@@ -36,6 +52,7 @@ function DisplayProduct(){
         listingSeller = myListing.seller;
         listingPrice = myListing.price;
         listingUrl = myListing.imgUrl;
+        oldVal = myListing.interestedUsers;
         //else msg = "Message seller";
     } else {
         console.log("Still loading");
@@ -72,6 +89,25 @@ function DisplayProduct(){
             myUID: userID
     }]
     }
+
+    const updateInterested = () => {
+        var newVal = "";
+        if(oldVal == null){
+            newVal = globalUserID;
+        }else{
+            if(oldVal.includes(globalUserID)){
+                console.log("already intersted");
+                newVal = oldVal;
+            }
+            else{
+                newVal = oldVal + ", " + globalUserID;
+            }
+        }
+        
+        firestore.collection('listings').doc(globalID).update({
+            interestedUsers: newVal
+        })
+    }
     return (
         <div>
             <h1>{ listingName }</h1>
@@ -83,10 +119,19 @@ function DisplayProduct(){
                 pathname:path,
                 state:state
             }}> <button>{msg}</button></Link></h1>
+            <button onClick={updateInterested}>Request to buy</button>
         </div>
     )
 }
 
+/*
+function updateInterestd(){
+    var newVal = oldVal + ", " + globalUserID;
+    firestore.collection('listings').doc(globalId).update({​​​​​
+        interestedUsers: newVal
+    }​​​​​);
+}
+*/
 /*
 function Edit(){
     return "/EditProduct";
