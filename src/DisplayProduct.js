@@ -87,11 +87,4 @@ function DisplayProduct(){
     )
 }
 
-/*
-function Edit(){
-    return "/EditProduct";
-}
-*/
-
-
 export default DisplayProduct;

@@ -95,7 +95,15 @@ function Name(name){
                     targetUserName: name.name[0].name,
                     myUID: userID
                 }]
-            }}><button>{name.name[0].name}</button></Link> {name.name[0].unseenMes} : {unread}
+            }}><button>Message {name.name[0].name}</button></Link> {name.name[0].unseenMes} : {unread} <Link to={{
+                pathname: "/Profile",
+                state:[{
+                    targetUserID: name.name[0].id,
+                    currentUserID: userID
+                }]
+            }}>
+            <button>See profile</button>
+            </Link>
         </div>
     )
 }

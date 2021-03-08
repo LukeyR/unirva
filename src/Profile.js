@@ -4,35 +4,50 @@ import firebase from 'firebase/app';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
-import {Link, useHistory} from 'react-router-dom';
+import {Link, useHistory, useLocation} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
 
 var listings = [];
 var docsID = [];
+var profileID = null;
+
+var index = 0;
 
 function Profile(){
     const history = useHistory();
     const [user] = useAuthState(auth);
-
+    const location = useLocation();
+    console.log(location.state);
+    if(location.state!= null){
+        profileID = location.state[0].targetUserID;
+    }
+    else{
+        profileID = user.uid;
+    }
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
     // retrieving them
 
+    console.log(profileID);
     const [listingsBig, loading] = useCollection(query);
 
     // check if data is still being loaded
     if(!loading){
         // make sure to take most recent posts
-        var index = 0;
+        index = 0;
+        listings = [];
         listingsBig.forEach(doc => {
-            listings[index] = doc.data();
-            docsID[index] = doc.id;
-            index++;
+            var data = doc.data();
+            if(data.seller == profileID){
+                listings[index] = doc.data();
+                docsID[index] = doc.id;
+                index++;
+            }
         })
-
+        console.log(index);
     }
 
     return(
@@ -43,6 +58,10 @@ function Profile(){
                         <img className="profilePicture" src={user.photoURL}/>
                         <h1>{user.displayName}</h1>
                         <p>
+                            {profileID == user.uid ?
+                            <InterestedBuyers/>
+                            :
+                            <></>}
                             <DisplayReview/>
                             <AddReview/>
                         </p>
@@ -70,7 +89,8 @@ function Profile(){
 function getListings(user, listings){
     return(
         <>
-        {listings.map((listing, index) =>{
+        {index ?
+        listings.map((listing, index) =>{
             return(
                 <Link to={{
                     pathname:"/DisplayProduct",
@@ -83,12 +103,20 @@ function getListings(user, listings){
                     </div>
                 </Link>
             )
-        })}
+        })
+        :
+        <p>User has no listings. Sorry</p>
+        }
         </>
     )
 }
 
+function InterestedBuyers(){
 
+    return(
+        <>These are the users interested in your products.</>
+    )
+}
 
 function DisplayReview(){
     var reviews = [];

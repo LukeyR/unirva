@@ -56,6 +56,7 @@ function Search(){
         console.log("Still loading");
     }
 
+
     const [showNew, setShowNew] = useState(true);
     const [showOld, setShowOld] = useState(false);
     const [showLow, setShowLow] = useState(false);
