@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './Profile.css';
 import firebase from 'firebase/app';
 import {useCollection} from 'react-firebase-hooks/firestore';
@@ -42,7 +42,10 @@ function Profile(){
                     <>
                         <img className="profilePicture" src={user.photoURL}/>
                         <h1>{user.displayName}</h1>
-                        <p>Other information goes here</p>
+                        <p>
+                            <DisplayReview/>
+                            <AddReview/>
+                        </p>
                     </>
                 :
                     history.push("/menu")
@@ -83,6 +86,69 @@ function getListings(user, listings){
         })}
         </>
     )
+}
+
+
+
+function DisplayReview(){
+    var reviews = [];
+    var credibilityScore = 0;
+    const query = firestore.collection('reviews');
+    const [reviewsRef, loading] = useCollection(query);
+
+    
+    if(!loading){
+        var index = 0;
+        reviewsRef.forEach(doc => {
+            reviews[index] = doc.data();
+            docsID[index] = doc.id;
+            credibilityScore += parseInt(reviews[index].stars);
+            index++;
+        })
+    }
+    return(
+        <>
+        <p>
+            <label>Credibility Score: {credibilityScore/index}</label>
+        </p>
+        <p>
+        {reviews.map((review, index) =>{
+            return(
+                <div key={docsID[index].toString()} className="review">
+                    <p className='Review test' >Review: {review.reviewDescr}</p>
+                    <p className='Stars' >Stars:{review.stars}</p>
+                </div>
+            )
+        })}
+        </p>
+    </>
+    )
+}
+
+function AddReview(){
+
+    const reviewsRef = firestore.collection('reviews');
+
+    const [reviewDescription, setReviewDescription] = useState('');
+    const [stars, setStars] = useState('');
+
+
+    const submitReview = async(e) => {
+        e.preventDefault();
+        reviewsRef.add({
+            reviewDescr:reviewDescription,
+            stars:stars,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+    }
+
+    return(
+        <form className = 'reviewForm' onSubmit={submitReview}>
+            <label>Review text: </label><input type="text" value={reviewDescription} onChange={(e) => setReviewDescription(e.target.value)}/>
+            <label>Stars: </label><input type="number" min="0" max="5" value={stars} onChange={(e) => setStars(e.target.value)}/>
+            <button className='button' type="submit">Submit review</button>
+        </form>
+    );
 }
 
 export default Profile;
