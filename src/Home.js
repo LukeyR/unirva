@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Home.css';
 import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
@@ -10,14 +10,45 @@ const firestore = firebase.firestore();
 
 var sortNewestToOldest = true;
 var listings = [];
+var listingsPrice = [];
 var docsID = [];
 
 function Home() {
 
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
-    // retrieving them
+    var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
+
+    const [showNew, setShowNew] = useState(true);
+    const [showOld, setShowOld] = useState(false);
+    const [showLow, setShowLow] = useState(false);
+    const [showHigh, setShowHigh] = useState(false);
+
+    function listingsTimeNew() {
+        setShowNew(true);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function listingsTimeOld() {
+        setShowNew(false);
+        setShowOld(true);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function listingsPriceLow() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(true);
+        setShowHigh(false);
+    }
+    function listingsPriceHigh() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(true);
+    }
+
 
     const [listingsBig, loading] = useCollection(query);
 
@@ -43,14 +74,28 @@ function Home() {
     }
 
     // check if data is still being loaded
-    if (!loading) {
-        // make sure to take most recent posts
+    if(!loading){
         var index = 0;
         listingsBig.forEach(doc => {
             listings[index] = doc.data();
             docsID[index] = doc.id;
             index++;
         })
+
+
+        // changes string-prices to float-prices. if not parseable, it sets it to 0
+        var index = 0;
+        listings.forEach(doc => {
+            doc.price = parseFloat(doc.price);
+            if (isNaN(doc.price)){
+                doc.price = 0;
+            }
+            listingsPrice[index] = doc;
+            index++;
+        })
+
+        // sorts listings by price
+        listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     }
 
@@ -65,11 +110,13 @@ function Home() {
                         <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>
                     </ButtonGroup>
                 <h2>Listings in Bath</h2>
-                <h2>Sorting (NOT WORKING FOR NOW)</h2>
+                <h2>Sorting</h2>
                 <div className="sortingRow">
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                        <Button onClick={() => buttonClicked("Oldest First")}>Oldest First</Button>
-                        <Button onClick={() => buttonClicked("Newest First")}>Newest First</Button>
+                        <Button onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
+                        <Button onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
+                        <Button onClick={() => listingsTimeOld()}>Price: Low - High</Button>
+                        <Button onClick={() => listingsTimeNew()}>Price: High - Low</Button>
                     </ButtonGroup>
                 </div>
             </div>
@@ -79,23 +126,22 @@ function Home() {
                 (
                     <Box p={1} m={1}>
                         <Grid container justify="center" spacing={4}>
-                            {listings.map((listingObj, index) =>
-                                getListingCard(listingObj, docsID[index])
-                            )}
+                            {(showNew || showOld) ?
+                                ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
+                                :
+                                ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
+                            }
+
                         </Grid>
                     </Box>
                 ) : <h1>Listings Loading...</h1>
             }
         </div>
     )
-}
-
-function toggleSort() {
-    sortNewestToOldest = !sortNewestToOldest;
-}
-
-function getOrderedListings(listings) {
-    return (sortNewestToOldest ? listings : listings.reverse());
 }
 
 export default Home;

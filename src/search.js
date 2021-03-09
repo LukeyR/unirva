@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link } from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
@@ -9,6 +9,7 @@ import HomeListingCard from "./listingCard";
 const firestore = firebase.firestore();
 
 var listings = [];
+var listingsPrice = [];
 var docsID = [];
 
 function Search(){
@@ -20,7 +21,7 @@ function Search(){
     listings = [];
 
     const listingsRef = firestore.collection('listings');
-    const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
+    var query = listingsRef.orderBy('createdAt', "desc"); // sort by time - newest
     
     // retrieving them
     const [listingsBig, loading] = useCollection(query);
@@ -35,6 +36,17 @@ function Search(){
                 docsID[index] = doc.id;
                 index++;
             }
+        })
+
+        // changes string-prices to float-prices. if not parseable, it sets it to 0
+        var index = 0;
+        listings.forEach(doc => {
+            doc.price = parseFloat(doc.price);
+            if (isNaN(doc.price)){
+                doc.price = 0;
+            }
+            listingsPrice[index] = doc;
+            index++;
         })
 
     } else{
@@ -54,17 +66,59 @@ function Search(){
         )
     }
 
+
+    const [showNew, setShowNew] = useState(true);
+    const [showOld, setShowOld] = useState(false);
+    const [showLow, setShowLow] = useState(false);
+    const [showHigh, setShowHigh] = useState(false);
+
+    function refreshTimeNew() {
+        setShowNew(true);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function refreshTimeOld() {
+        setShowNew(false);
+        setShowOld(true);
+        setShowLow(false);
+        setShowHigh(false);
+    }
+    function refreshPriceLow() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(true);
+        setShowHigh(false);
+    }
+    function refreshPriceHigh() {
+        setShowNew(false);
+        setShowOld(false);
+        setShowLow(false);
+        setShowHigh(true);
+    }
+
     return(
         <div>
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
+                    <div className="sortingRow">
+                        <button onClick={refreshTimeNew}>Newest</button>
+                        <button onClick={refreshTimeOld}>Oldest</button>
+                        <button onClick={refreshPriceLow}>£: Low</button>
+                        <button onClick={refreshPriceHigh}>£: High</button>
+                    </div>
                     {!loading ?
                         <Box p={2} m={2}>
                             <Grid container justify="flex-start" spacing={4}>
-                                {listings.map((listingObj, index) =>
+                                {(showNew || showOld) ?
+                                    (showNew ? listings : listings.reverse()).map((listingObj, index) =>
                                     getListingCard(listingObj, docsID[index])
-                                )}
+                                )
+                                    :
+                                    (showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index]))
+                                }
                             </Grid>
                         </Box>
                     : <h1>Listings Loading...</h1>
