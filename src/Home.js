@@ -112,11 +112,11 @@ function Home() {
                 <h2>Listings in Bath</h2>
                 <h2>Sorting</h2>
                 <div className="sortingRow">
-                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                        <Button onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
-                        <Button onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
-                        <Button onClick={() => listingsPriceLow()}>Price: Low - High</Button>
-                        <Button onClick={() => listingsPriceHigh()}>Price: High - Low</Button>
+                    <ButtonGroup color="primary" aria-label="contained primary button group">
+                        <Button variant={showNew ? "contained" : "outlined"}  onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
+                        <Button variant={showOld ? "contained" : "outlined"} onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
+                        <Button variant={showHigh ? "contained" : "outlined"}  onClick={() => listingsPriceHigh()}>Price: High - Low</Button>
+                        <Button variant={showLow ? "contained" : "outlined"}  onClick={() => listingsPriceLow()}>Price: Low - High</Button>
                     </ButtonGroup>
                 </div>
             </div>

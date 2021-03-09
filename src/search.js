@@ -39,7 +39,7 @@ function Search(){
         })
 
         // changes string-prices to float-prices. if not parseable, it sets it to 0
-        var index = 0;
+        index = 0;
         listings.forEach(doc => {
             doc.price = parseFloat(doc.price);
             if (isNaN(doc.price)){
@@ -48,6 +48,9 @@ function Search(){
             listingsPrice[index] = doc;
             index++;
         })
+
+        // sorts listings by price
+        listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     } else{
         console.log("Still loading");
@@ -103,11 +106,11 @@ function Search(){
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
                     <div className="sortingRow">
-                        <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                            <Button onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
-                            <Button onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
-                            <Button onClick={() => refreshPriceLow()}>Price: Low - High</Button>
-                            <Button onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
+                        <ButtonGroup color="primary" aria-label="contained primary button group">
+                            <Button variant={showNew ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
+                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
+                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price: Low - High</Button>
+                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
                         </ButtonGroup>
                     </div>
                     {!loading ?
@@ -115,8 +118,7 @@ function Search(){
                             <Grid container justify="flex-start" spacing={4}>
                                 {(showNew || showOld) ?
                                     (showNew ? listings.reverse() : listings).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
-                                )
+                                    getListingCard(listingObj, docsID[index]))
                                     :
                                     (showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
                                     getListingCard(listingObj, docsID[index]))
