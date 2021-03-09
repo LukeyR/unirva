@@ -29,6 +29,7 @@ import lightBlue from "@material-ui/core/colors/lightBlue";
 import pink from "@material-ui/core/colors/pink";
 import {useDocumentData} from "react-firebase-hooks/firestore";
 import firebase from "./firebase";
+import Favourites from "./Favourites";
 
 const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product"]
 
@@ -106,6 +107,7 @@ function App() {
                     <Route exact path="/Profile" render={() => (<Profile {...muiTheme} isAuthed={true}/>)}/>
                     <Route exact path="/Product" component={Product}/>
                     <Route exact path="/Chat" component={Chat}/>
+                    <Route exact path="/Favourites" component={Favourites}/>
                     <Route exact path="/search:results" component={Search}/>
                     <Route exact path="/DisplayProduct" component={DisplayProduct}/>
                     <Route exact path="/SignIn" component={SignIn}/>

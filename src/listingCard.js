@@ -31,7 +31,6 @@ const useStyles = makeStyles({
 const firestore = firebase.firestore();
 
 function HomeListingCard(props) {
-
     const {name, price, imgUrl, seller, description, likedBy} = props.listingObj
     const classes = useStyles();
     const history = useHistory();
@@ -39,7 +38,8 @@ function HomeListingCard(props) {
 
     const [liked, setLiked] = useState(likedBy.includes(user.uid))
 
-    const [sellerDoc, loadingUserDoc] = useDocumentData(firestore.collection("users").doc(seller))
+    const [sellerDoc, loadingSellerDoc] = useDocumentData(firestore.collection("users").doc(seller))
+    const [userDoc, loadingUserDoc] = useDocumentData(firestore.collection("users").doc(user.uid))
 
 
     const likeItem = () => {
@@ -47,16 +47,27 @@ function HomeListingCard(props) {
             unlikeItem();
             return;
         }
-        if (user) firestore.collection("listings").doc(props.iD).update({
-            likedBy: firebase.firestore.FieldValue.arrayUnion(user.uid),
-        })
+        if (user) {
+            firestore.collection("listings").doc(props.iD).update({
+                likedBy: firebase.firestore.FieldValue.arrayUnion(user.uid),
+            })
+            firestore.collection("users").doc(user.uid).update({
+                likes: firebase.firestore.FieldValue.arrayUnion(props.iD),
+            })
+        }
         setLiked(true)
     }
 
     const unlikeItem = () => {
-        if (user) firestore.collection("listings").doc(props.iD).update({
-            likedBy: firebase.firestore.FieldValue.arrayRemove(user.uid),
-        })
+        if (user) {
+            firestore.collection("listings").doc(props.iD).update({
+                likedBy: firebase.firestore.FieldValue.arrayRemove(user.uid),
+            })
+            firestore.collection("users").doc(user.uid).update({
+                likes: firebase.firestore.FieldValue.arrayRemove(props.iD),
+            })
+
+        }
         setLiked(false)
     }
 
@@ -121,7 +132,7 @@ function HomeListingCard(props) {
                 </Tooltip>
                 <Tooltip title={liked ? "Remove from favourites" : "Add to favourites"}>
                     <IconButton onClick={() => {likeItem()}}>
-                        {likedBy.includes(user.uid) ? <Grow in={liked} ><Favorite color="error" /></Grow> : <FavoriteBorder />}
+                        {likedBy.includes(user.uid) ? <Favorite color="error" /> : <FavoriteBorder />}
                     </IconButton>
                 </Tooltip>
                     </div>
