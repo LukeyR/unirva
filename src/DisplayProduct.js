@@ -43,7 +43,6 @@ function DisplayProduct(){
         listingPrice = myListing.price;
         listingUrl = myListing.imgUrl;
         oldVal = myListing.interestedUsers;
-        //else msg = "Message seller";
     } else {
         console.log("Still loading");
     }
@@ -80,38 +79,17 @@ function DisplayProduct(){
     }]
     }
 
-    const [buttonText, setButtonText] = useState("");
-    const changeText = (text) => setButtonText(text);
-
-    /*
-    try {
-        if(oldVal.includes(globalUserID)){
-            console.log("try")
-            changeText("Request to buy");
-        }
-        else{
-            changeText("Cancel to buy");
-        }
-      }
-    catch(err) {
-        
-    }*/
-
-
     const updateInterested = () => {
         var newVal = "";
         if(oldVal == null){
-            newVal = globalUserID;
+            newVal = "," + globalUserID;
         }else{
             if(oldVal.includes(globalUserID)){
-                console.log("already intersted");
-                var toRemove = ", " + globalUserID;
+                var toRemove = "," + globalUserID;
                 newVal = oldVal.replace(toRemove,"");
-                changeText("Request to buy");
             }
             else{
-                newVal = oldVal + ", " + globalUserID;
-                changeText("Cancel to buy");
+                newVal = oldVal + "," + globalUserID;
             }
         }
         
@@ -131,24 +109,14 @@ function DisplayProduct(){
                 pathname:path,
                 state:state
             }}> <button>{msg}</button></Link></h1>
-            <button onClick={updateInterested}>{buttonText}</button>
+            <button onClick={updateInterested}>{
+            oldVal.includes(globalUserID) ?
+                "Cancel request"
+                :
+                "Request to buy"
+            }</button>
         </div>
     )
 }
-
-/*
-function updateInterestd(){
-    var newVal = oldVal + ", " + globalUserID;
-    firestore.collection('listings').doc(globalId).update({​​​​​
-        interestedUsers: newVal
-    }​​​​​);
-}
-*/
-/*
-function Edit(){
-    return "/EditProduct";
-}
-*/
-
 
 export default DisplayProduct;
