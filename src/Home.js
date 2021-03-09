@@ -38,6 +38,10 @@ function Home() {
         )
     }
 
+    const buttonClicked = (button) => {
+        alert(`${button} was clicked`)
+    }
+
     // check if data is still being loaded
     if (!loading) {
         // make sure to take most recent posts
@@ -55,17 +59,17 @@ function Home() {
             <div style={{textAlign: "center"}}>
                 <h2>Categories</h2>
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                        <Button>A</Button>
-                        <Button>B</Button>
-                        <Button>C</Button>
-                        <Button>More Categories</Button>
+                        <Button onClick={() => buttonClicked("A")}>A</Button>
+                        <Button onClick={() => buttonClicked("B")}>B</Button>
+                        <Button onClick={() => buttonClicked("C")}>C</Button>
+                        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>
                     </ButtonGroup>
                 <h2>Listings in Bath</h2>
                 <h2>Sorting (NOT WORKING FOR NOW)</h2>
                 <div className="sortingRow">
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                        <Button>Oldest First</Button>
-                        <Button>Newest First</Button>
+                        <Button onClick={() => buttonClicked("Oldest First")}>Oldest First</Button>
+                        <Button onClick={() => buttonClicked("Newest First")}>Newest First</Button>
                     </ButtonGroup>
                 </div>
             </div>
