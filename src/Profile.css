@@ -22,12 +22,6 @@
     align-content: flex-start;
 }
 
-.listings :hover{
-    background-color: rgb(150, 150, 150);
-    border-radius: 15px;
-    cursor: pointer;
-}
-
 .productImage {
     height: 200px;
     width: 200px;

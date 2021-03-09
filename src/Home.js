@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import './Home.css';
 import firebase from './firebase';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import {Link} from 'react-router-dom';
+import {useCollection} from 'react-firebase-hooks/firestore';
+import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
+import HomeListingCard from "./listingCard";
+
 
 const firestore = firebase.firestore();
 
+var sortNewestToOldest = true;
 var listings = [];
 var listingsPrice = [];
 var docsID = [];
 
-function Home(){
+function Home() {
 
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
@@ -18,8 +21,8 @@ function Home(){
 
     const [showNew, setShowNew] = useState(true);
     const [showOld, setShowOld] = useState(false);
-    const [showLow, setShowLow] = useState(false); 
-    const [showHigh, setShowHigh] = useState(false); 
+    const [showLow, setShowLow] = useState(false);
+    const [showHigh, setShowHigh] = useState(false);
 
     function listingsTimeNew() {
         setShowNew(true);
@@ -53,6 +56,23 @@ function Home(){
     const defaultPrice = "loading...";
     const defaultUrl = "https://via.placeholder.com/150.jpg";
 
+    const getListingCard = (listingObj, iD) => {
+        let props = {
+            listingObj: listingObj,
+            iD: iD,
+        }
+
+        return (
+            <Grid item>
+                <HomeListingCard {...props} />
+            </Grid>
+        )
+    }
+
+    const buttonClicked = (button) => {
+        alert(`${button} was clicked`)
+    }
+
     // check if data is still being loaded
     if(!loading){
         var index = 0;
@@ -61,6 +81,7 @@ function Home(){
             docsID[index] = doc.id;
             index++;
         })
+
 
         // changes string-prices to float-prices. if not parseable, it sets it to 0
         var index = 0;
@@ -72,72 +93,53 @@ function Home(){
             listingsPrice[index] = doc;
             index++;
         })
-        
-        // sorts listings by price 
+
+        // sorts listings by price
         listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
     }
 
-    return(
-        <div>
-            <h2>Categories</h2>
-            <button>A</button>
-            <button>B</button>
-            <button>C</button>
-            <button>More Categories</button> 
-            <h1>Listings in Bath</h1>
-            <h2>Sorting</h2>
-            <div className="sortingRow">
-                <button onClick={listingsTimeNew}>Newest</button>
-                <button onClick={listingsTimeOld}>Oldest</button>
-                <button onClick={listingsPriceLow}>£: Low</button>
-                <button onClick={listingsPriceHigh}>£: High</button>
-            </div>
-            {showNew ? 
-                (<div>
-                    {!loading ? 
-                    listingsRow(listings)
-                    : <h1>Listings Loading...</h1>}
-                </div>) : <></>}
-            {showOld ? 
-                (<div>
-                    {!loading ? 
-                    listingsRow(listings.reverse())
-                    : <h1>Listings Loading...</h1>}
-                </div>) : <></>}
-            {showLow ? 
-                (<div>
-                    {!loading ? 
-                    listingsRow(listingsPrice)
-                    : <h1>Listings Loading...</h1>}
-                </div>) : <></>}
-            {showHigh ? 
-                (<div>
-                    {!loading ? 
-                    listingsRow(listingsPrice.reverse())
-                    : <h1>Listings Loading...</h1>}
-                </div>) : <></>}
-        </div>
-    )
-}
-
-function listingsRow(listings){
     return (
-        <div className="listingRow">
-            {listings.map((listing, index) =>{
-                return (
-                    <Link to={{
-                        pathname:"/DisplayProduct",
-                        state:[{iD: docsID[index]}]
-                    }}>
-                        <div key={docsID[index].toString()} className="product">    
-                            <img src={listing.imgUrl} className='productImage' />
-                            <p className='productTitle' >{listing.name}</p>
-                            <p className='productPrice' >Price: £{listing.price}</p>   
-                        </div>
-                    </Link>
-                )
-            })} 
+        <div>
+            <div style={{textAlign: "center"}}>
+                <h2>Categories</h2>
+                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                        <Button onClick={() => buttonClicked("A")}>A</Button>
+                        <Button onClick={() => buttonClicked("B")}>B</Button>
+                        <Button onClick={() => buttonClicked("C")}>C</Button>
+                        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>
+                    </ButtonGroup>
+                <h2>Listings in Bath</h2>
+                <h2>Sorting</h2>
+                <div className="sortingRow">
+                    <ButtonGroup color="primary" aria-label="contained primary button group">
+                        <Button variant={showNew ? "contained" : "outlined"}  onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
+                        <Button variant={showOld ? "contained" : "outlined"} onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
+                        <Button variant={showHigh ? "contained" : "outlined"}  onClick={() => listingsPriceHigh()}>Price: High - Low</Button>
+                        <Button variant={showLow ? "contained" : "outlined"}  onClick={() => listingsPriceLow()}>Price: Low - High</Button>
+                    </ButtonGroup>
+                </div>
+            </div>
+
+
+            {!loading ?
+                (
+                    <Box p={1} m={1}>
+                        <Grid container justify="center" spacing={4}>
+                            {(showNew || showOld) ?
+                                ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
+                                :
+                                ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
+                            }
+
+                        </Grid>
+                    </Box>
+                ) : <h1>Listings Loading...</h1>
+            }
         </div>
     )
 }
