@@ -55,22 +55,22 @@ function DisplayProduct(props){
         msg = "Edit details";
         match = true; 
         path = "/EditProduct"
-        state = [{
+        state = {
             iDListing: id,
             name: listingName,
             description: listingDes,
             price: listingPrice,
             url: listingUrl
-        }]
+        }
     }
     else {
         msg = "Message Seller"
         path = "/ChatRoom";
-        state = [{
+        state = {
             targetUserID: SellerID,
             targetUserName: userName,
             myUID: userID
-    }]
+    }
     }
     return (
         <div>

@@ -8,10 +8,11 @@ const firestore = firebase.firestore();
 var myID, target, targetID, senderIDDB, receiverIDDB, targetName;
 var oldText = "";
 
-function ChatRoom(){
-    myID = useLocation().state[0].myUID;
-    target = useLocation().state[0].targetUserName;
-    targetID = useLocation().state[0].targetUserID;
+function ChatRoom(props){
+    console.log(props)
+    myID = props.location.state.myUID;
+    target = props.location.state.targetUserName;
+    targetID = props.location.state.targetUserID;
     console.log(myID, target, targetID);
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;

@@ -16,13 +16,15 @@ import {
 import {Edit, Favorite, FavoriteBorder, FavoriteBorderOutlined, Chat} from "@material-ui/icons";
 import {red} from "@material-ui/core/colors";
 import firebase from "./firebase";
+import {useDocumentData} from "react-firebase-hooks/firestore";
 
 const useStyles = makeStyles({
     root: {
         width: "300px",
     },
-    heart: {
-        top: "-10px",
+    icons: {
+        display: "flex",
+        justifyContent: "flex-end",
     },
 })
 
@@ -35,8 +37,10 @@ function HomeListingCard(props) {
     const history = useHistory();
     const [user] = useAuthState(auth);
 
-    console.log(likedBy.includes(user.uid))
     const [liked, setLiked] = useState(likedBy.includes(user.uid))
+
+    const [sellerDoc, loadingUserDoc] = useDocumentData(firestore.collection("users").doc(seller))
+
 
     const likeItem = () => {
         if (liked) {
@@ -87,16 +91,40 @@ function HomeListingCard(props) {
                     </CardContent>
 
                 </CardActionArea>
+                <div className={classes.icons}>
                 <Tooltip title={seller === user.uid ? "Edit your listing" : "Message seller"} >
-                    <IconButton>
+                    <IconButton onClick={() => {(user && seller === user.uid) ?
+                        history.push({
+                            pathname: "/EditProduct",
+                            state: {
+                                iDListing: props.iD,
+                                name: name,
+                                description: description,
+                                price: price,
+                                url: imgUrl,
+                            },
+                        })
+                        : (user) ?
+                    (history.push({
+                        pathname: "/ChatRoom",
+                        state: {
+                            targetUserID: seller,
+                            targetUserName:  sellerDoc.Name,
+                            myUID: user.uid
+                        },
+                    }))
+                            :
+                            history.push("/menu")
+                    }}>
                         {seller === user.uid ? <Edit /> : <Chat />}
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={liked ? "Remove from favourites" : "Add to favourites"}>
                     <IconButton onClick={() => {likeItem()}}>
-                        {liked ? <Grow in={liked} ><Favorite color="error" /></Grow> : <FavoriteBorder />}
+                        {likedBy.includes(user.uid) ? <Grow in={liked} ><Favorite color="error" /></Grow> : <FavoriteBorder />}
                     </IconButton>
                 </Tooltip>
+                    </div>
             </Card>
         // </Link>
     )
