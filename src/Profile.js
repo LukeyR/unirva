@@ -167,7 +167,7 @@ function Buyers(props){
         <p>Interested in {listingName}:</p>
         <>{buyers.map(buyer => {return(
             <>
-            <>{buyer}</>
+            <>{buyer}: <button>Accept Offer</button></>
             <br/>
             </>
         )})}</>
