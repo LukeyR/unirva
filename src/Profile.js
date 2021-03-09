@@ -33,7 +33,8 @@ function Profile(){
     const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
     // retrieving them
 
-    console.log(profileID);
+    matched = CheckMatch(); // if true then seller accepted offer of current user
+
     const [listingsBig, loading] = useCollection(query);
 
     // check if data is still being loaded
@@ -93,6 +94,12 @@ function Profile(){
     )
 }
 
+function CheckMatch(){
+    var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers');
+    
+    return false;
+}
+
 function getListings(user, listings){
     return(
         <>
@@ -120,7 +127,7 @@ function getListings(user, listings){
 
 function InterestedBuyers(){
 
-    var [myListings, loading] = useCollectionData(firestore.collection('listings').where("seller", "==", profileID));
+    var [myListings, loading] = useCollection(firestore.collection('listings').where("seller", "==", profileID));
     var [users, loading2] = useCollectionData(firestore.collection('users'));
     var myUsers = [];
     if(!loading2){
@@ -132,16 +139,20 @@ function InterestedBuyers(){
     console.log(myUsers);
     if(!loading){
         myListings.forEach(listing => {
-            var potentialBuyers = listing.interestedUsers.split(',');
+            var potentialBuyers = listing.data().interestedUsers.split(',');
             if(potentialBuyers.length != 0 && !loading2){
                 var buyersName = [];
                 potentialBuyers.forEach(buyer => {
-                    buyersName.push(myUsers[buyer]);
+                    buyersName.push({
+                        name: myUsers[buyer],
+                        id: buyer
+                    });
                 });
                 console.log(buyersName);
                 mapping.push({
-                    key: listing.name,
-                    value: buyersName
+                    key: listing.data().name,
+                    value: buyersName,
+                    listingID: listing.id
                 })
             }
         })
@@ -153,7 +164,7 @@ function InterestedBuyers(){
         <div>
             <h1>These are the users interested in your products.</h1>
             <p>
-            {mapping && mapping.map(maping => <Buyers key={maping.key} name={maping.key} buyers={maping.value}></Buyers>)}
+            {mapping && mapping.map(maping => <Buyers key={maping.key} name={maping.key} buyers={maping.value} listing={maping}></Buyers>)}
             </p>
         </div>
     )
@@ -162,18 +173,33 @@ function InterestedBuyers(){
 function Buyers(props){
     var listingName = props.name;
     var buyers = props.buyers;
+    var listingId = props.listing.listingID;
+
+    
+
     return(
         <>
         <p>Interested in {listingName}:</p>
-        <>{buyers.map(buyer => {return(
+        <>{buyers.map(buyer => {
+            
+            const SendOffer = () =>{
+                var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers');
+                userOffers.add({
+                    buyerID: buyer.id,
+                    listingID: listingId
+                })
+            }
+
+            return(
             <>
-            <>{buyer}: <button>Accept Offer</button></>
+            <>{buyer.name}: <button onClick={SendOffer}>Accept Offer</button></>
             <br/>
             </>
         )})}</>
         </>
     )
 }
+
 
 function DisplayReview(){
     var reviews = [];
