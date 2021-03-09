@@ -100,7 +100,7 @@ function DisplayProduct(){
                 newVal = oldVal;
             }
             else{
-                newVal = oldVal + ", " + globalUserID;
+                newVal = oldVal + "," + globalUserID;
             }
         }
         
