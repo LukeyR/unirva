@@ -107,10 +107,10 @@ function Search(){
                     <h1>Search results for '{searchTerm}'</h1>
                     <div className="sortingRow">
                         <ButtonGroup color="primary" aria-label="contained primary button group">
-                            <Button variant={showNew ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
-                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
-                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price: Low - High</Button>
-                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
+                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
+                            <Button variant={showNew? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
+                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price: Low - High</Button>
+                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
                         </ButtonGroup>
                     </div>
                     {!loading ?
