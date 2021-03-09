@@ -103,7 +103,7 @@ function App() {
                 <div className="App">
                     <Header theme={muiTheme}/>
                     {/*<>Yes, whatever is put here is displayed on every page.</>*/}
-                    <Route exact path="/Profile" component={Profile}/>
+                    <Route exact path="/Profile" render={() => (<Profile {...muiTheme} isAuthed={true}/>)}/>
                     <Route exact path="/Product" component={Product}/>
                     <Route exact path="/Chat" component={Chat}/>
                     <Route exact path="/search:results" component={Search}/>

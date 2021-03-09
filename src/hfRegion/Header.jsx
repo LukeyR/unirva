@@ -235,7 +235,6 @@ const Header = ({theme}) => {
                                                 }
                                                             className={classes.profile}
                                                 >
-                                                    {console.log(theme.palette)}
                                                     <Avatar alt="Profile Image" src={user.photoURL} style={{backgroundColor: theme.palette.secondary.main}}>
                                                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                     </Avatar>

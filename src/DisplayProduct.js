@@ -8,8 +8,8 @@ import {Link} from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
-function DisplayProduct(){
-    let id = useLocation().state[0].iD;
+function DisplayProduct(props){
+    let id = props.location.state.iD;
     const [user] = useAuthState(auth);
     var userID = null;
     var match = false;
