@@ -115,8 +115,8 @@ function Home() {
                     <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
                         <Button onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
                         <Button onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
-                        <Button onClick={() => listingsTimeOld()}>Price: Low - High</Button>
-                        <Button onClick={() => listingsTimeNew()}>Price: High - Low</Button>
+                        <Button onClick={() => listingsPriceLow()}>Price: Low - High</Button>
+                        <Button onClick={() => listingsPriceHigh()}>Price: High - Low</Button>
                     </ButtonGroup>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import {Box, Grid} from "@material-ui/core";
+import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
 
 const firestore = firebase.firestore();
@@ -103,16 +103,18 @@ function Search(){
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
                     <div className="sortingRow">
-                        <button onClick={refreshTimeNew}>Newest</button>
-                        <button onClick={refreshTimeOld}>Oldest</button>
-                        <button onClick={refreshPriceLow}>£: Low</button>
-                        <button onClick={refreshPriceHigh}>£: High</button>
+                        <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
+                            <Button onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
+                            <Button onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
+                            <Button onClick={() => refreshPriceLow()}>Price: Low - High</Button>
+                            <Button onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
+                        </ButtonGroup>
                     </div>
                     {!loading ?
                         <Box p={2} m={2}>
                             <Grid container justify="flex-start" spacing={4}>
                                 {(showNew || showOld) ?
-                                    (showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                                    (showNew ? listings.reverse() : listings).map((listingObj, index) =>
                                     getListingCard(listingObj, docsID[index])
                                 )
                                     :
