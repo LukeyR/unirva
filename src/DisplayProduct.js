@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { useLocation } from 'react-router-dom';
@@ -24,16 +24,6 @@ function DisplayProduct(){
     }
     globalUserID = userID;
 
-    const currentUserRef = firestore.collection('users').where("ID", "==", userID);
-    var [currentUserRef2, loadingUserName] = useCollection(currentUserRef);
-
-    if(!loadingUserName){
-        currentUserRef2.forEach(doc => {
-            oldVal = doc.data().interestedUsers
-        })
-    }
-
-    console.log(currentUserRef.Name)
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings').doc(id);
     var [document, loading] = useCollection(listingsRef);
@@ -90,6 +80,24 @@ function DisplayProduct(){
     }]
     }
 
+    const [buttonText, setButtonText] = useState("");
+    const changeText = (text) => setButtonText(text);
+
+    /*
+    try {
+        if(oldVal.includes(globalUserID)){
+            console.log("try")
+            changeText("Request to buy");
+        }
+        else{
+            changeText("Cancel to buy");
+        }
+      }
+    catch(err) {
+        
+    }*/
+
+
     const updateInterested = () => {
         var newVal = "";
         if(oldVal == null){
@@ -97,10 +105,13 @@ function DisplayProduct(){
         }else{
             if(oldVal.includes(globalUserID)){
                 console.log("already intersted");
-                newVal = oldVal;
+                var toRemove = ", " + globalUserID;
+                newVal = oldVal.replace(toRemove,"");
+                changeText("Request to buy");
             }
             else{
-                newVal = oldVal + "," + globalUserID;
+                newVal = oldVal + ", " + globalUserID;
+                changeText("Cancel to buy");
             }
         }
         
@@ -108,6 +119,7 @@ function DisplayProduct(){
             interestedUsers: newVal
         })
     }
+
     return (
         <div>
             <h1>{ listingName }</h1>
@@ -119,7 +131,7 @@ function DisplayProduct(){
                 pathname:path,
                 state:state
             }}> <button>{msg}</button></Link></h1>
-            <button onClick={updateInterested}>Request to buy</button>
+            <button onClick={updateInterested}>{buttonText}</button>
         </div>
     )
 }
