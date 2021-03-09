@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './Profile.css';
 import firebase from 'firebase/app';
-import {useCollection} from 'react-firebase-hooks/firestore';
+import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
@@ -12,6 +12,8 @@ const firestore = firebase.firestore();
 var listings = [];
 var docsID = [];
 var profileID = null;
+var matched = false;
+var interestedUsers = null;
 
 var index = 0;
 
@@ -62,8 +64,13 @@ function Profile(){
                             <InterestedBuyers/>
                             :
                             <></>}
-                            <DisplayReview/>
-                            <AddReview/>
+                            {matched ?
+                            <div>
+                                <DisplayReview/>
+                                <AddReview/>
+                            </div>
+                            :
+                            <></>}
                         </p>
                     </>
                 :
@@ -113,8 +120,58 @@ function getListings(user, listings){
 
 function InterestedBuyers(){
 
+    var [myListings, loading] = useCollectionData(firestore.collection('listings').where("seller", "==", profileID));
+    var [users, loading2] = useCollectionData(firestore.collection('users'));
+    var myUsers = [];
+    if(!loading2){
+        users.forEach(usr => {
+            myUsers[usr.ID] = usr.Name;
+        })
+    }
+    var mapping = [];
+    console.log(myUsers);
+    if(!loading){
+        myListings.forEach(listing => {
+            var potentialBuyers = listing.interestedUsers.split(',');
+            if(potentialBuyers.length != 0 && !loading2){
+                var buyersName = [];
+                potentialBuyers.forEach(buyer => {
+                    buyersName.push(myUsers[buyer]);
+                });
+                console.log(buyersName);
+                mapping.push({
+                    key: listing.name,
+                    value: buyersName
+                })
+            }
+        })
+    }
+
+    console.log(mapping);
+
     return(
-        <>These are the users interested in your products.</>
+        <div>
+            <h1>These are the users interested in your products.</h1>
+            <p>
+            {mapping && mapping.map(maping => <Buyers key={maping.key} name={maping.key} buyers={maping.value}></Buyers>)}
+            </p>
+        </div>
+    )
+}
+
+function Buyers(props){
+    var listingName = props.name;
+    var buyers = props.buyers;
+    return(
+        <>
+        <p>Interested in {listingName}:</p>
+        <>{buyers.map(buyer => {return(
+            <>
+            <>{buyer}</>
+            <br/>
+            </>
+        )})}</>
+        </>
     )
 }
 
