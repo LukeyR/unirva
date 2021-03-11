@@ -5,9 +5,13 @@ import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
+import {Box, Grid} from "@material-ui/core";
+import HomeListingCard from "./listingCard";
 
 const firestore = firebase.firestore();
 
+// TODO
+//  Table of all listings
 
 var listings = [];
 var docsID = [];
@@ -70,6 +74,19 @@ function Profile(){
         })
     }
 
+    const getListingCard = (listingObj, iD) => {
+        let props = {
+            listingObj: listingObj,
+            iD: iD,
+        }
+
+        return (
+            <Grid item>
+                <HomeListingCard {...props} />
+            </Grid>
+        )
+    }
+
     return(
         <div className="container">
             <div className="about">
@@ -91,10 +108,15 @@ function Profile(){
                             </div>
                             :
                             <div>
-                                {alreadyLeftReview == false ?
-                                    <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
+                                {profileID == user.uid ?
+                                    <></>
                                     :
-                                    <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                    <>{alreadyLeftReview == false ?
+                                        <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
+                                        :
+                                        <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                    }
+                                    </>
                                 }
                             </div>
                             }
@@ -110,7 +132,13 @@ function Profile(){
                 <h2>This so we can display only the listings created by this user</h2>
                 <p>Currently displaying all possible listings for now</p>
                 {user ?
-                    getListings(user, listings)
+                    <Box p={1} m={1}>
+                    <Grid container justify="center" spacing={4}>
+                        {listings.map((listingObj, index) =>
+                            getListingCard(listingObj, docsID[index])
+                        )}
+                    </Grid>
+                    </Box>
                 :
                     <p>User has no listings</p>
                 }

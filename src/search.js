@@ -3,6 +3,8 @@ import { useLocation, Link } from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
+import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
+import HomeListingCard from "./listingCard";
 
 const firestore = firebase.firestore();
 
@@ -19,7 +21,7 @@ function Search(){
     listings = [];
 
     const listingsRef = firestore.collection('listings');
-    var query = listingsRef.orderBy('createdAt', "desc"); // sort by time - newest 
+    var query = listingsRef.orderBy('createdAt', "desc"); // sort by time - newest
     
     // retrieving them
     const [listingsBig, loading] = useCollection(query);
@@ -37,7 +39,7 @@ function Search(){
         })
 
         // changes string-prices to float-prices. if not parseable, it sets it to 0
-        var index = 0;
+        index = 0;
         listings.forEach(doc => {
             doc.price = parseFloat(doc.price);
             if (isNaN(doc.price)){
@@ -46,14 +48,25 @@ function Search(){
             listingsPrice[index] = doc;
             index++;
         })
-        
+
         // sorts listings by price
         listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
-
-
     } else{
         console.log("Still loading");
+    }
+
+    const getListingCard = (listingObj, iD) => {
+        let props = {
+            listingObj: listingObj,
+            iD: iD,
+        }
+
+        return (
+            <Grid item>
+                <HomeListingCard {...props} />
+            </Grid>
+        )
     }
 
 
@@ -86,43 +99,36 @@ function Search(){
         setShowLow(false);
         setShowHigh(true);
     }
-   
+
     return(
         <div>
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
                     <div className="sortingRow">
-                        <button onClick={refreshTimeNew}>Newest</button>
-                        <button onClick={refreshTimeOld}>Oldest</button>
-                        <button onClick={refreshPriceLow}>£: Low</button>
-                        <button onClick={refreshPriceHigh}>£: High</button>
+                        <ButtonGroup color="primary" aria-label="contained primary button group">
+                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
+                            <Button variant={showNew? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
+                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price: Low - High</Button>
+                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
+                        </ButtonGroup>
                     </div>
-                    {showNew ? 
-                        (<div>
-                            {!loading ? 
-                            listingsRow(listings)
-                            : <h1>Listings Loading...</h1>}
-                        </div>) : <></>}
-                    {showOld ? 
-                        (<div>
-                            {!loading ? 
-                            listingsRow(listings.reverse())
-                            : <h1>Listings Loading...</h1>}
-                        </div>) : <></>}
-                    {showLow ? 
-                        (<div>
-                            {!loading ? 
-                            listingsRow(listingsPrice)
-                            : <h1>Listings Loading...</h1>}
-                        </div>) : <></>}
-                    {showHigh ? 
-                        (<div>
-                            {!loading ? 
-                            listingsRow(listingsPrice.reverse())
-                            : <h1>Listings Loading...</h1>}
-                        </div>) : <></>}
-                </div>) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
+                    {!loading ?
+                        <Box p={2} m={2}>
+                            <Grid container justify="flex-start" spacing={4}>
+                                {(showNew || showOld) ?
+                                    (showNew ? listings.reverse() : listings).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index]))
+                                    :
+                                    (showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index]))
+                                }
+                            </Grid>
+                        </Box>
+                    : <h1>Listings Loading...</h1>
+                    }
+                </div>
+                ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
         </div>
     )
 }
