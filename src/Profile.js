@@ -162,7 +162,7 @@ function CheckMatch(){
     
     if(!loading){
         if(reviews.length != 0) alreadyLeftReview = true;
-        return !reviews.length == salesDone
+        return reviews.length != salesDone
     } 
 
     return false;
@@ -268,7 +268,13 @@ function Buyers(props){
 
             return(
             <>
-            <>{buyer.name}: <button onClick={SendOffer}>Accept Offer</button></>
+            <><Link to ={{
+                pathname: "/Profile",
+                state: [{
+                    targetUserID: buyer.id,
+                    currentUserID: userID
+                }]
+            }}><button>{buyer.name}</button></Link>: <button onClick={SendOffer}>Accept Offer</button></>
             <br/>
             </>
         )})}</>
@@ -305,9 +311,25 @@ function DisplayReview(){
         </p>
         <p>
         {reviews.map((review, index) =>{
+
+            const editReview = () =>{
+                console.log("edditing Review");
+            }
+
             return(
                 <div key={docsID[index].toString()} className="review">
-                    <p className='Review test' >{review.sender}: {review.reviewDescr} - {review.stars} stars</p>
+                    <p className='Review test' ><Link to={{
+                        pathname: "/Profile",
+                        state :[{
+                            targetUserID: review.senderID,
+                            currentUserID: userID
+                        }]
+                    }}><button>{review.sender}</button></Link>: {review.reviewDescr} - {review.stars} stars {
+                        review.senderID == userID?
+                            <><button onClick={editReview}>Edit review</button></>
+                            :
+                            <></>
+                    }</p>
                 </div>
             )
         })}
@@ -340,7 +362,7 @@ function AddReview(){
     return(
         <form className = 'reviewForm' onSubmit={submitReview}>
             <label>Review text: </label><input type="text" value={reviewDescription} onChange={(e) => setReviewDescription(e.target.value)}/>
-            <label>Stars: </label><input type="number" min="0" max="5" value={stars} onChange={(e) => setStars(e.target.value)}/>
+            <label>Stars: </label><input type="number" min="1" max="5" value={stars} onChange={(e) => setStars(e.target.value)}/>
             <button className='button' type="submit">Submit review</button>
         </form>
     );
