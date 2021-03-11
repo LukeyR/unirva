@@ -288,23 +288,30 @@ function DisplayReview(){
     var credibilityScore = 0;
     const query = firestore.collection('reviews').where("target", "==", profileID);
     const [reviewsRef, loading] = useCollection(query);
+    var count = [0,0,0,0,0];
+    var index = 0;
 
-    
     if(!loading){
-        var index = 0;
         reviewsRef.forEach(doc => {
             reviews[index] = doc.data();
             docsID[index] = doc.id;
             credibilityScore += parseInt(reviews[index].stars);
+            count[reviews[index].stars - 1] += 1;
             index++;
         })
     }
-    console.log(credibilityScore);
     return(
         <>
         <p>
             {credibilityScore != 0 ?
-                <label>Credibility Score: {credibilityScore/index}</label>
+            <>
+                <label>Credibility Score: {credibilityScore/index}</label><br/>
+                <label>5 star reviews: {count[4]} out of {index}</label><br/>
+                <label>4 star reviews: {count[3]} out of {index}</label><br/>
+                <label>3 star reviews: {count[2]} out of {index}</label><br/>
+                <label>2 star reviews: {count[1]} out of {index}</label><br/>
+                <label>1 star reviews: {count[0]} out of {index}</label><br/>
+            </>
                 :
                 <label>There are no reviews for this user.</label>
             }
