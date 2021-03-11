@@ -14,6 +14,7 @@ function DisplayProduct(){
     var userID = null;
     var match = false;
     var msg = "Loading";
+    var gotoSeller = "Loading";
     if(user != null){
         userID = user.uid;
     }
@@ -27,6 +28,7 @@ function DisplayProduct(){
     var userName = "Loading";
     var myListing = null;
     var path="";
+    var userPath="";
     var state = [];
 
     if(!loading){
@@ -53,8 +55,10 @@ function DisplayProduct(){
 
     if(listingSeller == userID) {
         msg = "Edit details";
+        gotoSeller = "Goto My Profile"
         match = true; 
         path = "/EditProduct"
+        userPath = "/Profile"
         state = [{
             iDListing: id,
             name: listingName,
@@ -65,7 +69,9 @@ function DisplayProduct(){
     }
     else {
         msg = "Message Seller"
+        gotoSeller = "Goto Seller Profile"
         path = "/ChatRoom";
+        userPath = "/SellerProfile" 
         state = [{
             targetUserID: SellerID,
             targetUserName: userName,
@@ -83,6 +89,10 @@ function DisplayProduct(){
                 pathname:path,
                 state:state
             }}> <button>{msg}</button></Link></h1>
+            <h1><Link to={{
+                pathname:userPath,
+                state:state
+            }}><button>{gotoSeller}</button></Link></h1>
         </div>
     )
 }
