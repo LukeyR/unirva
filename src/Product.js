@@ -113,6 +113,7 @@ function Upload(){
                     imgUrl:url,
                     seller:user.uid,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    interestedUsers: ""
                 }).then(() => {
                     console.log('product submitted. redirecting...');
                     window.location.href = "/";
