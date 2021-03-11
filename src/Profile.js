@@ -13,25 +13,43 @@ var listings = [];
 var docsID = [];
 var profileID = null;
 var matched = false;
-var interestedUsers = null;
+var userID = null;
+var currentName = null;
+var alreadyLeftReview = false;
 
 var index = 0;
+var offers = [];
 
 function Profile(){
     const history = useHistory();
     const [user] = useAuthState(auth);
     const location = useLocation();
-    console.log(location.state);
+    var currentUserID = null;
     if(location.state!= null){
         profileID = location.state[0].targetUserID;
+        currentUserID = location.state[0].currentUserID;
     }
     else{
         profileID = user.uid;
     }
+    userID = user.uid;
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
+    var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers').where("buyerID", "==", userID);
+    var currentUser = firestore.collection('users').where("ID", "==", currentUserID);
+    var [current, loadingUser] = useCollectionData(currentUser);
+    if(!loadingUser){
+        current.forEach(usr => {
+            currentName = usr.Name;
+        })
+    }
     const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
     // retrieving them
+
+    var [result, loadingOffer] = useCollectionData(userOffers);
+    if(!loadingOffer){
+        offers = result;
+    }
 
     matched = CheckMatch(); // if true then seller accepted offer of current user
 
@@ -50,7 +68,6 @@ function Profile(){
                 index++;
             }
         })
-        console.log(index);
     }
 
     return(
@@ -60,18 +77,27 @@ function Profile(){
                     <>
                         <img className="profilePicture" src={user.photoURL}/>
                         <h1>{user.displayName}</h1>
-                        <p>
+                        <p> 
                             {profileID == user.uid ?
                             <InterestedBuyers/>
                             :
                             <></>}
+                            <h1>Review Score</h1>
+                            <DisplayReview/>
                             {matched ?
-                            <div>
-                                <DisplayReview/>
+                            <div>    
+                                <h1>Leave a review</h1>
                                 <AddReview/>
                             </div>
                             :
-                            <></>}
+                            <div>
+                                {alreadyLeftReview == false ?
+                                    <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
+                                    :
+                                    <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                }
+                            </div>
+                            }
                         </p>
                     </>
                 :
@@ -95,9 +121,24 @@ function Profile(){
 }
 
 function CheckMatch(){
-    var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers');
+    // Right now we are checing if there is at least one accepted offer with the current user
+    // However this means that infinite reviews can be left by that user
+    // We want to limit this to one review / sale
+    // We can match the number of reviews from userID with the number of accepted Offers where buyerID == userID
+    var salesDone = offers.length;
+    // We need to count how many reviews this user (userID) left for profileID
+    var reviewRef = firestore.collection('reviews').where("target", "==", profileID).where("senderID", "==", userID);
+    var [reviews, loading] = useCollectionData(reviewRef);
     
+    if(salesDone == 0) return false;
+    
+    if(!loading){
+        if(reviews.length != 0) alreadyLeftReview = true;
+        return !reviews.length == salesDone
+    } 
+
     return false;
+
 }
 
 function getListings(user, listings){
@@ -136,19 +177,19 @@ function InterestedBuyers(){
         })
     }
     var mapping = [];
-    console.log(myUsers);
     if(!loading){
         myListings.forEach(listing => {
             var potentialBuyers = listing.data().interestedUsers.split(',');
             if(potentialBuyers.length != 0 && !loading2){
                 var buyersName = [];
                 potentialBuyers.forEach(buyer => {
-                    buyersName.push({
-                        name: myUsers[buyer],
-                        id: buyer
-                    });
+                    if(buyer != ""){
+                        buyersName.push({
+                            name: myUsers[buyer],
+                            id: buyer
+                        });
+                    }
                 });
-                console.log(buyersName);
                 mapping.push({
                     key: listing.data().name,
                     value: buyersName,
@@ -157,8 +198,6 @@ function InterestedBuyers(){
             }
         })
     }
-
-    console.log(mapping);
 
     return(
         <div>
@@ -182,11 +221,20 @@ function Buyers(props){
         <p>Interested in {listingName}:</p>
         <>{buyers.map(buyer => {
             
+            // When you send an offer (accept it), then all the other users interested should have their offers removed.
             const SendOffer = () =>{
                 var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers');
                 userOffers.add({
                     buyerID: buyer.id,
                     listingID: listingId
+                })
+                // need to remove those still interested in this listing.
+                // need to update the listing as being sold
+                var listingRef = firestore.collection('listings').doc(listingId);
+                var newVal = "";
+                listingRef.update({
+                    interestedUsers: newVal,
+                    sold: "true"
                 })
             }
 
@@ -204,7 +252,7 @@ function Buyers(props){
 function DisplayReview(){
     var reviews = [];
     var credibilityScore = 0;
-    const query = firestore.collection('reviews');
+    const query = firestore.collection('reviews').where("target", "==", profileID);
     const [reviewsRef, loading] = useCollection(query);
 
     
@@ -217,17 +265,21 @@ function DisplayReview(){
             index++;
         })
     }
+    console.log(credibilityScore);
     return(
         <>
         <p>
-            <label>Credibility Score: {credibilityScore/index}</label>
+            {credibilityScore != 0 ?
+                <label>Credibility Score: {credibilityScore/index}</label>
+                :
+                <label>There are no reviews for this user.</label>
+            }
         </p>
         <p>
         {reviews.map((review, index) =>{
             return(
                 <div key={docsID[index].toString()} className="review">
-                    <p className='Review test' >Review: {review.reviewDescr}</p>
-                    <p className='Stars' >Stars:{review.stars}</p>
+                    <p className='Review test' >{review.sender}: {review.reviewDescr} - {review.stars} stars</p>
                 </div>
             )
         })}
@@ -244,12 +296,16 @@ function AddReview(){
     const [stars, setStars] = useState('');
 
 
+    // Once a review is added, we should let that user only edit their review, but not leave any more (one review / sale)
     const submitReview = async(e) => {
         e.preventDefault();
         reviewsRef.add({
             reviewDescr:reviewDescription,
             stars:stars,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            sender: currentName,
+            senderID: userID,
+            target: profileID
         })
     }
 
