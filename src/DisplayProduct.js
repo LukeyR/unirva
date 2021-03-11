@@ -11,7 +11,8 @@ const firestore = firebase.firestore();
 
 var globalID = null;
 var globalUserID = null;
-var oldVal = null;
+var sellerID = null;
+var oldVal = "";
 function DisplayProduct(){
     let id = useLocation().state[0].iD;
     globalID = id;
@@ -34,6 +35,7 @@ function DisplayProduct(){
     var myListing = null;
     var path="";
     var state = [];
+    var sold = false;
 
     if(!loading){
         myListing = document.data();
@@ -43,6 +45,9 @@ function DisplayProduct(){
         listingPrice = myListing.price;
         listingUrl = myListing.imgUrl;
         oldVal = myListing.interestedUsers;
+        if(oldVal == null) oldVal = "";
+        sold = myListing.sold;
+        if(sold == null) sold = "false";
     } else {
         console.log("Still loading");
     }
@@ -54,6 +59,7 @@ function DisplayProduct(){
         trueSeller.forEach(seller => {
             userName = seller.data().Name;
             SellerID = seller.data().ID;
+            sellerID = SellerID;
         })
     }
 
@@ -81,12 +87,13 @@ function DisplayProduct(){
 
     const updateInterested = () => {
         var newVal = "";
-        if(oldVal == null){
-            newVal = "," + globalUserID;
+        if(oldVal == null || oldVal == ""){
+            newVal = globalUserID;
         }else{
             if(oldVal.includes(globalUserID)){
-                var toRemove = "," + globalUserID;
-                newVal = oldVal.replace(toRemove,"");
+                if(oldVal.includes("," + globalUserID))var toRemove = "," + globalUserID;
+                else var toRemove = globalUserID;
+                newVal = oldVal.replace(toRemove, "");
             }
             else{
                 newVal = oldVal + "," + globalUserID;
@@ -97,7 +104,7 @@ function DisplayProduct(){
             interestedUsers: newVal
         })
     }
-
+    console.log(globalUserID, sellerID);
     return (
         <div>
             <h1>{ listingName }</h1>
@@ -109,12 +116,20 @@ function DisplayProduct(){
                 pathname:path,
                 state:state
             }}> <button>{msg}</button></Link></h1>
-            <button onClick={updateInterested}>{
-            oldVal.includes(globalUserID) ?
-                "Cancel request"
+            { globalUserID != sellerID?
+                <>{sold == "false" ?
+                    <button onClick={updateInterested}>{
+                    oldVal.includes(globalUserID)?
+                        "Cancel request"
+                        :
+                        "Request to buy"
+                    }</button>
+                    :
+                    <h1>Sorry, this listing has been sold.</h1>
+                }</>
                 :
-                "Request to buy"
-            }</button>
+                <></>
+            }
         </div>
     )
 }
