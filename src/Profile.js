@@ -36,7 +36,7 @@ function Profile(){
     }
     else{
         profileID = user.uid;
-        targetName = user.displayName;
+        targetName = user.displayname;
     }
     userID = user.uid;
     // Getting the listings from the database.
@@ -56,6 +56,10 @@ function Profile(){
     if(!loadingUser){
         current.forEach(usr => {
             currentName = usr.Name;
+            
+            if(profileID == user.uid){
+                targetName = usr.Name;
+            }
         })
     }
     const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
