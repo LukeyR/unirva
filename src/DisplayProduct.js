@@ -20,6 +20,7 @@ function DisplayProduct(){
     var userID = null;
     var match = false;
     var msg = "Loading";
+    var gotoSeller = "Loading";
     if(user != null){
         userID = user.uid;
     }
@@ -34,7 +35,9 @@ function DisplayProduct(){
     var userName = "Loading";
     var myListing = null;
     var path="";
+    var userPath="";
     var state = [];
+    var stateMyProduct = [];
     var sold = false;
 
     if(!loading){
@@ -65,23 +68,30 @@ function DisplayProduct(){
 
     if(listingSeller == userID) {
         msg = "Edit details";
+        gotoSeller = "Goto My Profile"
         match = true; 
         path = "/EditProduct"
-        state = [{
+        userPath = "/Profile"
+        stateMyProduct = [{
             iDListing: id,
             name: listingName,
             description: listingDes,
             price: listingPrice,
             url: listingUrl
         }]
+        state = [{
+            targetUserID: SellerID,
+            currentUserID: userID
+        }]
     }
     else {
         msg = "Message Seller"
+        gotoSeller = "Goto Seller Profile"
         path = "/ChatRoom";
+        userPath = "/Profile"
         state = [{
             targetUserID: SellerID,
-            targetUserName: userName,
-            myUID: userID
+            currentUserID: userID
     }]
     }
 
@@ -114,8 +124,12 @@ function DisplayProduct(){
             <img src={listingUrl} alt='react logo' className='productImage' />
             <h1><Link to={{
                 pathname:path,
-                state:state
+                state:stateMyProduct
             }}> <button>{msg}</button></Link></h1>
+            <h1><Link to={{
+                pathname:userPath,
+                state:state
+            }}><button>{gotoSeller}</button></Link></h1>
             { globalUserID != sellerID?
                 <>{sold == "false" ?
                     <button onClick={updateInterested}>{
