@@ -38,6 +38,7 @@ function DisplayProduct(){
     var userPath="";
     var state = [];
     var stateMyProduct = [];
+    var stateMsg = [];
     var sold = false;
 
     if(!loading){
@@ -89,6 +90,11 @@ function DisplayProduct(){
         gotoSeller = "Goto Seller Profile"
         path = "/ChatRoom";
         userPath = "/Profile"
+        stateMyProduct = [{
+            targetUserName: userName,
+            targetUserID: SellerID,
+            myUID: userID
+        }]
         state = [{
             targetUserID: SellerID,
             currentUserID: userID
