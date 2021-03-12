@@ -290,11 +290,15 @@ function DisplayReview(){
     const [reviewsRef, loading] = useCollection(query);
     var count = [0,0,0,0,0];
     var index = 0;
+    var editable = [];
+    const [reviewDescription, setReviewDescription] = useState('');
+    const [stars, setStars] = useState('');
 
     if(!loading){
         reviewsRef.forEach(doc => {
             reviews[index] = doc.data();
             docsID[index] = doc.id;
+            editable[index] = false;
             credibilityScore += parseInt(reviews[index].stars);
             count[reviews[index].stars - 1] += 1;
             index++;
@@ -320,7 +324,21 @@ function DisplayReview(){
         {reviews.map((review, index) =>{
 
             const editReview = () =>{
-                console.log("edditing Review");
+                editable[index] = true;
+                firestore.collection('reviews').doc(docsID[index]).update({
+                    editable: "true"
+                })
+            }
+
+            const updateReview = (e) => {
+                e.preventDefault();
+                firestore.collection('reviews').doc(docsID[index]).update({
+                    editable: "false",
+                    reviewDescr:reviewDescription,
+                    stars:stars
+                })
+                setReviewDescription("");
+                setStars("");
             }
 
             return(
@@ -331,12 +349,23 @@ function DisplayReview(){
                             targetUserID: review.senderID,
                             currentUserID: userID
                         }]
-                    }}><button>{review.sender}</button></Link>: {review.reviewDescr} - {review.stars} stars {
+                    }}><button>{review.sender}</button></Link>:{review.editable == "true" ?
+                        <><form className = 'reviewForm' onSubmit={updateReview}>
+                            <label>Review text: </label><input type="text" placeholder={review.reviewDescr} value={reviewDescription} onChange={(e) => setReviewDescription(e.target.value)}/>
+                            <label>Stars: </label><input type="number" min="1" max="5" placeholder={review.stars} value={stars} onChange={(e) => setStars(e.target.value)}/>
+                            <button className='button' type="submit">Update review</button>
+                        </form>
+                    </>
+                        :
+                        <>{review.reviewDescr} - {review.stars} stars {
                         review.senderID == userID?
                             <><button onClick={editReview}>Edit review</button></>
                             :
-                            <></>
-                    }</p>
+                        <></>
+                    }
+                    </>   
+                    }
+                    </p>
                 </div>
             )
         })}
@@ -362,7 +391,8 @@ function AddReview(){
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             sender: currentName,
             senderID: userID,
-            target: profileID
+            target: profileID,
+            editable: "false"
         })
     }
 
