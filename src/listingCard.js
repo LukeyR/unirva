@@ -36,10 +36,11 @@ function HomeListingCard(props) {
     const history = useHistory();
     const [user] = useAuthState(auth);
 
-    const [liked, setLiked] = useState(likedBy.includes(user.uid))
 
     const [sellerDoc, loadingSellerDoc] = useDocumentData(firestore.collection("users").doc(seller))
-    const [userDoc, loadingUserDoc] = useDocumentData(firestore.collection("users").doc(user.uid))
+
+    let liked = null;
+    if (user) liked = likedBy.includes(user.uid)
 
 
     const likeItem = () => {
@@ -55,7 +56,7 @@ function HomeListingCard(props) {
                 likes: firebase.firestore.FieldValue.arrayUnion(props.iD),
             })
         }
-        setLiked(true)
+        liked = true
     }
 
     const unlikeItem = () => {
@@ -68,7 +69,7 @@ function HomeListingCard(props) {
             })
 
         }
-        setLiked(false)
+        liked = false
     }
 
     return (
@@ -103,8 +104,8 @@ function HomeListingCard(props) {
 
                 </CardActionArea>
                 <div className={classes.icons}>
-                <Tooltip title={seller === user.uid ? "Edit your listing" : "Message seller"} >
-                    <IconButton onClick={() => {(user && seller === user.uid) ?
+                <Tooltip title={user && seller === user.uid ? "Edit your listing" : "Message seller"} >
+                    <IconButton onClick={() => {user && seller === user.uid ?
                         history.push({
                             pathname: "/EditProduct",
                             state: {
@@ -127,12 +128,12 @@ function HomeListingCard(props) {
                             :
                             history.push("/menu")
                     }}>
-                        {seller === user.uid ? <Edit /> : <Chat />}
+                        {user && seller === user.uid ? <Edit /> : <Chat />}
                     </IconButton>
                 </Tooltip>
                 <Tooltip title={liked ? "Remove from favourites" : "Add to favourites"}>
                     <IconButton onClick={() => {likeItem()}}>
-                        {likedBy.includes(user.uid) ? <Favorite color="error" /> : <FavoriteBorder />}
+                        {user && likedBy.includes(user.uid) ? <Grow in={user && likedBy.includes(user.uid)}><Favorite color="error" /></Grow> : <FavoriteBorder />}
                     </IconButton>
                 </Tooltip>
                     </div>

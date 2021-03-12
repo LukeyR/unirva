@@ -1,7 +1,6 @@
 import React, {useState, useRef} from 'react';
 import firebase, { auth } from './firebase';
-import { useCollection, useCollectionData } from 'react-firebase-hooks/firestore';
-import { useLocation } from 'react-router-dom';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import './ChatRoom.css';
 
 const firestore = firebase.firestore();
@@ -9,11 +8,9 @@ var myID, target, targetID, senderIDDB, receiverIDDB, targetName;
 var oldText = "";
 
 function ChatRoom(props){
-    console.log(props)
     myID = props.location.state.myUID;
     target = props.location.state.targetUserName;
     targetID = props.location.state.targetUserID;
-    console.log(myID, target, targetID);
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;
 

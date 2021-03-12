@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import Product from './Product';
 import Chat from './Chat';
@@ -8,18 +8,15 @@ import Register from './authentication/Register';
 import {Route, useLocation} from 'react-router-dom';
 
 import Search from './search'
-import NavBar from './hfRegion/NavBar';
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
-import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
 import SignIn from './authentication/SignIn';
 import {AuthProvider} from './Auth';
 import {auth} from "./firebase";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import DisplayProduct from './DisplayProduct';
-import {AuthContext} from './Auth';
 import EditProduct from "./EditProduct";
 import ChatRoom from './ChatRoom';
 import {ThemeProvider} from "@material-ui/styles";
