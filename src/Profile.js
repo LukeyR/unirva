@@ -29,18 +29,29 @@ function Profile(){
     const [user] = useAuthState(auth);
     const location = useLocation();
     var currentUserID = null;
+    var targetName = null;
     if(location.state!= null){
         profileID = location.state[0].targetUserID;
         currentUserID = location.state[0].currentUserID;
     }
     else{
         profileID = user.uid;
+        targetName = user.displayName;
     }
     userID = user.uid;
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers').where("buyerID", "==", userID);
     var currentUser = firestore.collection('users').where("ID", "==", currentUserID);
+    var targetUser = firestore.collection('users').where("ID", "==", profileID);
+    var [target, loadingTarget] = useCollectionData(targetUser);
+    if(!loadingTarget){
+        if(profileID != user.uid){
+            target.forEach(usr => {
+                targetName = usr.Name;
+            })
+        }
+    }
     var [current, loadingUser] = useCollectionData(currentUser);
     if(!loadingUser){
         current.forEach(usr => {
@@ -93,7 +104,7 @@ function Profile(){
                 {user ?
                     <>
                         <img className="profilePicture" src={user.photoURL}/>
-                        <h1>{user.displayName}</h1>
+                        <h1>{targetName}</h1>
                         <p> 
                             {profileID == user.uid ?
                             <InterestedBuyers/>
