@@ -2,6 +2,7 @@ import React from 'react';
 import './Profile.css';
 import firebase from 'firebase/app';
 import {useCollection} from 'react-firebase-hooks/firestore';
+import {useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory} from 'react-router-dom';
@@ -52,6 +53,21 @@ function Profile(){
         )
     }
 
+    const userRef = firestore.collection('users').where("ID", "==", user.uid);
+    var [me, uLoading] = useCollectionData(userRef);
+
+    var name, lastname, university, myid;
+    if (!uLoading){
+        name = me[0].Name;
+        lastname = me[0].LastName;
+        university = me[0].University;
+        myid = me[0].ID;
+    }
+
+    // filter lsitings so only my listings appear on profile page
+    listings = listings.filter(function(listing) {
+        return (listing.seller == myid);
+    });
 
     return(
         <div className="container">
@@ -59,8 +75,9 @@ function Profile(){
                 {user ?
                     <>
                         <img className="profilePicture" src={user.photoURL}/>
-                        <h1>{user.displayName}</h1>
-                        <p>Other information goes here</p>
+
+                        <h1>{name + " " + lastname}</h1>
+                        <p>{university}</p>
                     </>
                 :
                     history.push("/menu")
@@ -68,9 +85,6 @@ function Profile(){
             </div>
 
             <div className="listings">
-                <h1>Listings need the "Seller" field to contain the userID of their owner</h1>
-                <h2>This so we can display only the listings created by this user</h2>
-                <p>Currently displaying all possible listings for now</p>
                 {user ?
                     <Box p={1} m={1}>
                         <Grid container justify="center" spacing={4}>
@@ -89,25 +103,5 @@ function Profile(){
     )
 }
 
-function getListings(user, listings){
-    return(
-        <>
-        {listings.map((listing, index) =>{
-            return(
-                <Link to={{
-                    pathname:"/DisplayProduct",
-                    state:[{iD: docsID[index]}]
-                }}>
-                    <div key={docsID[index].toString()} className="product">
-                        <img src={listing.imgUrl} className='productImage' />
-                        <p className='productTitle' >{listing.name}</p>
-                        <p className='productPrice' >Price: £{listing.price}</p>
-                    </div>
-                </Link>
-            )
-        })}
-        </>
-    )
-}
 
 export default Profile;
