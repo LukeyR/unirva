@@ -108,7 +108,7 @@ function Profile(){
                 {user ?
                     <>
                         <img className="profilePicture" src={user.photoURL}/>
-                        <h1>{targetName}</h1>
+                        <h1>{(targetName==null) ? (currentName) : targetName}</h1>
                         <p> 
                             {profileID == user.uid ?
                             <InterestedBuyers/>
