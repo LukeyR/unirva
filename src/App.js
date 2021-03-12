@@ -15,6 +15,7 @@ import Menu from "./authentication/Menu";
 import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
 import SignIn from './authentication/SignIn';
+import SellerProfile from "./SellerProfile";
 import {AuthProvider} from './Auth';
 import {auth} from "./firebase";
 import {useAuthState} from 'react-firebase-hooks/auth';
@@ -114,6 +115,7 @@ function App() {
                     <Route exact path="/ChatRoom" component={ChatRoom}/>
                     <Route exact path="/Logout" component={Logout}/>
                     <Route exact path="/signout" component={Logout}/>
+                    <Route exact path="/SellerProfile" component={SellerProfile} />
                     {location.pathname === "/" ? <Home/> : <></>}
                     {HideFooter()}
                 </div>
