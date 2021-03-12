@@ -60,9 +60,20 @@ function Upload(){
     const [image, setImage] = useState(null);
     const [user] = useAuthState(auth);
 
-    const handleChange = e => {
-        if (e.target.files[0]){
-            setImage(e.target.files[0]);
+    function handleChange() {
+        const preview = document.querySelector('img');
+        const file = document.querySelector('input[type=file]').files[0]
+        const reader = new FileReader();
+
+        reader.addEventListener('load', function (){
+            preview.src = reader.result;
+        }, false);
+
+        if (file && file.type.match('image.*')) {
+            reader.readAsDataURL(file)
+            setImage(file);
+        }else{
+            alert('Please only upload images');
         }
     }
 
@@ -130,6 +141,7 @@ function Upload(){
             <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
             <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
             <button className='button' type="submit">Post Listing</button>
+            <img src='' alt='' className='productImage' />
         </form>
     );
 }
