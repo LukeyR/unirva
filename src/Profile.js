@@ -16,13 +16,16 @@ const firestore = firebase.firestore();
 var listings = [];
 var docsID = [];
 var profileID = null;
-var matched = false;
+var matchedSeller = false;
+var matchedBuyer = false;
 var userID = null;
 var currentName = null;
-var alreadyLeftReview = false;
+var alreadyLeftReviewSeller = false;
+var alreadyLeftReviewBuyer = false;
 
 var index = 0;
-var offers = [];
+var offersSel = [];
+var offersBuy = []
 
 function Profile(){
     const history = useHistory();
@@ -43,7 +46,8 @@ function Profile(){
     userID = user.uid;
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
-    var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers').where("buyerID", "==", userID);
+    var userOffersSeller = firestore.collection('users/' + profileID + '/AcceptedOffers').where("buyerID", "==", userID);
+    var userOffersBuyer = firestore.collection('users/' + userID + '/AcceptedOffers').where("buyerID", "==", profileID);
     var currentUser = firestore.collection('users').where("ID", "==", currentUserID);
     var targetUser = firestore.collection('users').where("ID", "==", profileID);
     var [target, loadingTarget] = useCollectionData(targetUser);
@@ -71,12 +75,16 @@ function Profile(){
     const query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
     // retrieving them
 
-    var [result, loadingOffer] = useCollectionData(userOffers);
+    var [result1, loadingOffer] = useCollectionData(userOffersSeller);
+    var [result2, loadingOfferB] = useCollectionData(userOffersBuyer);
     if(!loadingOffer){
-        offers = result;
+        offersSel = result1;
     }
-
-    matched = CheckMatch(); // if true then seller accepted offer of current user
+    if(!loadingOfferB){
+        offersBuy = result2;
+    }
+    matchedSeller = CheckMatchSeller(); // if true then seller accepted offer of current user
+    matchedBuyer = CheckMatchBuyer();
 
     const [listingsBig, loading] = useCollection(query);
 
@@ -124,20 +132,39 @@ function Profile(){
                             <></>}
                             <h1>Review Score</h1>
                             <DisplayReview/>
-                            {matched ?
+                            <h1>Leave a review for this seller</h1>
+                            {matchedSeller ?
                             <div>    
-                                <h1>Leave a review</h1>
-                                <AddReview/>
+                                <AddReview option={0}></AddReview>
                             </div>
                             :
                             <div>
                                 {profileID == user.uid ?
                                     <></>
                                     :
-                                    <>{alreadyLeftReview == false ?
+                                    <>{alreadyLeftReviewSeller == false ?
                                         <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
                                         :
                                         <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                    }
+                                    </>
+                                }
+                            </div>
+                            }
+                            <h1>Leave a review for this buyer</h1>
+                            {matchedBuyer ?
+                            <div>    
+                                <AddReview option={1}></AddReview>
+                            </div>
+                            :
+                            <div>
+                                {profileID == user.uid ?
+                                    <></>
+                                    :
+                                    <>{alreadyLeftReviewBuyer == false ?
+                                        <h1>You cannot leave a review unless this user makes an offer and you accept it.</h1>
+                                        :
+                                        <h1>You can leave as many reviews as offers were made which you accepted.</h1>
                                     }
                                     </>
                                 }
@@ -168,20 +195,41 @@ function Profile(){
     )
 }
 
-function CheckMatch(){
+function CheckMatchSeller(){
     // Right now we are checing if there is at least one accepted offer with the current user
     // However this means that infinite reviews can be left by that user
     // We want to limit this to one review / sale
     // We can match the number of reviews from userID with the number of accepted Offers where buyerID == userID
-    var salesDone = offers.length;
+    var salesDone = offersSel.length;
     // We need to count how many reviews this user (userID) left for profileID
-    var reviewRef = firestore.collection('reviews').where("target", "==", profileID).where("senderID", "==", userID);
+    var reviewRef = firestore.collection('reviewsForSellers').where("target", "==", profileID).where("senderID", "==", userID);
     var [reviews, loading] = useCollectionData(reviewRef);
     
     if(salesDone == 0) return false;
     
     if(!loading){
-        if(reviews.length != 0) alreadyLeftReview = true;
+        if(reviews.length != 0) alreadyLeftReviewSeller = true;
+        return reviews.length != salesDone
+    } 
+
+    return false;
+
+}
+
+function CheckMatchBuyer(){
+    // Right now we are checing if there is at least one accepted offer with the current user
+    // However this means that infinite reviews can be left by that user
+    // We want to limit this to one review / sale
+    // We can match the number of reviews from userID with the number of accepted Offers where buyerID == userID
+    var salesDone = offersBuy.length;
+    // We need to count how many reviews this user (userID) left for profileID
+    var reviewRef = firestore.collection('reviewsForBuyers').where("target", "==", profileID).where("senderID", "==", userID);
+    var [reviews, loading] = useCollectionData(reviewRef);
+    
+    if(salesDone == 0) return false;
+    
+    if(!loading){
+        if(reviews.length != 0) alreadyLeftReviewBuyer = true;
         return reviews.length != salesDone
     } 
 
@@ -305,36 +353,50 @@ function Buyers(props){
 
 function DisplayReview(){
     var reviews = [];
-    var credibilityScore = 0;
-    const query = firestore.collection('reviews').where("target", "==", profileID);
-    const [reviewsRef, loading] = useCollection(query);
-    var count = [0,0,0,0,0];
+    var credibilityScoreBuyer = 0, credibilityScoreSeller = 0;
+    const queryBuy = firestore.collection('reviewsForBuyers').where("target", "==", profileID); // leaving reviews for those which buy
+    const querySel = firestore.collection('reviewsForSellers').where("target", "==", profileID); // leaving reviews for those which sell
+    const [reviewsRefBuyer, loadingB] = useCollection(queryBuy);
+    const [reviewsRefSeller, loadingS] = useCollection(querySel);
+    var countBuy = [0,0,0,0,0];
+    var countSel = [0,0,0,0,0];
     var index = 0;
     var editable = [];
     const [reviewDescription, setReviewDescription] = useState('');
     const [stars, setStars] = useState('');
 
-    if(!loading){
-        reviewsRef.forEach(doc => {
+    if(!loadingB){
+        reviewsRefBuyer.forEach(doc => {
             reviews[index] = doc.data();
             docsID[index] = doc.id;
             editable[index] = false;
-            credibilityScore += parseInt(reviews[index].stars);
-            count[reviews[index].stars - 1] += 1;
+            credibilityScoreBuyer += parseInt(reviews[index].stars);
+            countBuy[reviews[index].stars - 1] += 1;
+            index++;
+        })
+    }
+    var limit = index // this marks the point where reviews as a buyer end and begin as a seller
+    if(!loadingS){
+        reviewsRefSeller.forEach(doc => {
+            reviews[index] = doc.data();
+            docsID[index] = doc.id;
+            editable[index] = false;
+            credibilityScoreSeller += parseInt(reviews[index].stars);
+            countSel[reviews[index].stars - 1] += 1;
             index++;
         })
     }
     return(
         <>
         <p>
-            {credibilityScore != 0 ?
+            {credibilityScoreBuyer + credibilityScoreSeller != 0 ?
             <>
-                <label>Credibility Score: {credibilityScore/index}</label><br/>
-                <label>5 star reviews: {count[4]} out of {index}</label><br/>
-                <label>4 star reviews: {count[3]} out of {index}</label><br/>
-                <label>3 star reviews: {count[2]} out of {index}</label><br/>
-                <label>2 star reviews: {count[1]} out of {index}</label><br/>
-                <label>1 star reviews: {count[0]} out of {index}</label><br/>
+                <label>Credibility Score as buyer: {limit != 0? credibilityScoreBuyer/limit: 0}  |||  Credibility Score as seller: {index - limit != 0? credibilityScoreSeller/(index - limit) : 0}</label><br/>
+                <label>5 star reviews as buyer: {countBuy[4]} out of {limit}  |||  5 star reviews as seller: {countSel[4]} out of {index - limit}</label><br/>
+                <label>4 star reviews as buyer: {countBuy[3]} out of {limit}  |||  4 star reviews as seller: {countSel[3]} out of {index - limit}</label><br/>
+                <label>3 star reviews as buyer: {countBuy[2]} out of {limit}  |||  3 star reviews as seller: {countSel[2]} out of {index - limit}</label><br/>
+                <label>2 star reviews as buyer: {countBuy[1]} out of {limit}  |||  2 star reviews as seller: {countSel[1]} out of {index - limit}</label><br/>
+                <label>1 star reviews as buyer: {countBuy[0]} out of {limit}  |||  1 star reviews as seller: {countSel[0]} out of {index - limit}</label><br/>
             </>
                 :
                 <label>There are no reviews for this user.</label>
@@ -345,14 +407,21 @@ function DisplayReview(){
 
             const editReview = () =>{
                 editable[index] = true;
-                firestore.collection('reviews').doc(docsID[index]).update({
+                var path = "";
+                console.log(index, limit);
+                if(index < limit) path = "reviewsForBuyers";
+                else path = "reviewsForSellers";
+                firestore.collection(path).doc(docsID[index]).update({
                     editable: "true"
                 })
             }
 
             const updateReview = (e) => {
                 e.preventDefault();
-                firestore.collection('reviews').doc(docsID[index]).update({
+                var path = "";
+                if(index < limit) path = "reviewsForBuyers";
+                else path = "reviewsForSellers";
+                firestore.collection(path).doc(docsID[index]).update({
                     editable: "false",
                     reviewDescr:reviewDescription,
                     stars:stars
@@ -363,6 +432,8 @@ function DisplayReview(){
 
             return(
                 <div key={docsID[index].toString()} className="review">
+                    {index == 0 && credibilityScoreBuyer != 0? <h1>Reviews as a buyer</h1> : <></>}
+                    {index == limit && credibilityScoreSeller != 0 ? <h1>Reviews as a seller</h1> : <></>}
                     <p className='Review test' ><Link to={{
                         pathname: "/Profile",
                         state :[{
@@ -394,10 +465,13 @@ function DisplayReview(){
     )
 }
 
-function AddReview(){
-
-    const reviewsRef = firestore.collection('reviews');
-
+function AddReview(option){
+    var value = option.option;
+    var path = "";
+    console.log(value);
+    if(value == 0) path = "reviewsForSellers";
+    else path = "reviewsForBuyers"
+    const reviewsRef = firestore.collection(path);
     const [reviewDescription, setReviewDescription] = useState('');
     const [stars, setStars] = useState('');
 
