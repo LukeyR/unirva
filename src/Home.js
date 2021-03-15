@@ -2,10 +2,37 @@ import React, { useState } from 'react';
 import './Home.css';
 import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
-import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Grid,
+    List,
+    ListItem,
+    ListItemText,
+    MenuItem,
+    Menu,
+    makeStyles, Typography
+} from "@material-ui/core";
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import HomeListingCard from "./listingCard";
 import Favourites from "./Favourites";
 
+const useStyles = makeStyles((theme) => (
+    {
+        list: {
+            maxWidth: "300px"
+        },
+        moreIcon: {
+            color: theme.palette.text.primary
+        },
+        sorting: {
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: "30px",
+            alignItems: "center",
+        }
+}));
 
 const firestore = firebase.firestore();
 
@@ -14,8 +41,15 @@ var listings = [];
 var listingsPrice = [];
 var docsID = [];
 
-function Home() {
+const options = [
+    "Date: Newest - Oldest",
+    "Date: Oldest - Newest",
+    "Price: High - Low",
+    "Price: Low - High",
+];
 
+
+function Home() {
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
@@ -24,6 +58,45 @@ function Home() {
     const [showOld, setShowOld] = useState(false);
     const [showLow, setShowLow] = useState(false);
     const [showHigh, setShowHigh] = useState(false);
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const classes = useStyles();
+
+    const handleClickListItem = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuItemClick = (event, index) => {
+        setSelectedIndex(index);
+        setAnchorEl(null);
+        switch (index) {
+            case 0:
+                listingsTimeNew()
+                break;
+
+            case 1:
+                listingsTimeOld()
+                break;
+
+            case 2:
+                listingsPriceHigh()
+                break;
+
+            case 3:
+                listingsPriceLow()
+                break;
+            default:
+                console.log("Error Occourred: unkown index in Home.js/handleMenuItemClick")
+
+        }
+
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     function listingsTimeNew() {
         setShowNew(true);
@@ -113,12 +186,36 @@ function Home() {
                 <h2>Listings in Bath</h2>
                 <h2>Sorting</h2>
                 <div className="sortingRow">
-                    <ButtonGroup color="primary" aria-label="contained primary button group">
-                        <Button variant={showNew ? "contained" : "outlined"}  onClick={() => listingsTimeNew()}>Date: Newest - Oldest</Button>
-                        <Button variant={showOld ? "contained" : "outlined"} onClick={() => listingsTimeOld()}>Date: Oldest - Newest</Button>
-                        <Button variant={showHigh ? "contained" : "outlined"}  onClick={() => listingsPriceHigh()}>Price: High - Low</Button>
-                        <Button variant={showLow ? "contained" : "outlined"}  onClick={() => listingsPriceLow()}>Price: Low - High</Button>
-                    </ButtonGroup>
+
+                        <div className={classes.sorting}>
+                        <Typography display="inline" style={{marginRight: "10px"}}>
+                            Sort By:
+                        </Typography>
+                        <Button onClick={handleClickListItem} variant="outlined" color="primary">
+                            <Typography>
+                                {options[selectedIndex]}
+                            </Typography>
+                            <UnfoldMoreIcon className={classes.moreIcon}/>
+                        </Button>
+                        </div>
+                        <Menu
+                            id="lock-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            {options.map((option, index) => (
+                                <MenuItem
+                                    key={option}
+                                    selected={index === selectedIndex}
+                                    onClick={(event) => handleMenuItemClick(event, index)}
+                                >
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+
                 </div>
             </div>
 
