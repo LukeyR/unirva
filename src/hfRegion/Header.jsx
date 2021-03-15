@@ -29,7 +29,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import App from "../App";
-import {ExitToApp} from "@material-ui/icons";
+import {ExitToApp, Favorite} from "@material-ui/icons";
 import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
 import {deepOrange} from "@material-ui/core/colors";
 
@@ -235,7 +235,6 @@ const Header = ({theme}) => {
                                                 }
                                                             className={classes.profile}
                                                 >
-                                                    {console.log(theme.palette)}
                                                     <Avatar alt="Profile Image" src={user.photoURL} style={{backgroundColor: theme.palette.secondary.main}}>
                                                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                     </Avatar>
@@ -271,6 +270,12 @@ const Header = ({theme}) => {
                                             <AccountCircleTwoToneIcon/>
                                         </ListItemIcon>
                                         Profile
+                                    </MenuItem>
+                                    <MenuItem onClick={() => handleMenuClick("/Favourites")}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <Favorite/>
+                                        </ListItemIcon>
+                                        Favourites
                                     </MenuItem>
                                     <MenuItem onClick={() => updateDarkModePreference()}>
                                         <ListItemIcon className={classes.listIcon}>

@@ -1,34 +1,89 @@
-import React from "react";
+import React, {useState} from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
-import {Link} from "react-router-dom";
-import {Box, Card, CardActionArea, CardContent, CardMedia, Divider, makeStyles, Typography} from "@material-ui/core";
+import {Link, useHistory} from "react-router-dom";
+import {
+    Box, Button,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardMedia,
+    Divider, Grow,
+    Icon, IconButton,
+    makeStyles, Tooltip,
+    Typography, Zoom
+} from "@material-ui/core";
+import {Edit, Favorite, FavoriteBorder, FavoriteBorderOutlined, Chat} from "@material-ui/icons";
+import {red} from "@material-ui/core/colors";
+import firebase from "./firebase";
+import {useDocumentData} from "react-firebase-hooks/firestore";
 
 const useStyles = makeStyles({
     root: {
         width: "300px",
     },
+    icons: {
+        display: "flex",
+        justifyContent: "flex-end",
+    },
 })
 
-function HomeListingCard(props) {
+const firestore = firebase.firestore();
 
-    const {name, price, imgUrl, seller, description} = props.listingObj
+function HomeListingCard(props) {
+    const {name, price, imgUrl, seller, description, likedBy} = props.listingObj
     const classes = useStyles();
+    const history = useHistory();
+    const [user] = useAuthState(auth);
+
+
+    const [sellerDoc, loadingSellerDoc] = useDocumentData(firestore.collection("users").doc(seller))
+
+    let liked = null;
+    if (user) liked = likedBy.includes(user.uid)
+
+
+    const likeItem = () => {
+        if (liked) {
+            unlikeItem();
+            return;
+        }
+        if (user) {
+            firestore.collection("listings").doc(props.iD).update({
+                likedBy: firebase.firestore.FieldValue.arrayUnion(user.uid),
+            })
+            firestore.collection("users").doc(user.uid).update({
+                likes: firebase.firestore.FieldValue.arrayUnion(props.iD),
+            })
+        }
+        liked = true
+    }
+
+    const unlikeItem = () => {
+        if (user) {
+            firestore.collection("listings").doc(props.iD).update({
+                likedBy: firebase.firestore.FieldValue.arrayRemove(user.uid),
+            })
+            firestore.collection("users").doc(user.uid).update({
+                likes: firebase.firestore.FieldValue.arrayRemove(props.iD),
+            })
+
+        }
+        liked = false
+    }
 
     return (
-        <Link to={{
-            pathname:"/DisplayProduct",
-            state:[{iD: props.iD}]
-        }}
-              style={{textDecoration: "none"}}>
+        // <Link to={{
+        //     pathname:"/DisplayProduct",
+        //     state:[{iD: props.iD}]
+        // }}
+        //       style={{textDecoration: "none"}}>
             <Card className={classes.root}>
-                <CardActionArea>
+                <CardActionArea onClick={() => {history.push({pathname: "/DisplayProduct", state: {iD: props.iD}})}}>
                     <CardMedia
                         component="img"
-                        alt="Contemplative Reptile"
                         height="200"
                         image={imgUrl}
-                        title="Contemplative Reptile"
                     />
                     <CardContent>
                         <Box display="flex" justifyContent="space-between">
@@ -40,14 +95,50 @@ function HomeListingCard(props) {
                             </Typography>
                         </Box>
                         <Divider variant="middle"/>
-                        <Typography variant="body2" color="textSecondary" component="p" noWrap>
-                            {description}
-                        </Typography>
+                        <Box display="flex" justifyContent="space-between">
+                            <Typography variant="body2" color="textSecondary" component="p" noWrap style={{marginTop: "10px"}}>
+                                {description !== "" ? description : "No description provided..."}
+                            </Typography>
+                        </Box>
                     </CardContent>
 
                 </CardActionArea>
+                <div className={classes.icons}>
+                <Tooltip title={user && seller === user.uid ? "Edit your listing" : "Message seller"} >
+                    <IconButton onClick={() => {user && seller === user.uid ?
+                        history.push({
+                            pathname: "/EditProduct",
+                            state: {
+                                iDListing: props.iD,
+                                name: name,
+                                description: description,
+                                price: price,
+                                url: imgUrl,
+                            },
+                        })
+                        : (user) ?
+                    (history.push({
+                        pathname: "/ChatRoom",
+                        state: {
+                            targetUserID: seller,
+                            targetUserName:  sellerDoc.Name,
+                            myUID: user.uid
+                        },
+                    }))
+                            :
+                            history.push("/menu")
+                    }}>
+                        {user && seller === user.uid ? <Edit /> : <Chat />}
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={liked ? "Remove from favourites" : "Add to favourites"}>
+                    <IconButton onClick={() => {likeItem()}}>
+                        {user && likedBy.includes(user.uid) ? <Grow in={user && likedBy.includes(user.uid)}><Favorite color="error" /></Grow> : <FavoriteBorder />}
+                    </IconButton>
+                </Tooltip>
+                    </div>
             </Card>
-        </Link>
+        // </Link>
     )
 }
 

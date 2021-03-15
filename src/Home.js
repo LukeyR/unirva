@@ -4,6 +4,7 @@ import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
+import Favourites from "./Favourites";
 
 
 const firestore = firebase.firestore();

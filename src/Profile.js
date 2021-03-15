@@ -5,8 +5,9 @@ import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
-import {Box, Grid} from "@material-ui/core";
+import {Avatar, Box, Grid, IconButton} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
+import {makeStyles} from "@material-ui/styles";
 
 const firestore = firebase.firestore();
 
@@ -24,9 +25,22 @@ var alreadyLeftReview = false;
 var index = 0;
 var offers = [];
 
-function Profile(){
+const useStyles = makeStyles((theme) => ({
+    profilePicture: {
+        margin: "28px",
+        padding: "28px",
+        border: "0px solid black",
+        width: "185px",
+        height: "185px",
+        backgroundColor: theme.palette.secondary.main
+    }
+}))
+
+const Profile = (theme) => {
     const history = useHistory();
     const [user] = useAuthState(auth);
+    const classes = useStyles();
+
     const location = useLocation();
     var currentUserID = null;
     var targetName = null;
@@ -60,7 +74,7 @@ function Profile(){
     if(!loadingUser){
         current.forEach(usr => {
             currentName = usr.Name;
-            
+
             if(profileID == user.uid){
                 targetName = usr.Name;
                 targetLastName = usr.LastName;
@@ -114,34 +128,36 @@ function Profile(){
             <div className="about">
                 {user ?
                     <>
-                        <img className="profilePicture" src={user.photoURL}/>
+                        <Avatar  className={classes.profilePicture} alt="Profile Image" src={user.photoURL}>
+                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                        </Avatar>
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
-                        <p> 
+                        <p>
                             {profileID == user.uid ?
-                            <InterestedBuyers/>
-                            :
-                            <></>}
+                                <InterestedBuyers/>
+                                :
+                                <></>}
                             <h1>Review Score</h1>
                             <DisplayReview/>
                             {matched ?
-                            <div>    
-                                <h1>Leave a review</h1>
-                                <AddReview/>
-                            </div>
-                            :
-                            <div>
-                                {profileID == user.uid ?
-                                    <></>
-                                    :
-                                    <>{alreadyLeftReview == false ?
-                                        <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
+                                <div>
+                                    <h1>Leave a review</h1>
+                                    <AddReview/>
+                                </div>
+                                :
+                                <div>
+                                    {profileID == user.uid ?
+                                        <></>
                                         :
-                                        <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                        <>{alreadyLeftReview == false ?
+                                            <h1>You cannot leave a review unless you make an offer and this user accepts it.</h1>
+                                            :
+                                            <h1>You can leave as many reviews as offers you made which were accepted.</h1>
+                                        }
+                                        </>
                                     }
-                                    </>
-                                }
-                            </div>
+                                </div>
                             }
                         </p>
                     </>
@@ -153,13 +169,14 @@ function Profile(){
             <div className="listings">
                 {user ?
                     <Box p={1} m={1}>
-                    <Grid container justify="center" spacing={4}>
-                        {listings.map((listingObj, index) =>
-                            getListingCard(listingObj, docsID[index])
-                        )}
-                    </Grid>
+                        <Grid container justify="center" spacing={4}>
+                            {listings.map((listingObj, index) =>
+                                getListingCard(listingObj, docsID[index])
+                            )}
+                        </Grid>
                     </Box>
-                :
+
+                    :
                     <p>User has no listings</p>
                 }
             </div>
@@ -177,13 +194,13 @@ function CheckMatch(){
     // We need to count how many reviews this user (userID) left for profileID
     var reviewRef = firestore.collection('reviews').where("target", "==", profileID).where("senderID", "==", userID);
     var [reviews, loading] = useCollectionData(reviewRef);
-    
+
     if(salesDone == 0) return false;
-    
+
     if(!loading){
         if(reviews.length != 0) alreadyLeftReview = true;
         return reviews.length != salesDone
-    } 
+    }
 
     return false;
 
@@ -262,13 +279,13 @@ function Buyers(props){
     var buyers = props.buyers;
     var listingId = props.listing.listingID;
 
-    
+
 
     return(
         <>
         <p>Interested in {listingName}:</p>
         <>{buyers.map(buyer => {
-            
+
             // When you send an offer (accept it), then all the other users interested should have their offers removed.
             const SendOffer = () =>{
                 var userOffers = firestore.collection('users/' + profileID + '/AcceptedOffers');
@@ -383,7 +400,7 @@ function DisplayReview(){
                             :
                         <></>
                     }
-                    </>   
+                    </>
                     }
                     </p>
                 </div>
