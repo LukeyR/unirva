@@ -51,7 +51,7 @@ function Chat(){
         if(!loadingUsers){
             users.forEach(usr => {
                 let name = usr.data().Name;
-                if(name.includes(searchVal) && name != me[0].Name){
+                if(name.toLowerCase().includes(searchVal.toLowerCase()) && name != me[0].Name){
                     var count = 0
                     unseenMessages.forEach(msg => {
                         if(msg.SenderID == usr.data().ID) count++;
@@ -90,12 +90,20 @@ function Name(name){
         <div>
             <Link to={{
                 pathname: "/ChatRoom",
-                state: {
+                state: [{
                     targetUserID: name.name[0].id,
                     targetUserName: name.name[0].name,
                     myUID: userID
-                }
-            }}><button>{name.name[0].name}</button></Link> {name.name[0].unseenMes} : {unread}
+                }]
+            }}><button>Message {name.name[0].name}</button></Link> {name.name[0].unseenMes} : {unread} <Link to={{
+                pathname: "/Profile",
+                state:[{
+                    targetUserID: name.name[0].id,
+                    currentUserID: userID
+                }]
+            }}>
+            <button>See profile</button>
+            </Link>
         </div>
     )
 }

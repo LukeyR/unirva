@@ -121,26 +121,30 @@ function Chatroom(){
 }
 
 function ChatMessage(props){
-    console.log(props);
     const {msg, SenderID} = props.message;
-    //console.log(myID)
-    var text = "";
-    var result = "";
-    if(SenderID == myID) {text = "You"}
-    else{
 
-         text = targetName;
-    }
-    if(text == oldText && oldText != "") result = "";
-    else {
-        result = text + ":";
-        oldText = text;
-    }
+    //console.log(myID)
+    //var text = "";
+    //var result = "";
+    //if(SenderID == myID) {text = "You"}
+    //else{
+
+      //   text = targetName;
+    //}
+    //console.log(text, oldText);
+    //if(text == oldText && oldText != "") result = "";
+    //else {
+      //  result = text + ":";
+      //  oldText = text;
+    //}
     //const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received';
   
     return (
       <div>
-        {result} {msg}
+        {SenderID == myID ?
+            <p>You:{msg}</p>
+        :
+            <p>{targetName}:{msg}</p>} 
       </div>
     )
 
