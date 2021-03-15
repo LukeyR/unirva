@@ -4,11 +4,20 @@ import { storage, auth } from './firebase';
 import './Product.css';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useHistory} from "react-router-dom";
+import {Box, FormControl, Grid, Input, InputLabel, TextField} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 
 //Tried to make it nicer
 
 const firestore = firebase.firestore(); // accessing the firestore (database)
 
+const useStyles = makeStyles((theme) => ({
+    container: {
+        margin: "30px",
+    },
+    name: {
+    }
+}));
 
 // main structure of the Product page
 /**
@@ -20,27 +29,14 @@ function Product() {
     const history = useHistory();
     const [user] = useAuthState(auth);
 
+
     if (!user) {
         console.log("here")
         history.push("./menu")
     }
 
     return(
-        <div className='Product'>
-            <h1>This is the Product's page</h1>
-            <>So far let's focus on uploading new products and making sure these are stored in the database.</>
-            <br/>
-            <>Then we can focus on viewing each product.</>
-
-            <h1>Elements of a product</h1>
-            <>These should be: photo, name, description, price</>
-
-            <h1 className='product-info'>Product Information</h1>
-            <section>
-                <Upload/>
-            </section>
-
-        </div>
+        <Upload/>
     );
 }
 
@@ -59,6 +55,8 @@ function Upload(){
     //const [sellerVal, setFormValue4] = useState('');
     const [image, setImage] = useState(null);
     const [user] = useAuthState(auth);
+
+    const classes = useStyles();
 
     function handleChange() {
         const preview = document.querySelector('img');
@@ -136,14 +134,30 @@ function Upload(){
 
     // the main form
     return(
-        <form className = 'form' onSubmit={submitForm}>
-            <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
-            <label className='label2'>Price: </label><input className="input" type="number" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
-            <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
-            <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
-            <button className='button' type="submit">Post Listing</button>
-            <img src='' alt='' className='productImage' />
-        </form>
+        // <form className = 'form' onSubmit={submitForm}>
+        //     <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
+        //     <label className='label2'>Price: </label><input className="input" type="number" value={priceVal} onChange={(e) => setFormValue3(e.target.value)}/>
+        //     <label className='label1'>Description: </label><textarea className="description" placeholder="Describe your product here" value={descriptionVal} onChange={(e) => setFormValue2(e.target.value)}/>
+        //     <label className='label1'>Image Upload</label><input className="fileInput" type="file" onChange={handleChange}/>
+        //     <button className='button' type="submit">Post Listing</button>
+        //     <img src='' alt='' className='productImage' />
+        // </form>
+        <Box className={classes.container}>
+            <Grid container >
+                    <Grid item xs={12}>
+                        <TextField
+                            fullWidth
+                            required
+                            id="outlined-basic"
+                            label="Product Name"
+                            variant="outlined"
+                            color="primary"
+                            helperText="Enter a descriptive title for you product. Try using key words."
+                            className={classes.name}
+                        />
+                    </Grid>
+            </Grid>
+        </Box>
     );
 }
 
