@@ -124,6 +124,7 @@ function Upload(){
                     imgUrl:url,
                     seller:user.uid,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    likedBy: [user.uid],
                     interestedUsers: ""
                 }).then(() => {
                     console.log('product submitted. redirecting...');

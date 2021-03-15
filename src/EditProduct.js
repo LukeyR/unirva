@@ -6,13 +6,12 @@ import { useLocation } from 'react-router-dom';
 
 const firestore = firebase.firestore();
 
-function EditProduct(){
-    let state = useLocation().state[0];
-    let id = state.iDListing;
-    let listingName = state.name;
-    let listingDes = state.description;
-    let listingPrice = state.price;
-    let listingUrl = state.url;
+function EditProduct(props){
+    let id = props.location.state.iDListing;
+    let listingName = props.location.state.name;
+    let listingDes = props.location.state.description;
+    let listingPrice = props.location.state.price;
+    let listingUrl = props.location.state.url;
 
     const listingsRef = firestore.collection('listings').doc(id);
 

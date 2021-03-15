@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import Product from './Product';
 import Chat from './Chat';
@@ -8,11 +8,9 @@ import Register from './authentication/Register';
 import {Route, useLocation} from 'react-router-dom';
 
 import Search from './search'
-import NavBar from './hfRegion/NavBar';
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
-import Login from "./authentication/Login";
 import Logout from "./authentication/Logout";
 import SignIn from './authentication/SignIn';
 import SellerProfile from "./SellerProfile";
@@ -20,7 +18,6 @@ import {AuthProvider} from './Auth';
 import {auth} from "./firebase";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import DisplayProduct from './DisplayProduct';
-import {AuthContext} from './Auth';
 import EditProduct from "./EditProduct";
 import ChatRoom from './ChatRoom';
 import {ThemeProvider} from "@material-ui/styles";
@@ -30,6 +27,7 @@ import lightBlue from "@material-ui/core/colors/lightBlue";
 import pink from "@material-ui/core/colors/pink";
 import {useDocumentData} from "react-firebase-hooks/firestore";
 import firebase from "./firebase";
+import Favourites from "./Favourites";
 
 const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product"]
 
@@ -104,9 +102,10 @@ function App() {
                 <div className="App">
                     <Header theme={muiTheme}/>
                     {/*<>Yes, whatever is put here is displayed on every page.</>*/}
-                    <Route exact path="/Profile" component={Profile}/>
+                    <Route exact path="/Profile" render={() => (<Profile {...muiTheme} isAuthed={true}/>)}/>
                     <Route exact path="/Product" component={Product}/>
                     <Route exact path="/Chat" component={Chat}/>
+                    <Route exact path="/Favourites" component={Favourites}/>
                     <Route exact path="/search:results" component={Search}/>
                     <Route exact path="/DisplayProduct" component={DisplayProduct}/>
                     <Route exact path="/SignIn" component={SignIn}/>

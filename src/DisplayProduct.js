@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { useLocation } from 'react-router-dom';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link} from 'react-router-dom';
@@ -13,8 +12,8 @@ var globalID = null;
 var globalUserID = null;
 var sellerID = null;
 var oldVal = "";
-function DisplayProduct(){
-    let id = useLocation().state[0].iD;
+function DisplayProduct(props){
+    let id = props.location.state.iD;
     globalID = id;
     const [user] = useAuthState(auth);
     var userID = null;
@@ -70,16 +69,16 @@ function DisplayProduct(){
     if(listingSeller == userID) {
         msg = "Edit details";
         gotoSeller = "Goto My Profile"
-        match = true; 
+        match = true;
         path = "/EditProduct"
         userPath = "/Profile"
-        stateMyProduct = [{
+        stateMyProduct = {
             iDListing: id,
             name: listingName,
             description: listingDes,
             price: listingPrice,
             url: listingUrl
-        }]
+        }
         state = [{
             targetUserID: SellerID,
             currentUserID: userID
@@ -89,16 +88,15 @@ function DisplayProduct(){
         msg = "Message Seller"
         gotoSeller = "Goto Seller Profile"
         path = "/ChatRoom";
-        userPath = "/Profile"
-        stateMyProduct = [{
+        stateMyProduct = {
             targetUserName: userName,
             targetUserID: SellerID,
             myUID: userID
-        }]
-        state = [{
+        }
+        state = {
             targetUserID: SellerID,
             currentUserID: userID
-    }]
+        }
     }
 
     const updateInterested = () => {
@@ -115,7 +113,7 @@ function DisplayProduct(){
                 newVal = oldVal + "," + globalUserID;
             }
         }
-        
+
         firestore.collection('listings').doc(globalID).update({
             interestedUsers: newVal
         })

@@ -79,7 +79,7 @@ function Chat(){
 function ResultContainer(names){
     return(
         <div>
-            {names.names.map(name => <Name name={name}></Name>)}
+            {names.names.map(name => <Name name={name}/>)}
         </div>
     ) 
 }
