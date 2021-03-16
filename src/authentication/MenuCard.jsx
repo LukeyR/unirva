@@ -9,6 +9,7 @@ import {Redirect} from "react-router-dom"
 import {useHistory} from "react-router-dom";
 import {useAuthState} from "react-firebase-hooks/auth";
 import { useStyles } from "./Menu.js"
+import BrandLogo from "../BrandLogo";
 
 let redirect = false;
 
@@ -38,9 +39,11 @@ function SignIn() {
 
     return (
         <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
-            <CardContent>
-                <CardMedia className={classes.media} image={brandLogo} title="Brand Logo"/>
+        <div style={{ display:'flex', justifyContent:'center' }}>
+            <CardContent className={classes.cardActions}>
+                <BrandLogo />
             </CardContent>
+        </div>
 
             {/*log in button*/}
             <CardActions className={classes.cardActions}>
@@ -98,8 +101,9 @@ function SignOut() {
 
     return (
         <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
-            <CardContent>
-                <CardMedia className={classes.media} image={brandLogo} title="Brand Logo"/>
+
+            <CardContent className={classes.cardActions}>
+                <BrandLogo />
             </CardContent>
 
             {/*profile button*/}

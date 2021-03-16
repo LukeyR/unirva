@@ -4,7 +4,7 @@ import {Grid} from "@material-ui/core"
 import Content from "./MenuContent.jsx";
 import {makeStyles} from "@material-ui/styles";
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles((theme) =>  ({
     root: {
         backgroundColor: 'transparent',
         width: 500,
@@ -34,13 +34,17 @@ export const useStyles = makeStyles({
         width: 200,
     },
     media: {
-        height: 250,
+        margin: 'auto',
+    },
+    brandName: {
+        margin: 'auto',
+        color: theme.palette.text.secondary,
     },
     typography: {
         textAlign: "center",
         marginBottom: -10,
     },
-});
+}));
 
 function Menu() {
     const classes = useStyles();

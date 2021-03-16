@@ -14,6 +14,7 @@ const Register = () => {
         if((email.value.includes(".ac")||email.value.includes(".edu"))){
           if(password.value===password2.value){
             const new_user = await firebaseConfig.auth().createUserWithEmailAndPassword(email.value, password.value);
+            await auth.currentUser.updateProfile({displayName: firstname.value + " " + lastname.value})
             var userid = auth.currentUser.uid;
             var db = firebase.firestore();
             db.collection('users').doc(userid).set({

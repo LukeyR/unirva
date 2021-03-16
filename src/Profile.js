@@ -27,6 +27,8 @@ var offers = [];
 
 const useStyles = makeStyles((theme) => ({
     profilePicture: {
+        display: "flex",
+        justifyContent: "center",
         margin: "28px",
         padding: "28px",
         border: "0px solid black",
@@ -52,7 +54,8 @@ const Profile = (theme) => {
     }
     else{
         profileID = user.uid;
-        targetName = user.displayname;
+        targetName = user.displayName;
+        targetLastName = "";
     }
     userID = user.uid;
     // Getting the listings from the database.
