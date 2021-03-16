@@ -39,6 +39,7 @@ function DisplayProduct(props){
     var stateMyProduct = [];
     var stateMsg = [];
     var sold = false;
+    var listingExtraUrls = []
 
     if(!loading){
         myListing = document.data();
@@ -47,6 +48,7 @@ function DisplayProduct(props){
         listingSeller = myListing.seller;
         listingPrice = myListing.price;
         listingUrl = myListing.imgUrl;
+        listingExtraUrls = myListing.allPhotos;
         oldVal = myListing.interestedUsers;
         if(oldVal == null) oldVal = "";
         sold = myListing.sold;
@@ -126,6 +128,7 @@ function DisplayProduct(props){
             <h1> { listingDes} </h1>
             <h1> { userName } </h1>
             <img src={listingUrl} alt='react logo' className='productImage' />
+            {listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
             <h1><Link to={{
                 pathname:path,
                 state:stateMyProduct

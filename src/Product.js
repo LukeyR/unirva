@@ -90,6 +90,8 @@ function Upload() {
     })
     index = 0
 
+    const [uploading, setUploading] = useState(false)
+
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
     }
@@ -110,7 +112,7 @@ function Upload() {
 
         if (file && file.type.match('image.*')) {
             reader.readAsDataURL(file)
-            values.images.unshift(file);
+            values.images.push(file);
         } else {
             alert('Please only upload images');
         }
@@ -165,31 +167,31 @@ function Upload() {
             setEmptyValues(prevState => ({...prevState, description: false}))
         }
 
-        console.log(emptyValues)
-        console.log(returnEarly)
 
         if (returnEarly) {
             return;
         }
 
+        setUploading(true)
 
-        function uploadImage(image, i, array) {
+        async function uploadImage(image, firstImage, lastImage) {
 
             let fileName = generateFileName();
 
             let fileExtension = getFileExtension(image);
 
-            const uploadImg = storage.ref('images/' + fileName + fileExtension).put(image);
-            uploadImg.on("state_changed", snapshot => {
+             const uploadImg =  storage.ref('images/' + fileName + fileExtension).put(image);
+            await uploadImg.on("state_changed", snapshot => {
                 }, error => {
                     console.log(error);
                 },
                 () => {
                     storage.ref('images').child(fileName + fileExtension).getDownloadURL().then(url => {
 
-                        if (i === array.length - 1) {
-                            primaryUrl = url
-                            console.log("uploading")
+                        if (lastImage) {
+                            imageUrls.push(url)
+                            console.log(imageUrls)
+                            console.log(primaryUrl)
                             listingsRef.add({
                                 name: values.name,
                                 description: values.description,
@@ -204,6 +206,8 @@ function Upload() {
                                 console.log('product submitted. redirecting...');
                                 history.push("/")
                             });
+                        } else if (firstImage) {
+                            primaryUrl = url
                         } else {
                             imageUrls.push(url)
                         }
@@ -215,7 +219,24 @@ function Upload() {
         let primaryUrl = null;
         let imageUrls = []
 
-        values.images.forEach(uploadImage)
+        let counter = 0
+        for (const image of values.images) {
+            console.log(image)
+            if (values.images.length === 1) {
+                uploadImage(image, true, false)
+            }
+            else if (counter === 0) {
+                uploadImage(image, true, false)
+
+            } else if (counter === values.images.length - 1) {
+                uploadImage(image, false, true)
+
+            } else {
+                uploadImage(image, false, false)
+
+            }
+            counter += 1
+        }
 
     }
 
@@ -371,8 +392,10 @@ function Upload() {
                         <Button onClick={() => {
                             submitForm().then()
                         }}
+                                disabled={uploading}
                                 variant="outlined"
-                                color="primary">upload
+                                color="primary">
+                            {uploading ? "uploading" : "upload"}
                         </Button>
                     </Grid>
                 </Grid>
