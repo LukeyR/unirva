@@ -5,8 +5,9 @@ import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
-import {Box, Grid} from "@material-ui/core";
+import {Avatar, Box, Grid, IconButton} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
+import {makeStyles} from '@material-ui/styles';
 
 const firestore = firebase.firestore();
 
@@ -27,10 +28,23 @@ var index = 0;
 var offersSel = [];
 var offersBuy = []
 
-function Profile(){
+const useStyles = makeStyles((theme) => ({
+    profilePicture: {
+        margin: "28px",
+        padding: "28px",
+        border: "0px solid black",
+        width: "185px",
+        height: "185px",
+        backgroundColor: theme.palette.secondary.main
+    }
+}))
+
+const Profile = (theme) => {
     const history = useHistory();
     const [user] = useAuthState(auth);
     const location = useLocation();
+    console.log(location);
+    const classes = useStyles();
     var currentUserID = null;
     var targetName = null;
     var targetUni = null;
@@ -122,7 +136,9 @@ function Profile(){
             <div className="about">
                 {user ?
                     <>
-                        <img className="profilePicture" src={user.photoURL}/>
+                        <Avatar  className={classes.profilePicture} alt="Profile Image" src={user.photoURL}>
+                            {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                        </Avatar>
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
                         <p> 

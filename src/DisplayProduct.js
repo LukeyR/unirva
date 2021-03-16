@@ -68,10 +68,10 @@ function DisplayProduct(props){
 
     if(listingSeller == userID) {
         msg = "Edit details";
-        gotoSeller = "Goto My Profile"
+        gotoSeller = "Goto My Profile";
         match = true;
-        path = "/EditProduct"
-        userPath = "/Profile"
+        path = "/EditProduct";
+        userPath = "/Profile";
         stateMyProduct = {
             iDListing: id,
             name: listingName,
@@ -85,18 +85,19 @@ function DisplayProduct(props){
         }]
     }
     else {
-        msg = "Message Seller"
-        gotoSeller = "Goto Seller Profile"
+        msg = "Message Seller";
+        gotoSeller = "Goto Seller Profile";
+        userPath = "/Profile";
         path = "/ChatRoom";
         stateMyProduct = {
             targetUserName: userName,
             targetUserID: SellerID,
             myUID: userID
         }
-        state = {
+        state = [{
             targetUserID: SellerID,
             currentUserID: userID
-        }
+        }]
     }
 
     const updateInterested = () => {
