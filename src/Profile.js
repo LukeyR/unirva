@@ -55,7 +55,8 @@ const Profile = (theme) => {
     }
     else{
         profileID = user.uid;
-        targetName = user.displayname;
+        targetName = user.displayName;
+        targetLastName = "";
     }
     userID = user.uid;
     // Getting the listings from the database.
