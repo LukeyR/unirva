@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
  * displays the requested section. For example, if a user wants to upload a new product, then this will be the displayed section.
  * If a user wants to view a product, then we can make a new function preview which displays that product.
  */
-function Product() {
+function Product(props) {
     const history = useHistory();
     const [user] = useAuthState(auth);
 
@@ -58,12 +58,13 @@ function Product() {
     }
 
     return (
-        <Upload/>
+        <Upload {...props}/>
     );
 }
 
 
 let index = 0
+let startIndex = 0
 const max_index = 7
 
 /**
@@ -71,16 +72,23 @@ const max_index = 7
  * Inpired from the chat room tutorial I sent on WhatsApp
  * Tbh, I am not entirely sure what all the lines do, but it seems to work.
  */
-function Upload() {
+function Upload(props) {
+    const editing = props.location.state !== undefined
+    const name = editing ? props.location.state.name : "";
+    const price = editing ? props.location.state.price : "";
+    const url = editing ? [props.location.state.url] : [];
+    const extraPhotos = editing ? props.location.state.extraUrls : [];
+    const description = editing ? props.location.state.description : "";
+    const id = editing ? props.location.state.iDListing : "";
     const listingsRef = firestore.collection('listings'); // reference to the listings collection
 
     // the fields of a listing
     const [user] = useAuthState(auth);
     const [values, setValues] = useState({
-        name: "",
-        price: "",
-        images: [],
-        description: "",
+        name: name,
+        price: price,
+        images: url.concat(extraPhotos),
+        description: description,
     })
     const [emptyValues, setEmptyValues] = useState({
         name: false,
@@ -88,9 +96,12 @@ function Upload() {
         images: false,
         description: false,
     })
-    index = 0
+    const [startIndex, setStartIndex] = useState(values.images.length)
+    index = values.images.length
+
 
     const [uploading, setUploading] = useState(false)
+    const [disableUpload, setDisableUpload] = useState(index > 5)
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
@@ -118,6 +129,7 @@ function Upload() {
         }
 
         index += 1
+        setDisableUpload(index > 5)
     }
 
     // generates random alphanumeric file name of length 25
@@ -188,7 +200,22 @@ function Upload() {
                 () => {
                     storage.ref('images').child(fileName + fileExtension).getDownloadURL().then(url => {
 
-                        if (lastImage) {
+                        if (firstImage && lastImage) {
+                            listingsRef.add({
+                                name: values.name,
+                                description: values.description,
+                                price: values.price,
+                                imgUrl: url,
+                                seller: user.uid,
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                likedBy: [user.uid],
+                                interestedUsers: "",
+                                allPhotos: imageUrls
+                            }).then(() => {
+                                console.log('product submitted. redirecting...');
+                                history.push("/")
+                            });
+                        } else if (lastImage) {
                             imageUrls.push(url)
                             listingsRef.add({
                                 name: values.name,
@@ -205,7 +232,7 @@ function Upload() {
                                 history.push("/")
                             });
                         } else if (firstImage) {
-                            primaryUrl = url
+                            primaryUrl = url;
                         } else {
                             imageUrls.push(url)
                         }
@@ -214,13 +241,75 @@ function Upload() {
         }
 
 
+
+        async function updateListing(image, firstImage, lastImage, noImage) {
+            const editingListingsRef = firestore.collection('listings').doc(id);
+
+            if (noImage) {
+                await editingListingsRef.update({
+                    name: values.name,
+                    description: values.description,
+                    price: values.price,
+                })
+                console.log("listing updated")
+                history.push("/")
+                return;
+            }
+
+            let fileName = generateFileName();
+
+            let fileExtension = getFileExtension(image);
+
+            const uploadImg =  storage.ref('images/' + fileName + fileExtension).put(image);
+            await uploadImg.on("state_changed", snapshot => {
+                }, error => {
+                    console.log(error);
+                },
+                () => {
+                    storage.ref('images').child(fileName + fileExtension).getDownloadURL().then(url => {
+
+                        if (lastImage) {
+                            imageUrls.push(url)
+                            editingListingsRef.update({
+                                name: values.name,
+                                description: values.description,
+                                price: values.price,
+                                allPhotos: imageUrls
+                            }).then(() => {
+                                console.log('product submitted. redirecting...');
+                                history.push("/")
+                            });
+                        } else if (firstImage) {
+                            primaryUrl = url
+                        } else {
+                            imageUrls.push(url)
+                        }
+                    });
+                });
+        }
+
         let primaryUrl = null;
         let imageUrls = []
+
+        if (editing) {
+            if (index === startIndex) {
+                updateListing(null, false, false, true)
+            } else {
+                imageUrls = values.images.slice(1, startIndex)
+                for (let i = startIndex; i < index; ++i) {
+                    if (i === index - 1) { // Last photo to upload
+                        updateListing(values.images[i], false, true, false)
+                    } else {
+                        updateListing(values.images[i], false, false, false)
+                    }
+                }
+            }
+        } else {
 
         let counter = 0
         for (const image of values.images) {
             if (values.images.length === 1) {
-                uploadImage(image, true, false)
+                uploadImage(image, true, true)
             }
             else if (counter === 0) {
                 uploadImage(image, true, false)
@@ -234,6 +323,7 @@ function Upload() {
             }
             counter += 1
         }
+}
 
     }
 
@@ -242,7 +332,9 @@ function Upload() {
         for (let i = 0; i < 6; ++i) {
             printImages.push(
             <Grid item>
-                <img id={`image_output_${i}`} src={uploadVec} alt="brand logo" width={175} height={175}
+                <img id={`image_output_${i}`} src={ typeof values.images[i] === "object" ? document.getElementById(`image_output_${i}`).src
+                     : (values.images[i] !== undefined ? values.images[i] : uploadVec)
+                } alt="brand logo" width={175} height={175}
                   className={classes.media}/>
             </Grid>
         )
@@ -309,6 +401,7 @@ function Upload() {
                             <Box textAlign="center" alignItems="center"
                                  p={1} m={1}>
                                 <Button
+                                    disabled={disableUpload}
                                     id="upload_button"
                                     variant="outlined"
                                     component="label"
@@ -371,7 +464,7 @@ function Upload() {
                                 disabled={uploading}
                                 variant="outlined"
                                 color="primary">
-                            {uploading ? "uploading" : "upload"}
+                            {editing ? (uploading ? "updating" : "update") : (uploading ? "uploading" : "upload")}
                         </Button>
                     </Grid>
                 </Grid>

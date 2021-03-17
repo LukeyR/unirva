@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 const firestore = firebase.firestore();
 
 function HomeListingCard(props) {
-    const {name, price, imgUrl, seller, description, likedBy} = props.listingObj
+    const {name, price, imgUrl, seller, description, likedBy, allPhotos} = props.listingObj
     const classes = useStyles();
     const history = useHistory();
     const [user] = useAuthState(auth);
@@ -107,13 +107,14 @@ function HomeListingCard(props) {
                 <Tooltip title={user && seller === user.uid ? "Edit your listing" : "Message seller"} >
                     <IconButton onClick={() => {user && seller === user.uid ?
                         history.push({
-                            pathname: "/EditProduct",
+                            pathname: "/Product",
                             state: {
                                 iDListing: props.iD,
                                 name: name,
                                 description: description,
                                 price: price,
                                 url: imgUrl,
+                                extraUrls: allPhotos,
                             },
                         })
                         : (user) ?

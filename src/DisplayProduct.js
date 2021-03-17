@@ -3,7 +3,8 @@ import firebase from './firebase';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
+import {Button} from "@material-ui/core";
 
 const firestore = firebase.firestore();
 
@@ -25,6 +26,8 @@ function DisplayProduct(props){
     }
     globalUserID = userID;
 
+    const history = useHistory();
+
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings').doc(id);
     var [document, loading] = useCollection(listingsRef);
@@ -41,8 +44,25 @@ function DisplayProduct(props){
     var sold = false;
     var listingExtraUrls = []
 
+
+
+    var userRef = firestore.collection('users').where("ID", "==", listingSeller);
+    var [trueSeller, loadingSeller] = useCollection(userRef);
+    var SellerID;
+    if(!loadingSeller) {
+        trueSeller.forEach(seller => {
+            userName = seller.data().Name;
+            SellerID = seller.data().ID;
+            sellerID = SellerID;
+        })
+    }
+
     if(!loading){
         myListing = document.data();
+        if (myListing === undefined) {
+            history.push("/")
+            return (<></>)
+        }
         listingName = myListing.name;
         listingDes = myListing.description;
         listingSeller = myListing.seller;
@@ -57,17 +77,6 @@ function DisplayProduct(props){
         console.log("Still loading");
     }
 
-    var userRef = firestore.collection('users').where("ID", "==", listingSeller);
-    var [trueSeller, loadingSeller] = useCollection(userRef);
-    var SellerID;
-    if(!loadingSeller) {
-        trueSeller.forEach(seller => {
-            userName = seller.data().Name;
-            SellerID = seller.data().ID;
-            sellerID = SellerID;
-        })
-    }
-
     if(listingSeller == userID) {
         msg = "Edit details";
         gotoSeller = "Goto My Profile"
@@ -79,7 +88,8 @@ function DisplayProduct(props){
             name: listingName,
             description: listingDes,
             price: listingPrice,
-            url: listingUrl
+            url: listingUrl,
+            extraUrls: listingExtraUrls,
         }
         state = [{
             targetUserID: SellerID,
@@ -129,10 +139,14 @@ function DisplayProduct(props){
             <h1> { userName } </h1>
             <img src={listingUrl} alt='react logo' className='productImage' />
             {listingExtraUrls !== undefined && listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
-            <h1><Link to={{
-                pathname:path,
-                state:stateMyProduct
-            }}> <button>{msg}</button></Link></h1>
+            <div>
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                    history.push("/product", stateMyProduct)
+            }}>{msg}</Button>
+        </div>
             <h1><Link to={{
                 pathname:userPath,
                 state:state
