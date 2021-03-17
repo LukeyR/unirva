@@ -4,10 +4,9 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory} from 'react-router-dom';
-import {Button} from "@material-ui/core";
+import {Box, Button, Dialog, DialogTitle, GridList, GridListTile, Paper, Typography} from "@material-ui/core";
 
 const firestore = firebase.firestore();
-
 
 var globalID = null;
 var globalUserID = null;
@@ -44,25 +43,7 @@ function DisplayProduct(props){
     var sold = false;
     var listingExtraUrls = []
 
-
-
-    var userRef = firestore.collection('users').where("ID", "==", listingSeller);
-    var [trueSeller, loadingSeller] = useCollection(userRef);
-    var SellerID;
-    if(!loadingSeller) {
-        trueSeller.forEach(seller => {
-            userName = seller.data().Name;
-            SellerID = seller.data().ID;
-            sellerID = SellerID;
-        })
-    }
-
-    if(!loading){
-        myListing = document.data();
-        if (myListing === undefined) {
-            history.push("/")
-            return (<></>)
-        }
+    if(!loading && (myListing = document.data()) !== undefined){
         listingName = myListing.name;
         listingDes = myListing.description;
         listingSeller = myListing.seller;
@@ -76,6 +57,18 @@ function DisplayProduct(props){
     } else {
         console.log("Still loading");
     }
+
+    var userRef = firestore.collection('users').where("ID", "==", listingSeller);
+    var [trueSeller, loadingSeller] = useCollection(userRef);
+    var SellerID;
+    if(!loadingSeller) {
+        trueSeller.forEach(seller => {
+            userName = seller.data().Name;
+            SellerID = seller.data().ID;
+            sellerID = SellerID;
+        })
+    }
+
 
     if(listingSeller == userID) {
         msg = "Edit details";
@@ -131,11 +124,40 @@ function DisplayProduct(props){
         })
     }
 
+    function SimpleDialog(props) {
+        const { onClose, selectedValue, open } = props;
+
+        const handleClose = () => {
+            onClose(selectedValue);
+        };
+
+
+        return (
+            <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
+                <Box justifyContent="center" m={1} p={1}>
+                <img src={listingUrl} alt='react logo' className='productImage' />
+                </Box>
+            </Dialog>
+        );
+    }
+
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(listingUrl);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (value) => {
+        setOpen(false);
+        setSelectedValue(value);
+    };
+
     return (
         <div>
             <h1>{ listingName }</h1>
             <h1> { listingPrice } </h1>
-            <h1> { listingDes} </h1>
+            <Paper><Typography style={{whiteSpace: 'pre-line'}}> { listingDes} </Typography></Paper>
             <h1> { userName } </h1>
             <img src={listingUrl} alt='react logo' className='productImage' />
             {listingExtraUrls !== undefined && listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
@@ -147,6 +169,7 @@ function DisplayProduct(props){
                     history.push("/product", stateMyProduct)
             }}>{msg}</Button>
         </div>
+
             <h1><Link to={{
                 pathname:userPath,
                 state:state

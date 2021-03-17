@@ -9,13 +9,16 @@ import {
     FormControl,
     Grid,
     InputAdornment,
-    InputLabel,
+    InputLabel, LinearProgress,
     OutlinedInput,
     SvgIcon,
     TextField
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import uploadVec from "./img/uploadTemplate.svg";
+import {CheckOutlined, ClearOutlined, DeleteOutlined, PublishOutlined, Update} from "@material-ui/icons";
+import red from '@material-ui/core/colors/red';
+import green from '@material-ui/core/colors/green';
 
 //Tried to make it nicer
 
@@ -38,6 +41,14 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         justifyContent: 'center',
         objectFit: "cover",
+    },
+    noButton: {
+      color: theme.palette.action.disabled,
+      borderColor: theme.palette.action.disabled,
+    },
+    yesButton: {
+        color: red[200],
+        borderColor: red[200],
     },
 }));
 
@@ -102,6 +113,8 @@ function Upload(props) {
 
     const [uploading, setUploading] = useState(false)
     const [disableUpload, setDisableUpload] = useState(index > 5)
+    const [areYouSure, setAreYouSure] = useState(false)
+    const [loadingBar, setLoadingBar] = useState("0")
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
@@ -184,6 +197,8 @@ function Upload(props) {
             return;
         }
 
+        setLoadingBar("100")
+
         setUploading(true)
 
         async function uploadImage(image, firstImage, lastImage) {
@@ -192,7 +207,7 @@ function Upload(props) {
 
             let fileExtension = getFileExtension(image);
 
-             const uploadImg =  storage.ref('images/' + fileName + fileExtension).put(image);
+            const uploadImg = storage.ref('images/' + fileName + fileExtension).put(image);
             await uploadImg.on("state_changed", snapshot => {
                 }, error => {
                     console.log(error);
@@ -212,6 +227,8 @@ function Upload(props) {
                                 interestedUsers: "",
                                 allPhotos: imageUrls
                             }).then(() => {
+                                //TODO
+                                //  Snackbar success
                                 console.log('product submitted. redirecting...');
                                 history.push("/")
                             });
@@ -241,7 +258,6 @@ function Upload(props) {
         }
 
 
-
         async function updateListing(image, firstImage, lastImage, noImage) {
             const editingListingsRef = firestore.collection('listings').doc(id);
 
@@ -260,7 +276,7 @@ function Upload(props) {
 
             let fileExtension = getFileExtension(image);
 
-            const uploadImg =  storage.ref('images/' + fileName + fileExtension).put(image);
+            const uploadImg = storage.ref('images/' + fileName + fileExtension).put(image);
             await uploadImg.on("state_changed", snapshot => {
                 }, error => {
                     console.log(error);
@@ -306,42 +322,63 @@ function Upload(props) {
             }
         } else {
 
-        let counter = 0
-        for (const image of values.images) {
-            if (values.images.length === 1) {
-                uploadImage(image, true, true)
+            let counter = 0
+            for (const image of values.images) {
+                if (values.images.length === 1) {
+                    await uploadImage(image, true, true)
+                } else if (counter === 0) {
+                    await uploadImage(image, true, false)
+
+                } else if (counter === values.images.length - 1) {
+                    await uploadImage(image, false, true)
+
+                } else {
+                    await uploadImage(image, false, false)
+
+                }
+                counter += 1
             }
-            else if (counter === 0) {
-                uploadImage(image, true, false)
-
-            } else if (counter === values.images.length - 1) {
-                uploadImage(image, false, true)
-
-            } else {
-                uploadImage(image, false, false)
-
-            }
-            counter += 1
         }
-}
 
     }
 
-        let printImages = []
+    console.log(values.description)
 
-        for (let i = 0; i < 6; ++i) {
-            printImages.push(
+    const getImageName = (url) => {
+        let baseUrl = 'https://firebasestorage.googleapis.com/v0/b/ipproject-27ae8.appspot.com/o/images%2F';
+        let imageName = url.replace(baseUrl, '');
+        let indexOfEnd = imageName.indexOf('?');
+        imageName = imageName.substring(0, indexOfEnd);
+        console.log(imageName)
+        return imageName
+    }
+
+    async function deleteListing() {
+        for (const image of values.images) {
+            const imageName = getImageName(image)
+            await storage.ref("images").child(imageName).delete()
+        }
+        await listingsRef.doc(id).delete().then(() => {
+            history.push("/")
+        })
+    }
+
+    let printImages = []
+
+    for (let i = 0; i < 6; ++i) {
+        printImages.push(
             <Grid item>
-                <img id={`image_output_${i}`} src={ typeof values.images[i] === "object" ? document.getElementById(`image_output_${i}`).src
-                     : (values.images[i] !== undefined ? values.images[i] : uploadVec)
-                } alt="brand logo" width={175} height={175}
-                  className={classes.media}/>
+                <img id={`image_output_${i}`}
+                     src={typeof values.images[i] === "object" && values.images[i] !== null ? document.getElementById(`image_output_${i}`).src
+                         : (values.images[i] !== undefined ? values.images[i] : uploadVec)
+                     } alt="brand logo" width={175} height={175}
+                     className={classes.media}/>
             </Grid>
         )
-        }
+    }
 
 
-    // the main form
+    // the mai form
     return (
         // <form className = 'form' onSubmit={submitForm}>
         //     <label className='label1'>Name: </label><input className="input" type="text" value={nameVal} onChange={(e) => setFormValue(e.target.value)}/>
@@ -402,6 +439,7 @@ function Upload(props) {
                                  p={1} m={1}>
                                 <Button
                                     disabled={disableUpload}
+                                    startIcon={<PublishOutlined/>}
                                     id="upload_button"
                                     variant="outlined"
                                     component="label"
@@ -450,6 +488,9 @@ function Upload(props) {
                             onChange={handleChange("description")}
                         />
                     </Grid>
+                    <LinearProgress style={{width: `${loadingBar}%`}} color="secondary" />
+
+
                     <Grid container
                           spacing={0}
                           direction="row"
@@ -462,11 +503,52 @@ function Upload(props) {
                             submitForm().then()
                         }}
                                 disabled={uploading}
+                                startIcon={<Update/>}
                                 variant="outlined"
                                 color="primary">
                             {editing ? (uploading ? "updating" : "update") : (uploading ? "uploading" : "upload")}
                         </Button>
-                    </Grid>
+                    </Grid><Grid container
+                                 spacing={0}
+                                 direction="row"
+                                 alignItems="center"
+                                 justify="center"
+                                 item
+                                 xs={12}
+
+                >
+                    {areYouSure ? (
+                        <>
+                            <Box m={1}>
+                                <Button onClick={() => {
+                                    setAreYouSure(false)
+                                }}
+                                        startIcon={<ClearOutlined/>}
+                                        variant="outlined"
+                                        className={classes.noButton}>
+                                    No
+                                </Button>
+                            </Box>
+                            <Box m={1}>
+                                <Button onClick={() => {
+                                    deleteListing().then()
+                                }}
+                                        startIcon={<CheckOutlined/>}
+                                        variant="outlined"
+                                        color="primary">
+
+                                    Yes
+                                </Button>
+                            </Box>
+                        </>) : (editing ? <Button onClick={() => {
+                        setAreYouSure(true)
+                    }}
+                                                  startIcon={<DeleteOutlined />}
+                                                  variant="outlined"
+                                                  className={classes.yesButton}>
+                        Delete
+                    </Button> : <></>)}
+                </Grid>
                 </Grid>
             </Box>
         </>
