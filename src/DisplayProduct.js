@@ -120,7 +120,7 @@ function DisplayProduct(props){
             interestedUsers: newVal
         })
     }
-    console.log(globalUserID, sellerID);
+
     return (
         <div>
             <h1>{ listingName }</h1>
@@ -128,7 +128,7 @@ function DisplayProduct(props){
             <h1> { listingDes} </h1>
             <h1> { userName } </h1>
             <img src={listingUrl} alt='react logo' className='productImage' />
-            {listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
+            {listingExtraUrls !== undefined && listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
             <h1><Link to={{
                 pathname:path,
                 state:stateMyProduct

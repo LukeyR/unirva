@@ -190,8 +190,6 @@ function Upload() {
 
                         if (lastImage) {
                             imageUrls.push(url)
-                            console.log(imageUrls)
-                            console.log(primaryUrl)
                             listingsRef.add({
                                 name: values.name,
                                 description: values.description,
@@ -221,7 +219,6 @@ function Upload() {
 
         let counter = 0
         for (const image of values.images) {
-            console.log(image)
             if (values.images.length === 1) {
                 uploadImage(image, true, false)
             }
@@ -240,17 +237,17 @@ function Upload() {
 
     }
 
-    // const UploadButton = () => {
-    //     const [uploadUrl, setUploadUrl] = useState(null);
-    //
-    //     useItemStartListener(item => {
-    //         console.log(`item ${item.id} started uploading. file name ${item.file.name}`)
-    //     })
-    //
-    //     useItemFinishListener(item => {
-    //         console.log(`item ${item.id} finished. response = ${item.uploadResponse}`)
-    //     })
-    // }
+        let printImages = []
+
+        for (let i = 0; i < 6; ++i) {
+            printImages.push(
+            <Grid item>
+                <img id={`image_output_${i}`} src={uploadVec} alt="brand logo" width={175} height={175}
+                  className={classes.media}/>
+            </Grid>
+        )
+        }
+
 
     // the main form
     return (
@@ -287,7 +284,7 @@ function Upload() {
                         />
                     </Grid>
                     <Grid item xs={12} sm={3}>
-                        <FormControl fullWidth className={classes.margin} variant="outlined"
+                        <FormControl fullWidth required className={classes.margin} variant="outlined"
                                      error={emptyValues.price}>
                             <InputLabel htmlFor="standard-adornment-amount">Price</InputLabel>
                             <OutlinedInput
@@ -295,7 +292,7 @@ function Upload() {
                                 value={values.price}
                                 type="number"
                                 startAdornment={<InputAdornment position="start">£</InputAdornment>}
-                                labelWidth={37}
+                                labelWidth={50}
                                 onChange={handleChange("price")}
                             />
                         </FormControl>
@@ -332,36 +329,15 @@ function Upload() {
                         </Grid>
                     </Grid>
                     <Grid container
+                          spacing={1}
                           direction="row"
                           alignItems="center"
                           justify="space-evenly"
                           item
                           xs={12} md={9} lg={10}
                     >
-                        <Grid item>
-                            <img id="image_output_0" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
-                        <Grid item>
-                            <img id="image_output_1" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
-                        <Grid item>
-                            <img id="image_output_2" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
-                        <Grid item>
-                            <img id="image_output_3" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
-                        <Grid item>
-                            <img id="image_output_4" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
-                        <Grid item>
-                            <img id="image_output_5" src={uploadVec} alt="brand logo" width={175} height={175}
-                                 className={classes.media}/>
-                        </Grid>
+                        {printImages}
+
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
@@ -370,7 +346,7 @@ function Upload() {
                             multiline
                             error={emptyValues.description}
                             value={values.description}
-                            rows={3}
+                            rows={5}
                             rowsMax={13}
                             id="Product-Description"
                             label="Product Description"
