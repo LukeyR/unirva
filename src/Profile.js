@@ -51,12 +51,13 @@ const Profile = (theme) => {
     var targetName = null;
     var targetUni = null;
     var targetLastName = null;
-    if(location.state!= null){
+    if(location.state){
         profileID = location.state.targetUserID;
         currentUserID = location.state.currentUserID;
     }
     else{
         profileID = user.uid;
+
         targetName = user.displayName;
         targetLastName = "";
     }
@@ -132,6 +133,7 @@ const Profile = (theme) => {
             </Grid>
         )
     }
+    console.log(targetName, targetLastName)
     var displayInfo = targetName + " " + targetLastName;
     var uni = targetUni;
     return(
