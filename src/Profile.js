@@ -50,8 +50,8 @@ const Profile = (theme) => {
     var targetUni = null;
     var targetLastName = null;
     if(location.state!= null){
-        profileID = location.state[0].targetUserID;
-        currentUserID = location.state[0].currentUserID;
+        profileID = location.state.targetUserID;
+        currentUserID = location.state.currentUserID;
     }
     else{
         profileID = user.uid;
