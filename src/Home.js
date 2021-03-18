@@ -12,14 +12,20 @@ import {
     ListItemText,
     MenuItem,
     Menu,
-    makeStyles, Typography
+    makeStyles, Typography, Card, Divider, Tooltip, IconButton, Grow, CardMedia, CardContent
 } from "@material-ui/core";
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import HomeListingCard from "./listingCard";
 import Favourites from "./Favourites";
+import Skeleton from '@material-ui/lab/Skeleton';
+import {Chat, Edit, Favorite, FavoriteBorder} from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => (
     {
+        root: {
+            width: "300px",
+            margin: theme.spacing(2),
+        },
         list: {
             maxWidth: "300px"
         },
@@ -31,7 +37,21 @@ const useStyles = makeStyles((theme) => (
             justifyContent: "flex-end",
             marginRight: "30px",
             alignItems: "center",
-        }
+        },
+        media: {
+            height: 200
+        },
+        title_price: {
+            display: "flex",
+            justifyContent: "flex-start",
+        },
+        icons: {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
+        icon: {
+            margin: "5px",
+        },
 }));
 
 const firestore = firebase.firestore();
@@ -47,7 +67,6 @@ const options = [
     "Price: High - Low",
     "Price: Low - High",
 ];
-
 
 function Home() {
     // Getting the listings from the database.
@@ -173,6 +192,33 @@ function Home() {
 
     }
 
+    let emptyCards = []
+
+    for (let i = 0; i < 8; ++i) {
+        emptyCards.push(<>
+            <Card className={classes.root}>
+                <CardMedia>
+                <Skeleton animation="wave" variant="rect" className={classes.media} />
+                </CardMedia>
+                <CardContent>
+                    <div className={classes.title_price}>
+                        <Skeleton animation="wave" height={28} width="80%" style={{ marginBottom: 6}} />
+                        <Skeleton animation="wave" height={28} width="15%" style={{ marginBottom: 6, marginLeft: 40,}} />
+
+                    </div>
+                <Divider variant="middle"/>
+                <Skeleton animation="wave" height={10} style={{ marginBottom: 6,  marginTop: 6}}/>
+                <Skeleton animation="wave" height={10}/>
+                <Skeleton animation="wave" height={10} width="65%" style={{ marginBottom: 6,  marginTop: 6}}/>
+                    <div className={classes.icons}>
+                        <Skeleton variant="circle" width={40} height={40} className={classes.icon}/>
+                        <Skeleton variant="circle" width={40} height={40} className={classes.icon}/>
+                    </div>
+                </CardContent>
+            </Card>
+        </>)
+    }
+
     return (
         <div>
             <div style={{textAlign: "center"}}>
@@ -220,11 +266,11 @@ function Home() {
             </div>
 
 
-            {!loading ?
-                (
+
                     <Box p={1} m={1}>
                         <Grid container justify="center" spacing={4}>
-                            {(showNew || showOld) ?
+                            {!loading ?
+                            ((showNew || showOld) ?
                                 ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
                                     getListingCard(listingObj, docsID[index])
                                 ))
@@ -232,12 +278,12 @@ function Home() {
                                 ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
                                     getListingCard(listingObj, docsID[index])
                                 ))
-                            }
 
+
+                             ): emptyCards
+                            }
                         </Grid>
                     </Box>
-                ) : <h1>Listings Loading...</h1>
-            }
         </div>
     )
 }

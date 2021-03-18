@@ -1,4 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="306" height="162" viewBox="0 0 306 162">
-  <text id="Brand_logo" data-name="Brand
-logo" fill="#707070" font-size="60" font-family="Roboto-Thin, Roboto" font-weight="200"><tspan x="78.454" y="63">brand</tspan><tspan x="97.351" y="142">logo</tspan></text>
+<svg width="86" height="65" viewBox="0 0 86 65" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect y="19" width="16" height="45" fill="#6FCF97"/>
+    <rect x="19" y="19" width="16" height="45" fill="#BB6BD9"/>
+    <rect x="38" y="19" width="16" height="45" fill="#F2C94C"/>
+    <rect x="59.7728" y="20.127" width="16" height="45" transform="rotate(-12.8225 59.7728 20.127)" fill="#EB5757"/>
+    <rect y="2" width="16" height="9" fill="#6FCF97"/>
+    <rect x="19" y="2" width="16" height="9" fill="#BB6BD9"/>
+    <rect x="38" y="2" width="16" height="9" fill="#F2C94C"/>
+    <rect x="56" y="3.5509" width="16" height="9" transform="rotate(-12.8225 56 3.5509)" fill="#EB5757"/>
+    <rect y="13" width="16" height="4" fill="#6FCF97"/>
+    <rect x="19" y="13" width="16" height="4" fill="#BB6BD9"/>
+    <rect x="38" y="13" width="16" height="4" fill="#F2C94C"/>
+    <rect x="58.4412" y="14.2766" width="16" height="4" transform="rotate(-12.8225 58.4412 14.2766)" fill="#EB5757"/>
 </svg>
