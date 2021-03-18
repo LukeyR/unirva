@@ -68,10 +68,10 @@ function DisplayProduct(props){
 
     if(listingSeller == userID) {
         msg = "Edit details";
-        gotoSeller = "Goto My Profile";
+        gotoSeller = "Goto My Profile"
         match = true;
-        path = "/EditProduct";
-        userPath = "/Profile";
+        path = "/EditProduct"
+        userPath = "/Profile"
         stateMyProduct = {
             iDListing: id,
             name: listingName,

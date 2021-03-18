@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
 const Profile = (theme) => {
     const history = useHistory();
     const [user] = useAuthState(auth);
-    const location = useLocation();
-    console.log(location);
     const classes = useStyles();
+
+    const location = useLocation();
     var currentUserID = null;
     var targetName = null;
     var targetUni = null;
@@ -79,7 +79,7 @@ const Profile = (theme) => {
     if(!loadingUser){
         current.forEach(usr => {
             currentName = usr.Name;
-            
+
             if(profileID == user.uid){
                 targetName = usr.Name;
                 targetLastName = usr.LastName;
@@ -142,16 +142,16 @@ const Profile = (theme) => {
                         </Avatar>
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
-                        <p> 
+                        <p>
                             {profileID == user.uid ?
-                            <InterestedBuyers/>
-                            :
-                            <></>}
+                                <InterestedBuyers/>
+                                :
+                                <></>}
                             <h1>Review Score</h1>
                             <DisplayReview/>
                             <h1>Leave a review for this seller</h1>
                             {matchedSeller ?
-                            <div>    
+                            <div>
                                 <AddReview option={0}></AddReview>
                             </div>
                             :
@@ -170,7 +170,7 @@ const Profile = (theme) => {
                             }
                             <h1>Leave a review for this buyer</h1>
                             {matchedBuyer ?
-                            <div>    
+                            <div>
                                 <AddReview option={1}></AddReview>
                             </div>
                             :
@@ -197,13 +197,14 @@ const Profile = (theme) => {
             <div className="listings">
                 {user ?
                     <Box p={1} m={1}>
-                    <Grid container justify="center" spacing={4}>
-                        {listings.map((listingObj, index) =>
-                            getListingCard(listingObj, docsID[index])
-                        )}
-                    </Grid>
+                        <Grid container justify="center" spacing={4}>
+                            {listings.map((listingObj, index) =>
+                                getListingCard(listingObj, docsID[index])
+                            )}
+                        </Grid>
                     </Box>
-                :
+
+                    :
                     <p>User has no listings</p>
                 }
             </div>
@@ -221,13 +222,13 @@ function CheckMatchSeller(){
     // We need to count how many reviews this user (userID) left for profileID
     var reviewRef = firestore.collection('reviewsForSellers').where("target", "==", profileID).where("senderID", "==", userID);
     var [reviews, loading] = useCollectionData(reviewRef);
-    
+
     if(salesDone == 0) return false;
-    
+
     if(!loading){
         if(reviews.length != 0) alreadyLeftReviewSeller = true;
         return reviews.length != salesDone
-    } 
+    }
 
     return false;
 
@@ -242,9 +243,9 @@ function CheckMatchBuyer(){
     // We need to count how many reviews this user (userID) left for profileID
     var reviewRef = firestore.collection('reviewsForBuyers').where("target", "==", profileID).where("senderID", "==", userID);
     var [reviews, loading] = useCollectionData(reviewRef);
-    
+
     if(salesDone == 0) return false;
-    
+
     if(!loading){
         if(reviews.length != 0) alreadyLeftReviewBuyer = true;
         return reviews.length != salesDone
