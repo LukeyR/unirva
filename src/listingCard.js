@@ -30,6 +30,9 @@ const useStyles = makeStyles({
 
 const firestore = firebase.firestore();
 
+//2.26
+//3.1+
+
 function HomeListingCard(props) {
     const {name, price, imgUrl, seller, description, likedBy, allPhotos} = props.listingObj
     const classes = useStyles();

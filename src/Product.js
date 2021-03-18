@@ -10,7 +10,7 @@ import {
     Grid,
     InputAdornment,
     InputLabel, LinearProgress,
-    OutlinedInput,
+    OutlinedInput, Paper,
     SvgIcon,
     TextField
 } from "@material-ui/core";
@@ -393,6 +393,8 @@ function Upload(props) {
                 p={1} m={1}
                 className={classes.container}
             >
+                <Paper>
+                    <Box p={3}>
                 <Grid container
                       spacing={3}
                 >
@@ -549,6 +551,8 @@ function Upload(props) {
                     </Button> : <></>)}
                 </Grid>
                 </Grid>
+                    </Box>
+                </Paper>
             </Box>
         </>
     )
