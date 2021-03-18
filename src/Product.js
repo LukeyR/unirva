@@ -435,8 +435,7 @@ function Upload(props) {
                           xs={12} md={3} lg={2}
                     >
                         <Grid item>
-                            <Box textAlign="center" alignItems="center"
-                                 p={1} m={1}>
+                            <Box textAlign="center" alignItems="center">
                                 <Button
                                     disabled={disableUpload}
                                     startIcon={<PublishOutlined/>}
