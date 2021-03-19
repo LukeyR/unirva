@@ -51,9 +51,10 @@ const Profile = (theme) => {
     var targetName = null;
     var targetUni = null;
     var targetLastName = null;
+    //console.log(location.state);
     if(location.state){
-        profileID = location.state.targetUserID;
-        currentUserID = location.state.currentUserID;
+        profileID = location.state[0].targetUserID;
+        currentUserID = location.state[0].currentUserID;
     }
     else{
         profileID = user.uid;
@@ -63,6 +64,7 @@ const Profile = (theme) => {
     }
     userID = user.uid;
     // Getting the listings from the database.
+    console.log(profileID, currentUserID, userID);
     const listingsRef = firestore.collection('listings');
     var userOffersSeller = firestore.collection('users/' + profileID + '/AcceptedOffers').where("buyerID", "==", userID);
     var userOffersBuyer = firestore.collection('users/' + userID + '/AcceptedOffers').where("buyerID", "==", profileID);
