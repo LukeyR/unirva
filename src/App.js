@@ -4,18 +4,15 @@ import Product from './Product';
 import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
-import Register from './authentication/Register';
 import {Route, useLocation} from 'react-router-dom';
-
 import Search from './search'
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
 import Menu from "./authentication/Menu";
 import Logout from "./authentication/Logout";
-import SignIn from './authentication/SignIn';
 import SellerProfile from "./SellerProfile";
 import {AuthProvider} from './Auth';
-import {auth} from "./firebase";
+import firebase, {auth} from "./firebase";
 import {useAuthState} from 'react-firebase-hooks/auth';
 import DisplayProduct from './DisplayProduct';
 import EditProduct from "./EditProduct";
@@ -26,11 +23,11 @@ import {deepOrange, orange} from "@material-ui/core/colors";
 import lightBlue from "@material-ui/core/colors/lightBlue";
 import pink from "@material-ui/core/colors/pink";
 import {useDocumentData} from "react-firebase-hooks/firestore";
-import firebase from "./firebase";
 import Favourites from "./Favourites";
+import SignUp from "./authentication/signup"
+import LogIn from "./authentication/login"
 
-const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product"]
-
+const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat"]
 
 
 function HideFooter() {
@@ -56,7 +53,7 @@ function App() {
     const [user] = useAuthState(auth);
 
 
-    const lightTheme = () =>({
+    const lightTheme = () => ({
         palette: {
             type: "light",
             primary: {
@@ -73,23 +70,23 @@ function App() {
 
 
     const darkTheme = () => ({
-            palette: {
-                type: "dark",
-                primary: {
-                    main: orange[500],
-                },
-                secondary: {
-                    main: deepOrange[500],
-                },
-                background: {
-                    paper2: "#6d6d6d",
-                }
+        palette: {
+            type: "dark",
+            primary: {
+                main: orange[500],
             },
+            secondary: {
+                main: deepOrange[500],
+            },
+            background: {
+                paper2: "#6d6d6d",
+            }
+        },
     });
 
     let userID = null;
     let userDocRef = null;
-    if(user) {
+    if (user) {
         userID = user.uid;
         const usersRef = firestore.collection("users");
         userDocRef = usersRef.doc(userID)
@@ -115,13 +112,13 @@ function App() {
                     <Route exact path="/Favourites" component={Favourites}/>
                     <Route exact path="/search:results" component={Search}/>
                     <Route exact path="/DisplayProduct" component={DisplayProduct}/>
-                    <Route exact path="/SignIn" component={SignIn}/>
-                    <Route exact path="/Register" component={Register}/>
+                    <Route exact path="/LogIn" component={LogIn}/>
+                    <Route exact path="/signup" component={SignUp}/>
                     <Route exact path="/EditProduct" component={EditProduct}/>
                     <Route exact path="/ChatRoom" component={ChatRoom}/>
                     <Route exact path="/Logout" component={Logout}/>
                     <Route exact path="/signout" component={Logout}/>
-                    <Route exact path="/SellerProfile" component={SellerProfile} />
+                    <Route exact path="/SellerProfile" component={SellerProfile}/>
                     {location.pathname === "/" ? <Home/> : <></>}
                     {HideFooter()}
                 </div>

@@ -20,7 +20,7 @@ const Header = () => {
     const classes = useStyles();
 
     return (
-        <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
+        <Card className={classes.root} variant="contained"> {/*Need outline as we remove border in css*/}
             <CardContent>
                 <CardMedia className={classes.media} image={brandLogo} title="Brand Logo"/>
             </CardContent>

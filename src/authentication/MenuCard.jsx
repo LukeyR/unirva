@@ -1,5 +1,15 @@
 import React from "react";
-import {Button, ButtonGroup, Card, CardActions, CardContent, CardMedia, SvgIcon, Typography,} from "@material-ui/core";
+import {
+    Button,
+    ButtonGroup,
+    Card,
+    CardActionArea,
+    CardActions,
+    CardContent,
+    CardMedia,
+    SvgIcon,
+    Typography,
+} from "@material-ui/core";
 import brandLogo from "../img/Brandlogo.svg";
 import {ReactComponent as GoogleLogo} from "../img/google_g_logo.svg";
 import "./Menu.css"
@@ -38,7 +48,7 @@ function SignIn() {
     }
 
     return (
-        <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
+        <Card className={classes.root} variant="contained" style={{height: 575}}> {/*Need outline as we remove border in css*/}
         <div style={{ display:'flex', justifyContent:'center' }}>
             <CardContent className={classes.cardActions}>
                 <BrandLogo />
@@ -49,7 +59,7 @@ function SignIn() {
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                        history.push("./signin")
+                        history.push("./login")
                     }} className={classes.button} style={{marginBottom: -12.5}}>
                         Log In
                     </Button>
@@ -84,8 +94,9 @@ function SignIn() {
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                        history.push("./register")
-                    }} className={classes.button}>
+                        history.push("./signup")
+                    }} className={classes.button}
+                    >
                         Register
                     </Button>
                 </ButtonGroup>
@@ -100,7 +111,7 @@ function SignOut() {
     const history = useHistory();
 
     return (
-        <Card className={classes.root} variant="outlined"> {/*Need outline as we remove border in css*/}
+        <Card className={classes.root} variant="contained" style={{height: 575}}> {/*Need outline as we remove border in css*/}
 
             <CardContent className={classes.cardActions}>
                 <BrandLogo />
