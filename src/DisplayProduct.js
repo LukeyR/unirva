@@ -116,7 +116,7 @@ function DisplayProduct(props) {
         msg = "Edit details";
         gotoSeller = "Goto My Profile"
         match = true;
-        path = "/EditProduct"
+        path = "/product"
         userPath = "/Profile"
         stateMyProduct = {
             iDListing: id,
@@ -141,10 +141,10 @@ function DisplayProduct(props) {
             targetUserID: SellerID,
             myUID: userID
         }
-        state = {
+        state = [{
             targetUserID: SellerID,
             currentUserID: userID
-        }
+        }]
     }
 
     const updateInterested = () => {
@@ -331,7 +331,7 @@ function DisplayProduct(props) {
                                                         color="primary"
                                                         onClick={() => {
                                                             console.log(stateMyProduct)
-                                                                        history.push("/product", stateMyProduct)
+                                                                        history.push(path, stateMyProduct)
                                                                 }}
                                                     >
                                                         {msg}
@@ -351,6 +351,7 @@ function DisplayProduct(props) {
                                                         variant="outlined"
                                                         color="primary"
                                                         onClick={() => {
+                                                            console.log("Pushing from here");
                                                             history.push(userPath,
                                                                 state)
                                                         }}
