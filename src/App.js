@@ -63,7 +63,7 @@ function App() {
                 main: pink[500],
             },
             background: {
-                paper2: "#6d6d6d",
+                paper2: "#fff",
             }
         },
     });

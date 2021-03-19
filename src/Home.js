@@ -19,6 +19,8 @@ import HomeListingCard from "./listingCard";
 import Favourites from "./Favourites";
 import Skeleton from '@material-ui/lab/Skeleton';
 import {Chat, Edit, Favorite, FavoriteBorder} from "@material-ui/icons";
+import BrandLogo from "./BrandLogo";
+import brandLogo from "./img/Brandlogo.svg";
 
 const useStyles = makeStyles((theme) => (
     {
@@ -221,18 +223,22 @@ function Home() {
 
     return (
         <div>
-            <div style={{textAlign: "center"}}>
-                <h2>Categories</h2>
-                    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">
-                        <Button onClick={() => buttonClicked("A")}>A</Button>
-                        <Button onClick={() => buttonClicked("B")}>B</Button>
-                        <Button onClick={() => buttonClicked("C")}>C</Button>
-                        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>
-                    </ButtonGroup>
-                <h2>Listings in Bath</h2>
-                <h2>Sorting</h2>
-                <div className="sortingRow">
-
+            <Box display="flex" alignItems="center" justifyContent="center" style={{marginBottom: "-50px", marginTop: "-50px"}}>
+            <img src={brandLogo} alt="brand logo" width={40} height={40} className={classes.media}/>
+            <Typography variant="h2" style={{display: "inline", marginLeft: "15px", fontSize: "40px"}} color="textPrimary">
+                unirva
+            </Typography>
+            </Box>
+                {/*<h2>Categories</h2>*/}
+                {/*    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">*/}
+                {/*        <Button onClick={() => buttonClicked("A")}>A</Button>*/}
+                {/*        <Button onClick={() => buttonClicked("B")}>B</Button>*/}
+                {/*        <Button onClick={() => buttonClicked("C")}>C</Button>*/}
+                {/*        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>*/}
+                {/*    </ButtonGroup>*/}
+                {/*<h2>Listings in Bath</h2>*/}
+                {/*<h2>Sorting</h2>*/}
+            <Box className="sortingRow">
                         <div className={classes.sorting}>
                         <Typography display="inline" style={{marginRight: "10px"}}>
                             Sort By:
@@ -262,28 +268,27 @@ function Home() {
                             ))}
                         </Menu>
 
-                </div>
-            </div>
+                </Box>
 
 
 
-                    <Box p={1} m={1}>
-                        <Grid container justify="center" spacing={4}>
-                            {!loading ?
-                            ((showNew || showOld) ?
-                                ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
-                                ))
-                                :
-                                ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
-                                ))
+            <Box p={1} m={1}>
+                <Grid container justify="center" spacing={4}>
+                    {!loading ?
+                    ((showNew || showOld) ?
+                        ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                            getListingCard(listingObj, docsID[index])
+                        ))
+                        :
+                        ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                            getListingCard(listingObj, docsID[index])
+                        ))
 
 
-                             ): emptyCards
-                            }
-                        </Grid>
-                    </Box>
+                     ): emptyCards
+                    }
+                </Grid>
+            </Box>
         </div>
     )
 }

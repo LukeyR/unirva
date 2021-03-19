@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
         borderColor: red[200],
     },
     secondPaper: {
-        backgroundColor: "#5d5d5d",
+        backgroundColor: theme.palette.background.paper2,
     },
     emptyFrame: {
         width: "120px",
