@@ -12,7 +12,7 @@ import {
     ListItemText,
     MenuItem,
     Menu,
-    makeStyles, Typography, Card, Divider, Tooltip, IconButton, Grow, CardMedia, CardContent
+    makeStyles, Typography, Card, Divider, Tooltip, IconButton, Grow, CardMedia, CardContent, Snackbar
 } from "@material-ui/core";
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import HomeListingCard from "./listingCard";
@@ -21,6 +21,8 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import {Chat, Edit, Favorite, FavoriteBorder} from "@material-ui/icons";
 import BrandLogo from "./BrandLogo";
 import brandLogo from "./img/Brandlogo.svg";
+import {useLocation} from "react-router-dom";
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => (
     {
@@ -82,6 +84,29 @@ function Home() {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const location = useLocation();
+
+    const [successShown, setSuccessShown] = useState(false);
+    const [open, setOpen] = useState(!successShown && location.state && location.state.successful);
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    console.log(location.state)
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSuccessShown(false)
+        if (location.state && location.state.successful) {
+
+            location.state.successful = false
+        }
+        setOpen(false);
+    };
+
 
     const classes = useStyles();
 
@@ -223,6 +248,12 @@ function Home() {
 
     return (
         <div>
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+                <Alert onClose={handleCloseSnackbar} severity="success" variant="filled">
+                    Your product was successfully submitted!
+                </Alert>
+            </Snackbar>
+
             <Box display="flex" alignItems="center" justifyContent="center" style={{marginBottom: "-50px", marginTop: "-50px"}}>
             <img src={brandLogo} alt="brand logo" width={40} height={40} className={classes.media}/>
             <Typography variant="h2" style={{display: "inline", marginLeft: "15px", fontSize: "40px"}} color="textPrimary">

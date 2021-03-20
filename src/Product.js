@@ -230,7 +230,7 @@ function Upload(props) {
                                 //TODO
                                 //  Snackbar success
                                 console.log('product submitted. redirecting...');
-                                history.push("/")
+                                history.push("/", {successful: true})
                             });
                         } else if (lastImage) {
                             imageUrls.push(url)
@@ -246,7 +246,7 @@ function Upload(props) {
                                 allPhotos: imageUrls
                             }).then(() => {
                                 console.log('product submitted. redirecting...');
-                                history.push("/")
+                                history.push("/", {successful: true})
                             });
                         } else if (firstImage) {
                             primaryUrl = url;
@@ -293,7 +293,7 @@ function Upload(props) {
                                 allPhotos: imageUrls
                             }).then(() => {
                                 console.log('product submitted. redirecting...');
-                                history.push("/")
+                                history.push("/", {successful: true})
                             });
                         } else if (firstImage) {
                             primaryUrl = url
