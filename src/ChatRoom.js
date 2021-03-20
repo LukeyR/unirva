@@ -192,7 +192,6 @@ function ChatMessage(props) {
             }
         </div>
     )
-
 }
 
 
