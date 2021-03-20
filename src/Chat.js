@@ -97,6 +97,11 @@ const useStyles = makeStyles((theme) => ({
         transition: theme.transitions.create('width'),
         width: '100%',
     },
+    textBox: {
+        '&:hover' : {
+            cursor: "pointer",
+        }
+    }
 }))
 
 const firestore = firebase.firestore();
@@ -120,38 +125,41 @@ function ProfileCard(props) {
 
 
     return (
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
             <Paper>
                 <Box p={1}>
                     <Grid container>
-                        <Grid item xs={2}>
+                        <Grid item xs={3}>
                             <Avatar className={classes.profilePicture} alt="Profile Image" style={{backgroundColor: `${avatarColour}`}} onClick={() => {redirect("/profile", {
                                 targetUserID: props.targetUserID,
                                 currentUserID: props.myUid})}}>
                                 {props.name ? props.name.charAt(0) : "N"}
                             </Avatar>
                         </Grid>
-                        <Grid container item xs={8}>
+                        <Grid container item xs={7} className={classes.textBox} onClick={() => {redirect("/chatroom", {
+                            targetUserID: props.targetUserID,
+                            currentUserID: props.myUid,
+                            myUID: userID})}}>
                             <Grid item xs={12}>
                                     <Typography variant="h5" style={{fontSize: "24px"}} display="block">
                                         {props.name.charAt(0).toUpperCase() + props.name.substr(1)}
                                     </Typography>
                             </Grid>
                                 <Grid item xs={12}>
-                                    <Typography variant="body2" style={{fontSize: "24px"}} color="textSecondary"
+                                    <Typography variant="body2" style={{fontSize: "18px"}} color="textSecondary"
                                                 display="block">
                                         {props.unread}
                                     </Typography>
                             </Grid>
                         </Grid>
-                        <Grid container item xs={2}>
+                        <Grid container item xs={2} className={classes.textBox}  onClick={() => {redirect("/chatroom", {
+                            targetUserID: props.targetUserID,
+                            currentUserID: props.myUid,
+                            myUID: userID})}}>
                             <Box display="flex" alignItems="center" justifyContent="flex-end">
                                 <Badge badgeContent={props.unseenCount} color="secondary" >
-                                    <IconButton onClick={() => {redirect("/chatroom", {
-                                        targetUserID: props.targetUserID,
-                                        currentUserID: props.myUid,
-                                        myUID: userID})}}>
-                                <MailOutline style={{fontSize: "45px",}} />
+                                    <IconButton>
+                                        <MailOutline style={{fontSize: "38px",}} />
                                     </IconButton>
                                 </Badge>
                             </Box>
