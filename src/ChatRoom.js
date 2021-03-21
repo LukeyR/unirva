@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import firebase, {auth} from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import './ChatRoom.css';
@@ -127,6 +127,13 @@ const useStyles = makeStyles((theme) => ({
         transition: theme.transitions.create('width'),
         width: '100%',
     },
+    sendButton: {
+        width: "31px",
+        height: "31px",
+        borderRadius: "50%",
+        marginRight: "6px",
+        backgroundColor: theme.palette.primary.main,
+}
 }));
 
 function ChatRoom(props) {
@@ -136,7 +143,7 @@ function ChatRoom(props) {
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;
     chatWindow = document.getElementById("chat-window");
-    console.log(chatWindow)
+    // console.log(chatWindow)
     if (chatWindow) {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
@@ -161,6 +168,7 @@ function ChatRoom(props) {
             senderIDDB = me.id;
         })
     }
+
 
     // need to get an instance of the user, for this I need the ID though, not their name
     var [receiver, loadingRe] = useCollection(firestore.collection('users').where("ID", "==", targetID));
@@ -207,9 +215,7 @@ function ChatRoom(props) {
                    </Grid>
                    <Divider variant="middle" style={{marginTop: "10px"}}/>
                    <Box display="flex" className={classes.chatWindow}>
-                       <Chatroom id="chat-window"/>
-
-
+                       <Chatroom/>
                    </Box>
                    <Divider variant="middle" style={{marginTop: "10px"}}/>
                    <MessageBox/>
@@ -264,8 +270,6 @@ function Chatroom() {
         let out = []
         let temp = []
         for (let message of messageList) {
-            console.log(temp)
-            console.log(message)
             if (temp.length === 0 || temp[temp.length - 1].SenderID === message.SenderID) {
                 temp.push(message);
             } else {
@@ -302,6 +306,17 @@ function Chatroom() {
     // console.log(messages)
     // console.log(messagesDivided)
 
+
+    // const messagesEndRef = useRef(null)
+    //
+    // useEffect(() => {
+    //     messagesEndRef.current.scrollIntoView({
+    //         behavior: 'smooth',
+    //         block: 'end',
+    //         inline: 'nearest'
+    //     });
+    // });
+
     return (
             <Box p={1} style={{width: "100%"}}>
                 {messages && messagesDivided.map(msgs => handleMsgClump(msgs).map(msg => msg))}
@@ -330,6 +345,13 @@ function MessageBox() {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 seen: "true"
             })
+                .then((docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                })
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                });
+            console.log("here")
 
             await messagesRef2.add({
                 msg: message,
@@ -338,8 +360,14 @@ function MessageBox() {
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 seen: "false"
             })
+                .then((docRef) => {
+                    console.log("Document written with ID: ", docRef.id);
+                })
+                .catch((error) => {
+                    console.error("Error adding document: ", error);
+                });
 
-            setMessage('');
+            setMessage("");
 
             if (chatWindow) {
                 chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -374,7 +402,7 @@ function MessageBox() {
                             {/*<input type="text" value={msgVal} onChange={(e) => setMsgVal(e.target.value)}></input>*/}
 
 
-                        <Box style={{width: "31px", height: "31px", borderRadius: "50%", marginRight: "6px", backgroundColor: "#000000"}} display="flex" justifyContent="center" alignItems="center">
+                        <Box className={classes.sendButton} display="flex" justifyContent="center" alignItems="center">
                             <IconButton onClick={() => {sendMessage()}}>
                                 <Send style={{fontSize: "18px"}} />
                             </IconButton>
@@ -388,14 +416,17 @@ function MessageBox() {
 function ChatMessage(props) {
     const {msg, SenderID} = props.message;
     const classes = useStyles();
-    console.log(props)
+    const [showTime, setShowTime] = useState(false)
+
     let date = new Date(1970, 0, 1);
 
-    // TODO
-    //  ERROR HERE
-    date.setSeconds(props.createdAt.seconds);
+    if (props.createdAt) {
+        date.setSeconds(props.createdAt.seconds);
+    }
 
-    let shortDate = date.getDate() + "/" + date.getMonth() + 1 + "/" + date.getFullYear().toString().substr(2) + " " + date.getHours() + ":" + date.getMinutes()
+    let shortDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear().toString().substr(2) + " " + date.getHours() + ":" + date.getMinutes()
+
+    // console.log(msg + shortDate)
 
     //console.log(myID)
     //var text = "";
@@ -417,25 +448,30 @@ function ChatMessage(props) {
         <div>
             {SenderID === myID ?
                 <>
-                    <Box display="flex" justifyContent="flex-end">
+                    <Box display="flex" justifyContent="flex-end" >
                         <Box className={classes.bubbleYou} style={{
                             borderRadius: `10px ${props.firstMessage ? "10px" : "0"} 0 10px`,
                             marginTop: `${props.firstMessage ? "15px" : "2px"}`,
                             marginRight: `${props.lastMessage ? "0px" : "5px"}`,}
-                        }
+                        } onClick={() => {setShowTime(!showTime)}}
                         >
                             <Typography variant="body1" color="textPrimary">{msg}</Typography>
                         </Box>
-                        <Box display="flex" alignItems="flex-end">
+                        <Box display="flex" alignItems="flex-end" onClick={() => {setShowTime(!showTime)}}>
                             {props.lastMessage ? <Box className={classes.miniTriangleYou}
                             /> : <></>}
                         </Box>
                     </Box>
+                    {showTime ? <Box display="flex" justifyContent="flex-end">
+                        <Typography variant="body2">
+                            {shortDate}
+                        </Typography>
+                    </Box> : ""}
                 </>
                 :
                 <>
-                    <Box display="flex" justifyContent="flex-start">
-                        <Box display="flex" alignItems="flex-end">
+                    <Box display="flex" justifyContent="flex-start" >
+                        <Box display="flex" alignItems="flex-end" onClick={() => {setShowTime(!showTime)}}>
                             {props.lastMessage ?
                                 <Box className={classes.miniTriangleThem}
                             /> : <></>}
@@ -445,13 +481,19 @@ function ChatMessage(props) {
                                 borderRadius: `${props.firstMessage ? "10px" : "0"} 10px 10px 0`,
                                 marginTop: `${props.firstMessage ? "15px" : "2px"}`,
                                 marginLeft: `${props.lastMessage ? "0px" : "5px"}`,
-                            }}
+                            }} onClick={() => {setShowTime(!showTime)}}
                             >
                                 <Typography variant="body1" color="textPrimary">{msg}</Typography>
                             </Box>
 
                         </Box>
                     </Box>
+
+                    {showTime ? <Box display="flex" justifyContent="flex-start">
+                        <Typography variant="body2">
+                            {shortDate}
+                        </Typography>
+                    </Box> : ""}
                 </>
             }
         </div>
