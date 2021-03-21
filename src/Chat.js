@@ -4,22 +4,8 @@ import firebase, {auth} from "./firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {useCollection, useCollectionData} from "react-firebase-hooks/firestore";
 import {makeStyles} from "@material-ui/styles";
-import {
-    Avatar,
-    Badge,
-    Box,
-    Button, CardContent,
-    Divider,
-    fade,
-    Grid, IconButton,
-    InputBase,
-    Menu,
-    MenuItem,
-    Paper,
-    Typography
-} from "@material-ui/core";
+import {Avatar, Badge, Box, Divider, fade, Grid, IconButton, InputBase, Paper, Typography} from "@material-ui/core";
 import {MailOutline} from "@material-ui/icons";
-import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
 import SearchIcon from "@material-ui/icons/Search";
 import deepOrange from "@material-ui/core/colors/deepOrange";
 import pink from "@material-ui/core/colors/pink"
@@ -35,7 +21,7 @@ import {useHistory} from "react-router-dom";
 //  Fix bug when user is not signed in with google
 
 const useStyles = makeStyles((theme) => ({
-    root : {
+    root: {
         flexGrow: 1,
     },
     profilePicture: {
@@ -46,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
         border: "0px solid black",
         width: "50px",
         height: "50px",
-        '&:hover' : {
+        '&:hover': {
             cursor: "pointer",
         }
     },
@@ -98,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
         width: '100%',
     },
     textBox: {
-        '&:hover' : {
+        '&:hover': {
             cursor: "pointer",
         }
     }
@@ -130,36 +116,46 @@ function ProfileCard(props) {
                 <Box p={1}>
                     <Grid container>
                         <Grid item xs={3}>
-                            <Avatar className={classes.profilePicture} alt="Profile Image" style={{backgroundColor: `${avatarColour}`}} onClick={() => {redirect("/profile", {
-                                targetUserID: props.targetUserID,
-                                currentUserID: props.myUid})}}>
+                            <Avatar className={classes.profilePicture} alt="Profile Image"
+                                    style={{backgroundColor: `${avatarColour}`}} onClick={() => {
+                                redirect("/profile", {
+                                    targetUserID: props.targetUserID,
+                                    currentUserID: props.myUid
+                                })
+                            }}>
                                 {props.name ? props.name.charAt(0) : "N"}
                             </Avatar>
                         </Grid>
-                        <Grid container item xs={7} className={classes.textBox} onClick={() => {redirect("/chatroom", {
-                            targetUserID: props.targetUserID,
-                            currentUserID: props.myUid,
-                            myUID: userID})}}>
+                        <Grid container item xs={7} className={classes.textBox} onClick={() => {
+                            redirect("/chatroom", {
+                                targetUserID: props.targetUserID,
+                                currentUserID: props.myUid,
+                                myUID: userID
+                            })
+                        }}>
                             <Grid item xs={12}>
-                                    <Typography variant="h5" style={{fontSize: "24px"}} display="block">
-                                        {props.name.charAt(0).toUpperCase() + props.name.substr(1)}
-                                    </Typography>
+                                <Typography variant="h5" style={{fontSize: "24px"}} display="block">
+                                    {props.name.charAt(0).toUpperCase() + props.name.substr(1)}
+                                </Typography>
                             </Grid>
-                                <Grid item xs={12}>
-                                    <Typography variant="body2" style={{fontSize: "18px"}} color="textSecondary"
-                                                display="block">
-                                        {props.unread}
-                                    </Typography>
+                            <Grid item xs={12}>
+                                <Typography variant="body2" style={{fontSize: "18px"}} color="textSecondary"
+                                            display="block">
+                                    {props.unread}
+                                </Typography>
                             </Grid>
                         </Grid>
-                        <Grid container item xs={2} className={classes.textBox}  onClick={() => {redirect("/chatroom", {
-                            targetUserID: props.targetUserID,
-                            currentUserID: props.myUid,
-                            myUID: userID})}}>
+                        <Grid container item xs={2} className={classes.textBox} onClick={() => {
+                            redirect("/chatroom", {
+                                targetUserID: props.targetUserID,
+                                currentUserID: props.myUid,
+                                myUID: userID
+                            })
+                        }}>
                             <Box display="flex" alignItems="center" justifyContent="flex-end">
-                                <Badge badgeContent={props.unseenCount} color="secondary" >
+                                <Badge badgeContent={props.unseenCount} color="secondary">
                                     <IconButton>
-                                        <MailOutline style={{fontSize: "38px",}} />
+                                        <MailOutline style={{fontSize: "38px",}}/>
                                     </IconButton>
                                 </Badge>
                             </Box>
@@ -168,82 +164,82 @@ function ProfileCard(props) {
                 </Box>
             </Paper>
         </Grid>
-)
+    )
 }
 
-function Chat()
-    {
+function Chat() {
 
-        const classes = useStyles();
-        const [user] = useAuthState(auth);
-        const [searchTerm, setSearchTerm] = useState("")
+    const classes = useStyles();
+    const [user] = useAuthState(auth);
+    const [searchTerm, setSearchTerm] = useState("")
 
-        var results = [];
-        var numberOfResults = 0;
+    var results = [];
+    var numberOfResults = 0;
 
-        if (user != null) userID = user.uid;
+    if (user != null) userID = user.uid;
 
-        const userRef = firestore.collection('users').where('ID', "==", userID);
-        const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
+    const userRef = firestore.collection('users').where('ID', "==", userID);
+    const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
 
-        var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
+    var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
-        var [me, loading] = useCollectionData(userRef);
-        var myChats = "Loading";
-        const [searchVal, setSearch] = useState("");
-        if (!loading) myChats = me[0].chatsNo;
-        var unseen = 0;
+    var [me, loading] = useCollectionData(userRef);
+    var myChats = "Loading";
+    const [searchVal, setSearch] = useState("");
+    if (!loading) myChats = me[0].chatsNo;
+    var unseen = 0;
 
-        if (!loadingMes) {
-            unseen = unseenMessages.length;
-        }
+    if (!loadingMes) {
+        unseen = unseenMessages.length;
+    }
 
-        const [users, loadingUsers] = useCollection(firestore.collection('users'));
+    const [users, loadingUsers] = useCollection(firestore.collection('users'));
 
-        const editSearchTerm = (e) => {
-            setSearch(e.target.value);
-        }
-
-
-        // Searching for a user
-        const search = () => {
-            results = [];
-            numberOfResults = 0;
-            if (!loadingUsers) {
-                users.forEach(usr => {
-                    let name = usr.data().Name;
-                    if (name.toLowerCase().includes(searchVal.toLowerCase()) && name != me[0].Name) {
-                        var count = 0
-                        unseenMessages.forEach(msg => {
-                            if (msg.SenderID == usr.data().ID) count++;
-                        })
-                        results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID, unseenMes: count}];
-                        numberOfResults++;
-                    }
-                })
-            } else console.log("Still loading");
-            return results;
-        }
+    const editSearchTerm = (e) => {
+        setSearch(e.target.value);
+    }
 
 
-        return (
-            <div className={classes.root} >
-                {/*<h1>Chat</h1>*/}
-                {/*<p>Right, let's get going!</p>*/}
-                {/*<h1>You have {myChats} chats open.</h1>*/}
-                {/*<h1>You have {unseen} unseen messages.</h1>*/}
-                <Box m={3} stlye={{marginBottom: "-30px"}}>
+    // Searching for a user
+    const search = () => {
+        results = [];
+        numberOfResults = 0;
+        if (!loadingUsers) {
+            users.forEach(usr => {
+                let name = usr.data().Name;
+                if (name.toLowerCase().includes(searchVal.toLowerCase()) && name != me[0].Name) {
+                    var count = 0
+                    unseenMessages.forEach(msg => {
+                        if (msg.SenderID == usr.data().ID) count++;
+                    })
+                    results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID, unseenMes: count}];
+                    numberOfResults++;
+                }
+            })
+        } else console.log("Still loading");
+        return results;
+    }
+
+
+    return (
+        <div className={classes.root}>
+            {/*<h1>Chat</h1>*/}
+            {/*<p>Right, let's get going!</p>*/}
+            {/*<h1>You have {myChats} chats open.</h1>*/}
+            {/*<h1>You have {unseen} unseen messages.</h1>*/}
+            <Box m={3} stlye={{marginBottom: "-30px"}}>
                 <Typography variant="h2">
                     Your Chats
                 </Typography>
-                </Box>
-                <Divider variant="middle" style={{marginBottom: "20px"}}/>
-                <Box className="sortingRow">
-                    <div className={classes.sorting}>
-                        <Typography variant="subtitle1" display="inline"  stlye={{marginLeft: "20px", justifyContent: "flex-start",}}>
-                            {unseen} unseen messages
-                        </Typography>
-                        <Box className={classes.searchBox}>
+            </Box>
+            <Divider variant="middle" style={{marginBottom: "20px"}}/>
+            <Box className="sortingRow">
+                <div className={classes.sorting}>
+                    <Typography variant="subtitle1" display="inline"
+                                stlye={{marginLeft: "20px", justifyContent: "flex-start",}}>
+                        {unseen} unseen messages
+                    </Typography>
+                    <Box className={classes.searchBox}>
                         <Typography display="inline" style={{marginRight: "10px"}}>
                             Filter:
                         </Typography>
@@ -267,39 +263,37 @@ function Chat()
                                 onChange={editSearchTerm}
                             />
                         </div>
-                        </Box>
-                    </div>
-                </Box>
-                <ResultContainer names={search()}/>
-            </div>
-        )
-    }
-
-function ResultContainer(names)
-    {
-        return (
-            <Box p={3}>
-                <Grid container spacing={3}>
-                    {names.names.map(name => <Name name={name}/>)}
-                </Grid>
+                    </Box>
+                </div>
             </Box>
-        )
-    }
+            <ResultContainer names={search()}/>
+        </div>
+    )
+}
 
-function Name(name)
-    {
-        var unread = "No new messages"
-        return (
+function ResultContainer(names) {
+    return (
+        <Box p={3}>
+            <Grid container spacing={3}>
+                {names.names.map(name => <Name name={name}/>)}
+            </Grid>
+        </Box>
+    )
+}
 
-            <ProfileCard {...{
-                name: name.name[0].name,
-                unseenCount: name.name[0].unseenMes,
-                unread: unread,
-                targetUserID: name.name[0].id,
-                myUid: userID,
+function Name(name) {
+    var unread = "No new messages"
+    return (
 
-            }} />
-        )
-    }
+        <ProfileCard {...{
+            name: name.name[0].name,
+            unseenCount: name.name[0].unseenMes,
+            unread: unread,
+            targetUserID: name.name[0].id,
+            myUid: userID,
+
+        }} />
+    )
+}
 
 export default Chat;

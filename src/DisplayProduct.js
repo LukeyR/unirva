@@ -130,8 +130,7 @@ function DisplayProduct(props) {
             targetUserID: SellerID,
             currentUserID: userID
         }]
-    }
-    else {
+    } else {
         msg = "Message Seller";
         gotoSeller = "Goto Seller Profile";
         userPath = "/Profile";
@@ -141,10 +140,10 @@ function DisplayProduct(props) {
             targetUserID: SellerID,
             myUID: userID
         }
-        state = [{
+        state = {
             targetUserID: SellerID,
             currentUserID: userID
-        }]
+        }
     }
 
     const updateInterested = () => {
@@ -209,11 +208,12 @@ function DisplayProduct(props) {
         smallImages.push(
             <Grid item xs={4}>
                 <Box p={3} display="flex" justifyContent="space-between" alignItems="center">
-                    <img src={allImages !== [] && allImages[i] !== undefined ? allImages[i] : emptyFrame} className={allImages !== [] && allImages[i] !== undefined ? classes.smallImages : classes.emptyFrame}
+                    <img src={allImages !== [] && allImages[i] !== undefined ? allImages[i] : emptyFrame}
+                         className={allImages !== [] && allImages[i] !== undefined ? classes.smallImages : classes.emptyFrame}
                          style={{borderRadius: `${i === selectedImageIndex ? "16px" : "3px"}`}}
-                    onClick={() => {
-                        setBigImage(i)
-                    }} alt="Primary Image"/>
+                         onClick={() => {
+                             setBigImage(i)
+                         }} alt="Primary Image"/>
                 </Box>
             </Grid>
         )
@@ -282,84 +282,90 @@ function DisplayProduct(props) {
                             </Box>
                             <Divider variant="middle"/>
                             <Grid container spacing={3}>
-                                <Grid item xs={12} md={3} lg={4} >
-                                <Box p={3} display="flex" justifyContent="center" alignItems="center" >
-                                    <img src={allImages !== [] ? allImages[selectedImageIndex] : emptyFrame} style={{width: "400px", height: "400px",
-                                        objectFit: "cover",}}/>
-                                </Box>
-                            </Grid>
-                                <Grid container spacing={3} item xs={12} md={3} lg={4}>
-                                        <Box display="flex" justifyContent="flex-start" alignItems="center"  flexWrap="wrap">
-                                            {smallImages}
-                                        </Box>
+                                <Grid item xs={12} md={3} lg={4}>
+                                    <Box p={3} display="flex" justifyContent="center" alignItems="center">
+                                        <img src={allImages !== [] ? allImages[selectedImageIndex] : emptyFrame}
+                                             style={{
+                                                 width: "400px", height: "400px",
+                                                 objectFit: "scale-down",
+                                             }}/>
+                                    </Box>
                                 </Grid>
                                 <Grid container spacing={3} item xs={12} md={3} lg={4}>
-                                    <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap" m={2} p={2}>
-                                            <Grid item xs={12}>
-                                                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
-                                                    { globalUserID !== sellerID ?
-                                                        <>{sold === "false" ?
-                                                            <Button onClick={updateInterested}
-                                                                    variant="outlined"
-                                                                    color="primary"
-                                                            >
-                                                                {oldVal.includes(globalUserID) ?
-                                                                    "Cancel request"
-                                                                    :
-                                                                    "Request to buy"
+                                    <Box display="flex" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
+                                        {smallImages}
+                                    </Box>
+                                </Grid>
+                                <Grid container spacing={3} item xs={12} md={3} lg={4}>
+                                    <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap"
+                                         m={2} p={2}>
+                                        <Grid item xs={12}>
+                                            <Box display="flex" justifyContent="center" alignItems="center"
+                                                 flexDirection="column">
+                                                {globalUserID !== sellerID ?
+                                                    <>{sold === "false" ?
+                                                        <Button onClick={updateInterested}
+                                                                variant="outlined"
+                                                                color="primary"
+                                                        >
+                                                            {oldVal.includes(globalUserID) ?
+                                                                "Cancel request"
+                                                                :
+                                                                "Request to buy"
                                                             }
-                                                            </Button>
-                                                            :
-                                                            <Typography
-                                                                variant="h2"
-                                                                style={{fontSize: 24, marginBottom: "10px"}}
-                                                            >
-                                                                Sorry, this listing has been sold.
-                                                            </Typography>
-                                                        }</>
+                                                        </Button>
                                                         :
-
                                                         <Typography
                                                             variant="h2"
                                                             style={{fontSize: 24, marginBottom: "10px"}}
                                                         >
-                                                            Sorry, you can't buy your own listing.
+                                                            Sorry, this listing has been sold.
                                                         </Typography>
-                                                    }
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="primary"
-                                                        onClick={() => {
-                                                            console.log(stateMyProduct)
-                                                                        history.push(path, stateMyProduct)
-                                                                }}
-                                                    >
-                                                        {msg}
-                                                    </Button>
-                                                </Box>
-                                            </Grid>
-                                            <Grid item xs={12}>
+                                                    }</>
+                                                    :
 
-                                                <Box display="flex" justifyContent="center" alignItems="center" flexDirection="column">
                                                     <Typography
                                                         variant="h2"
                                                         style={{fontSize: 24, marginBottom: "10px"}}
                                                     >
-                                                        Seller: {userName}
+                                                        Sorry, you can't buy your own listing.
                                                     </Typography>
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="primary"
-                                                        onClick={() => {
-                                                            console.log("Pushing from here");
-                                                            history.push(userPath,
-                                                                state)
-                                                        }}
-                                                    >
-                                                        {gotoSeller}
-                                                    </Button>
-                                                </Box>
-                                            </Grid>
+                                                }
+                                                <Button
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        console.log(stateMyProduct)
+                                                        history.push(path, stateMyProduct)
+                                                    }}
+                                                >
+                                                    {msg}
+                                                </Button>
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={12}>
+
+                                            <Box display="flex" justifyContent="center" alignItems="center"
+                                                 flexDirection="column">
+                                                <Typography
+                                                    variant="h2"
+                                                    style={{fontSize: 24, marginBottom: "10px"}}
+                                                >
+                                                    Seller: {userName}
+                                                </Typography>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        console.log("Pushing from here");
+                                                        history.push(userPath,
+                                                            state)
+                                                    }}
+                                                >
+                                                    {gotoSeller}
+                                                </Button>
+                                            </Box>
+                                        </Grid>
                                     </Box>
                                 </Grid>
 

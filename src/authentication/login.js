@@ -1,11 +1,9 @@
 import React, {useContext, useState} from 'react';
-import {Box, Button, Card, CardContent, Grid, Paper, TextField} from "@material-ui/core";
+import {Box, Button, CardContent, Grid, Paper, TextField} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import BrandLogo from "../BrandLogo";
-import {Autocomplete} from "@material-ui/lab";
-import firebaseConfig, {auth} from "../firebase";
-import firebase from "firebase";
-import {Redirect, useHistory} from "react-router-dom";
+import firebaseConfig from "../firebase";
+import {useHistory} from "react-router-dom";
 import {AuthContext} from "../Auth";
 
 function Signup() {
@@ -46,7 +44,7 @@ function Signup() {
             alert(error);
         }
     };
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
     if (currentUser) {
         history.push("./")
     }
@@ -55,43 +53,44 @@ function Signup() {
         <Box display="flex" justifyContent="center" alignItems="center" style={{margin: 30}}>
             <Grid container variant="contained">
                 <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
-                <Box p={3}>
-                    <CardContent className={classes.cardActions}>
-                        <BrandLogo/>
-                    </CardContent>
-                    <TextField
-                        error={emptyValues.email}
-                        fullWidth
-                        required
-                        value={values.email}
-                        id="Email"
-                        label="Academic Email Address"
-                        variant="outlined"
-                        color="primary"
-                        style={{marginTop: 10}}
-                        onChange={handleChange("email")}
-                    />
-                    <TextField
-                        error={emptyValues.password}
-                        fullWidth
-                        required
-                        value={values.password}
-                        type="password"
-                        id="Password"
-                        label="Password"
-                        variant="outlined"
-                        color="primary"
-                        style={{marginTop: 10}}
-                        onChange={handleChange("password")}
-                    />
-                    <Button variant="outlined" color="primary"
-                            style={{ marginTop: 10 }}
-                            onClick={() => {
-                       handleSubmit()}}
-                    >
-                        Log in
-                    </Button>
-                </Box>
+                    <Box p={3}>
+                        <CardContent className={classes.cardActions}>
+                            <BrandLogo/>
+                        </CardContent>
+                        <TextField
+                            error={emptyValues.email}
+                            fullWidth
+                            required
+                            value={values.email}
+                            id="Email"
+                            label="Academic Email Address"
+                            variant="outlined"
+                            color="primary"
+                            style={{marginTop: 10}}
+                            onChange={handleChange("email")}
+                        />
+                        <TextField
+                            error={emptyValues.password}
+                            fullWidth
+                            required
+                            value={values.password}
+                            type="password"
+                            id="Password"
+                            label="Password"
+                            variant="outlined"
+                            color="primary"
+                            style={{marginTop: 10}}
+                            onChange={handleChange("password")}
+                        />
+                        <Button variant="outlined" color="primary"
+                                style={{marginTop: 10}}
+                                onClick={() => {
+                                    handleSubmit()
+                                }}
+                        >
+                            Log in
+                        </Button>
+                    </Box>
                 </Paper>
             </Grid>
         </Box>

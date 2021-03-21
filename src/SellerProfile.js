@@ -2,9 +2,7 @@ import React from 'react';
 import './Profile.css';
 import firebase from 'firebase/app';
 import {useCollection} from 'react-firebase-hooks/firestore';
-import {useAuthState} from "react-firebase-hooks/auth";
-import {auth} from "./firebase";
-import {Link, useLocation} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import {Box, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
 
@@ -14,14 +12,14 @@ var target, targetID, targetName, targetPhoto;
 var listings = [];
 var docsID = [];
 
-function SellerProfile(){
+function SellerProfile() {
     target = useLocation().state[0].targetUserName;
     targetID = useLocation().state[0].targetUserID;
     console.log(target, targetID);
 
     var [targetSeller, loadingSeller] = useCollection(firestore.collection('users').where("ID", "==", targetID));
 
-    if(!loadingSeller){
+    if (!loadingSeller) {
         targetSeller.forEach(targetSeller => {
             targetName = targetSeller.data().Name;
             targetPhoto = targetSeller.data().photoURL;
@@ -36,7 +34,7 @@ function SellerProfile(){
     const [listingsBig, loading] = useCollection(query);
 
     // check if data is still being loaded
-    if(!loading){
+    if (!loading) {
         // make sure to take most recent posts
         var index = 0;
         listingsBig.forEach(doc => {
@@ -61,7 +59,7 @@ function SellerProfile(){
     }
 
 
-    return(
+    return (
         <div className="container">
             <div className="about">
                 {targetSeller ?
@@ -70,7 +68,7 @@ function SellerProfile(){
                         <h1>{targetName}</h1>
                         <p>Other information goes here</p>
                     </>
-                :
+                    :
                     <></>
                 }
             </div>

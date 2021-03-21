@@ -9,8 +9,10 @@ import {
     FormControl,
     Grid,
     InputAdornment,
-    InputLabel, LinearProgress,
-    OutlinedInput, Paper,
+    InputLabel,
+    LinearProgress,
+    OutlinedInput,
+    Paper,
     SvgIcon,
     TextField
 } from "@material-ui/core";
@@ -18,7 +20,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import uploadVec from "./img/uploadTemplate.svg";
 import {CheckOutlined, ClearOutlined, DeleteOutlined, PublishOutlined, Update} from "@material-ui/icons";
 import red from '@material-ui/core/colors/red';
-import green from '@material-ui/core/colors/green';
 
 //Tried to make it nicer
 
@@ -43,8 +44,8 @@ const useStyles = makeStyles((theme) => ({
         objectFit: "cover",
     },
     noButton: {
-      color: theme.palette.action.disabled,
-      borderColor: theme.palette.action.disabled,
+        color: theme.palette.action.disabled,
+        borderColor: theme.palette.action.disabled,
     },
     yesButton: {
         color: red[200],
@@ -395,162 +396,162 @@ function Upload(props) {
             >
                 <Paper>
                     <Box p={3}>
-                <Grid container
-                      spacing={3}
-                >
-                    <Grid item xs={12} sm={9}>
-                        <TextField
+                        <Grid container
+                              spacing={3}
+                        >
+                            <Grid item xs={12} sm={9}>
+                                <TextField
 
-                            error={emptyValues.name}
-                            fullWidth
-                            required
-                            value={values.name}
-                            id="Product-Name"
-                            label="Product Name"
-                            variant="outlined"
-                            color="primary"
-                            helperText="Enter a descriptive title for you product. Try using key words."
-                            className={classes.name}
-                            onChange={handleChange("name")}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                        <FormControl fullWidth required className={classes.margin} variant="outlined"
-                                     error={emptyValues.price}>
-                            <InputLabel htmlFor="standard-adornment-amount">Price</InputLabel>
-                            <OutlinedInput
-                                id="standard-adornment-amount"
-                                value={values.price}
-                                type="number"
-                                startAdornment={<InputAdornment position="start">£</InputAdornment>}
-                                labelWidth={50}
-                                onChange={handleChange("price")}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid container
-                          spacing={2}
-                          direction="row"
-                          alignItems="center"
-                          justify="center"
-                          item
-                          xs={12} md={3} lg={2}
-                    >
-                        <Grid item>
-                            <Box textAlign="center" alignItems="center">
-                                <Button
-                                    disabled={disableUpload}
-                                    startIcon={<PublishOutlined/>}
-                                    id="upload_button"
+                                    error={emptyValues.name}
+                                    fullWidth
+                                    required
+                                    value={values.name}
+                                    id="Product-Name"
+                                    label="Product Name"
                                     variant="outlined"
-                                    component="label"
                                     color="primary"
-                                    style={{margin: "auto"}}
-                                >
-                                    <input
-                                        id="upload-photo"
-                                        name="upload-photo"
-                                        type="file"
-                                        hidden
-                                        onChange={handleChangeImage}
+                                    helperText="Enter a descriptive title for you product. Try using key words."
+                                    className={classes.name}
+                                    onChange={handleChange("name")}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={3}>
+                                <FormControl fullWidth required className={classes.margin} variant="outlined"
+                                             error={emptyValues.price}>
+                                    <InputLabel htmlFor="standard-adornment-amount">Price</InputLabel>
+                                    <OutlinedInput
+                                        id="standard-adornment-amount"
+                                        value={values.price}
+                                        type="number"
+                                        startAdornment={<InputAdornment position="start">£</InputAdornment>}
+                                        labelWidth={50}
+                                        onChange={handleChange("price")}
                                     />
-                                    Upload Image
-                                </Button>
-                            </Box>
+                                </FormControl>
+                            </Grid>
+                            <Grid container
+                                  spacing={2}
+                                  direction="row"
+                                  alignItems="center"
+                                  justify="center"
+                                  item
+                                  xs={12} md={3} lg={2}
+                            >
+                                <Grid item>
+                                    <Box textAlign="center" alignItems="center">
+                                        <Button
+                                            disabled={disableUpload}
+                                            startIcon={<PublishOutlined/>}
+                                            id="upload_button"
+                                            variant="outlined"
+                                            component="label"
+                                            color="primary"
+                                            style={{margin: "auto"}}
+                                        >
+                                            <input
+                                                id="upload-photo"
+                                                name="upload-photo"
+                                                type="file"
+                                                hidden
+                                                onChange={handleChangeImage}
+                                            />
+                                            Upload Image
+                                        </Button>
+                                    </Box>
 
-                        </Grid>
-                    </Grid>
-                    <Grid container
-                          spacing={1}
-                          direction="row"
-                          alignItems="center"
-                          justify="space-evenly"
-                          item
-                          xs={12} md={9} lg={10}
-                    >
-                        {printImages}
+                                </Grid>
+                            </Grid>
+                            <Grid container
+                                  spacing={1}
+                                  direction="row"
+                                  alignItems="center"
+                                  justify="space-evenly"
+                                  item
+                                  xs={12} md={9} lg={10}
+                            >
+                                {printImages}
 
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            required
-                            multiline
-                            error={emptyValues.description}
-                            value={values.description}
-                            rows={5}
-                            rowsMax={13}
-                            id="Product-Description"
-                            label="Product Description"
-                            variant="outlined"
-                            color="primary"
-                            helperText="Enter a good description for your product"
-                            className={classes.name}
-                            onChange={handleChange("description")}
-                        />
-                    </Grid>
-                    <LinearProgress style={{width: `${loadingBar}%`}} color="secondary" />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    multiline
+                                    error={emptyValues.description}
+                                    value={values.description}
+                                    rows={5}
+                                    rowsMax={13}
+                                    id="Product-Description"
+                                    label="Product Description"
+                                    variant="outlined"
+                                    color="primary"
+                                    helperText="Enter a good description for your product"
+                                    className={classes.name}
+                                    onChange={handleChange("description")}
+                                />
+                            </Grid>
+                            <LinearProgress style={{width: `${loadingBar}%`}} color="secondary"/>
 
 
-                    <Grid container
-                          spacing={0}
-                          direction="row"
-                          alignItems="center"
-                          justify="center"
-                          item
-                          xs={12}
-                    >
-                        <Button onClick={() => {
-                            submitForm().then()
-                        }}
-                                disabled={uploading}
-                                startIcon={<Update/>}
-                                variant="outlined"
-                                color="primary">
-                            {editing ? (uploading ? "updating" : "update") : (uploading ? "uploading" : "upload")}
-                        </Button>
-                    </Grid><Grid container
-                                 spacing={0}
-                                 direction="row"
-                                 alignItems="center"
-                                 justify="center"
-                                 item
-                                 xs={12}
-
-                >
-                    {areYouSure ? (
-                        <>
-                            <Box m={1}>
+                            <Grid container
+                                  spacing={0}
+                                  direction="row"
+                                  alignItems="center"
+                                  justify="center"
+                                  item
+                                  xs={12}
+                            >
                                 <Button onClick={() => {
-                                    setAreYouSure(false)
+                                    submitForm().then()
                                 }}
-                                        startIcon={<ClearOutlined/>}
-                                        variant="outlined"
-                                        className={classes.noButton}>
-                                    No
-                                </Button>
-                            </Box>
-                            <Box m={1}>
-                                <Button onClick={() => {
-                                    deleteListing().then()
-                                }}
-                                        startIcon={<CheckOutlined/>}
+                                        disabled={uploading}
+                                        startIcon={<Update/>}
                                         variant="outlined"
                                         color="primary">
-
-                                    Yes
+                                    {editing ? (uploading ? "updating" : "update") : (uploading ? "uploading" : "upload")}
                                 </Button>
-                            </Box>
-                        </>) : (editing ? <Button onClick={() => {
-                        setAreYouSure(true)
-                    }}
-                                                  startIcon={<DeleteOutlined />}
-                                                  variant="outlined"
-                                                  className={classes.yesButton}>
-                        Delete
-                    </Button> : <></>)}
-                </Grid>
-                </Grid>
+                            </Grid><Grid container
+                                         spacing={0}
+                                         direction="row"
+                                         alignItems="center"
+                                         justify="center"
+                                         item
+                                         xs={12}
+
+                        >
+                            {areYouSure ? (
+                                <>
+                                    <Box m={1}>
+                                        <Button onClick={() => {
+                                            setAreYouSure(false)
+                                        }}
+                                                startIcon={<ClearOutlined/>}
+                                                variant="outlined"
+                                                className={classes.noButton}>
+                                            No
+                                        </Button>
+                                    </Box>
+                                    <Box m={1}>
+                                        <Button onClick={() => {
+                                            deleteListing().then()
+                                        }}
+                                                startIcon={<CheckOutlined/>}
+                                                variant="outlined"
+                                                color="primary">
+
+                                            Yes
+                                        </Button>
+                                    </Box>
+                                </>) : (editing ? <Button onClick={() => {
+                                setAreYouSure(true)
+                            }}
+                                                          startIcon={<DeleteOutlined/>}
+                                                          variant="outlined"
+                                                          className={classes.yesButton}>
+                                Delete
+                            </Button> : <></>)}
+                        </Grid>
+                        </Grid>
                     </Box>
                 </Paper>
             </Box>

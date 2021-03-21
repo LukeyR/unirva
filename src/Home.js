@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Home.css';
 import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import {
     Box,
     Button,
-    ButtonGroup,
+    Card,
+    CardContent,
+    CardMedia,
+    Divider,
     Grid,
-    List,
-    ListItem,
-    ListItemText,
-    MenuItem,
+    makeStyles,
     Menu,
-    makeStyles, Typography, Card, Divider, Tooltip, IconButton, Grow, CardMedia, CardContent, Snackbar
+    MenuItem,
+    Snackbar,
+    Typography
 } from "@material-ui/core";
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import HomeListingCard from "./listingCard";
-import Favourites from "./Favourites";
 import Skeleton from '@material-ui/lab/Skeleton';
-import {Chat, Edit, Favorite, FavoriteBorder} from "@material-ui/icons";
-import BrandLogo from "./BrandLogo";
 import brandLogo from "./img/Brandlogo.svg";
 import {useLocation} from "react-router-dom";
 import {Alert} from "@material-ui/lab";
@@ -56,7 +55,7 @@ const useStyles = makeStyles((theme) => (
         icon: {
             margin: "5px",
         },
-}));
+    }));
 
 const firestore = firebase.firestore();
 
@@ -150,18 +149,21 @@ function Home() {
         setShowLow(false);
         setShowHigh(false);
     }
+
     function listingsTimeOld() {
         setShowNew(false);
         setShowOld(true);
         setShowLow(false);
         setShowHigh(false);
     }
+
     function listingsPriceLow() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(true);
         setShowHigh(false);
     }
+
     function listingsPriceHigh() {
         setShowNew(false);
         setShowOld(false);
@@ -194,7 +196,7 @@ function Home() {
     }
 
     // check if data is still being loaded
-    if(!loading){
+    if (!loading) {
         var index = 0;
         listingsBig.forEach(doc => {
             listings[index] = doc.data();
@@ -207,7 +209,7 @@ function Home() {
         var index = 0;
         listings.forEach(doc => {
             doc.price = parseFloat(doc.price);
-            if (isNaN(doc.price)){
+            if (isNaN(doc.price)) {
                 doc.price = 0;
             }
             listingsPrice[index] = doc;
@@ -225,18 +227,18 @@ function Home() {
         emptyCards.push(<>
             <Card className={classes.root}>
                 <CardMedia>
-                <Skeleton animation="wave" variant="rect" className={classes.media} />
+                    <Skeleton animation="wave" variant="rect" className={classes.media}/>
                 </CardMedia>
                 <CardContent>
                     <div className={classes.title_price}>
-                        <Skeleton animation="wave" height={28} width="80%" style={{ marginBottom: 6}} />
-                        <Skeleton animation="wave" height={28} width="15%" style={{ marginBottom: 6, marginLeft: 40,}} />
+                        <Skeleton animation="wave" height={28} width="80%" style={{marginBottom: 6}}/>
+                        <Skeleton animation="wave" height={28} width="15%" style={{marginBottom: 6, marginLeft: 40,}}/>
 
                     </div>
-                <Divider variant="middle"/>
-                <Skeleton animation="wave" height={10} style={{ marginBottom: 6,  marginTop: 6}}/>
-                <Skeleton animation="wave" height={10}/>
-                <Skeleton animation="wave" height={10} width="65%" style={{ marginBottom: 6,  marginTop: 6}}/>
+                    <Divider variant="middle"/>
+                    <Skeleton animation="wave" height={10} style={{marginBottom: 6, marginTop: 6}}/>
+                    <Skeleton animation="wave" height={10}/>
+                    <Skeleton animation="wave" height={10} width="65%" style={{marginBottom: 6, marginTop: 6}}/>
                     <div className={classes.icons}>
                         <Skeleton variant="circle" width={40} height={40} className={classes.icon}/>
                         <Skeleton variant="circle" width={40} height={40} className={classes.icon}/>
@@ -254,69 +256,70 @@ function Home() {
                 </Alert>
             </Snackbar>
 
-            <Box display="flex" alignItems="center" justifyContent="center" style={{marginBottom: "-50px", marginTop: "-50px"}}>
-            <img src={brandLogo} alt="brand logo" width={40} height={40} className={classes.media}/>
-            <Typography variant="h2" style={{display: "inline", marginLeft: "15px", fontSize: "40px"}} color="textPrimary">
-                unirva
-            </Typography>
+            <Box display="flex" alignItems="center" justifyContent="center"
+                 style={{marginBottom: "-50px", marginTop: "-50px"}}>
+                <img src={brandLogo} alt="brand logo" width={40} height={40} className={classes.media}/>
+                <Typography variant="h2" style={{display: "inline", marginLeft: "15px", fontSize: "40px"}}
+                            color="textPrimary">
+                    unirva
+                </Typography>
             </Box>
-                {/*<h2>Categories</h2>*/}
-                {/*    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">*/}
-                {/*        <Button onClick={() => buttonClicked("A")}>A</Button>*/}
-                {/*        <Button onClick={() => buttonClicked("B")}>B</Button>*/}
-                {/*        <Button onClick={() => buttonClicked("C")}>C</Button>*/}
-                {/*        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>*/}
-                {/*    </ButtonGroup>*/}
-                {/*<h2>Listings in Bath</h2>*/}
-                {/*<h2>Sorting</h2>*/}
+            {/*<h2>Categories</h2>*/}
+            {/*    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">*/}
+            {/*        <Button onClick={() => buttonClicked("A")}>A</Button>*/}
+            {/*        <Button onClick={() => buttonClicked("B")}>B</Button>*/}
+            {/*        <Button onClick={() => buttonClicked("C")}>C</Button>*/}
+            {/*        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>*/}
+            {/*    </ButtonGroup>*/}
+            {/*<h2>Listings in Bath</h2>*/}
+            {/*<h2>Sorting</h2>*/}
             <Box className="sortingRow">
-                        <div className={classes.sorting}>
-                        <Typography display="inline" style={{marginRight: "10px"}}>
-                            Sort By:
+                <div className={classes.sorting}>
+                    <Typography display="inline" style={{marginRight: "10px"}}>
+                        Sort By:
+                    </Typography>
+                    <Button onClick={handleClickListItem} variant="outlined" color="primary">
+                        <Typography>
+                            {options[selectedIndex]}
                         </Typography>
-                        <Button onClick={handleClickListItem} variant="outlined" color="primary">
-                            <Typography>
-                                {options[selectedIndex]}
-                            </Typography>
-                            <UnfoldMoreIcon className={classes.moreIcon}/>
-                        </Button>
-                        </div>
-                        <Menu
-                            id="lock-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
+                        <UnfoldMoreIcon className={classes.moreIcon}/>
+                    </Button>
+                </div>
+                <Menu
+                    id="lock-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                >
+                    {options.map((option, index) => (
+                        <MenuItem
+                            key={option}
+                            selected={index === selectedIndex}
+                            onClick={(event) => handleMenuItemClick(event, index)}
                         >
-                            {options.map((option, index) => (
-                                <MenuItem
-                                    key={option}
-                                    selected={index === selectedIndex}
-                                    onClick={(event) => handleMenuItemClick(event, index)}
-                                >
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Menu>
 
-                </Box>
-
+            </Box>
 
 
             <Box p={1} m={1}>
                 <Grid container justify="center" spacing={4}>
                     {!loading ?
-                    ((showNew || showOld) ?
-                        ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
-                            getListingCard(listingObj, docsID[index])
-                        ))
-                        :
-                        ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
-                            getListingCard(listingObj, docsID[index])
-                        ))
+                        ((showNew || showOld) ?
+                                ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
+                                :
+                                ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
+                                    getListingCard(listingObj, docsID[index])
+                                ))
 
 
-                     ): emptyCards
+                        ) : emptyCards
                     }
                 </Grid>
             </Box>

@@ -1,24 +1,12 @@
 import React from "react";
-import {
-    Button,
-    ButtonGroup,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardContent,
-    CardMedia,
-    SvgIcon,
-    Typography,
-} from "@material-ui/core";
-import brandLogo from "../img/Brandlogo.svg";
+import {Button, ButtonGroup, Card, CardActions, CardContent, SvgIcon, Typography,} from "@material-ui/core";
 import {ReactComponent as GoogleLogo} from "../img/google_g_logo.svg";
 import "./Menu.css"
 import firebase from "firebase";
 import {auth} from "../firebase";
-import {Redirect} from "react-router-dom"
-import {useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom"
 import {useAuthState} from "react-firebase-hooks/auth";
-import { useStyles } from "./Menu.js"
+import {useStyles} from "./Menu.js"
 import BrandLogo from "../BrandLogo";
 
 let redirect = false;
@@ -48,12 +36,13 @@ function SignIn() {
     }
 
     return (
-        <Card className={classes.root} variant="contained" style={{height: 575}}> {/*Need outline as we remove border in css*/}
-        <div style={{ display:'flex', justifyContent:'center' }}>
-            <CardContent className={classes.cardActions}>
-                <BrandLogo />
-            </CardContent>
-        </div>
+        <Card className={classes.root} variant="contained"
+              style={{height: 575}}> {/*Need outline as we remove border in css*/}
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+                <CardContent className={classes.cardActions}>
+                    <BrandLogo/>
+                </CardContent>
+            </div>
 
             {/*log in button*/}
             <CardActions className={classes.cardActions}>
@@ -75,9 +64,10 @@ function SignIn() {
             {/*sign in with google button*/}
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
-                    <Button   startIcon={googleIcon()} onClick={() => {
+                    <Button startIcon={googleIcon()} onClick={() => {
                         signInWithGoogle()
-                    }} aria-label="Sign in with google" className={classes.button} style={{width: 125, marginBottom: 5,}}>
+                    }} aria-label="Sign in with google" className={classes.button}
+                            style={{width: 125, marginBottom: 5,}}>
                         Google
                     </Button>
                 </ButtonGroup>
@@ -111,10 +101,11 @@ function SignOut() {
     const history = useHistory();
 
     return (
-        <Card className={classes.root} variant="contained" style={{height: 575}}> {/*Need outline as we remove border in css*/}
+        <Card className={classes.root} variant="contained"
+              style={{height: 575}}> {/*Need outline as we remove border in css*/}
 
             <CardContent className={classes.cardActions}>
-                <BrandLogo />
+                <BrandLogo/>
             </CardContent>
 
             {/*profile button*/}
@@ -132,7 +123,7 @@ function SignOut() {
             <CardActions className={classes.cardActions}>
                 <ButtonGroup>
                     <Button onClick={() => {
-                            history.push("/logout")
+                        history.push("/logout")
                     }} className={classes.button}>
                         Sign Out
                     </Button>

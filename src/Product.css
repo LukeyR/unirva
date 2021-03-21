@@ -3,13 +3,13 @@
 
 .Product {
     background-color: #3274b3;
-}   
-
-.product-info {
-    text-align : left;
 }
 
-.form{
+.product-info {
+    text-align: left;
+}
+
+.form {
     display: grid;
     grid-column-gap: 20px;
     grid-row-gap: 50px;
@@ -39,7 +39,7 @@
     border: none;
 }
 
-.description{
+.description {
     grid-column-start: 2;
     grid-column-end: 7;
     background-color: #3274b3;
@@ -54,15 +54,15 @@
     resize: none;
 }
 
-.label1{
+.label1 {
     grid-column: 1;
 }
 
-.label2{
+.label2 {
     grid-column: 3;
 }
 
-.label3{
+.label3 {
     grid-column: 5;
 }
 

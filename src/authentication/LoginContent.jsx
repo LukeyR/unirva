@@ -2,16 +2,9 @@ import React from 'react';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../firebase";
 import {useHistory} from "react-router-dom";
-import {
-    Button,
-    ButtonGroup,
-    Card,
-    CardActions,
-    CardContent,
-    CardMedia,
-} from "@material-ui/core";
+import {Button, ButtonGroup, Card, CardActions, CardContent, CardMedia,} from "@material-ui/core";
 import brandLogo from "../img/Brandlogo.svg";
-import { useStyles } from "./Menu";
+import {useStyles} from "./Menu";
 
 
 const Header = () => {

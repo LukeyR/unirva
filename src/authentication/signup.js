@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Box, Button, Card, CardContent, Grid, Paper, TextField} from "@material-ui/core";
+import {Box, Button, CardContent, Grid, Paper, TextField} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import BrandLogo from "../BrandLogo";
 import {Autocomplete} from "@material-ui/lab";
@@ -40,8 +40,8 @@ function Signup() {
     const handleSubmit = async () => {
 
         try {
-            if((values.email.includes(".ac")||values.email.includes(".edu"))){
-                if(values.password===values.passwordConfirm){
+            if ((values.email.includes(".ac") || values.email.includes(".edu"))) {
+                if (values.password === values.passwordConfirm) {
                     const new_user = await firebaseConfig.auth().createUserWithEmailAndPassword(values.email, values.password);
                     await auth.currentUser.updateProfile({displayName: values.firstName + " " + values.lastName})
                     var userid = auth.currentUser.uid;
@@ -53,22 +53,19 @@ function Signup() {
                         University: values.university,
                         chatsNo: 0
                     });
-                    if(new_user.user != null){
+                    if (new_user.user != null) {
                         new_user.user.sendEmailVerification();
                         alert("Verification email sent.");
-                    }
-                    else{
+                    } else {
                         alert('user null');
                     }
                     setCurrentUser(true);
-                }
-                else{
+                } else {
                     console.log(values.password);
                     console.log(values.passwordConfirm);
                     throw 'Passwords do not match';
                 }
-            }
-            else{
+            } else {
                 throw 'Email is not a university email!';
             }
         } catch (error) {
@@ -76,106 +73,107 @@ function Signup() {
         }
     };
     if (currentUser) {
-        return <Redirect to="/Profile" />;
+        return <Redirect to="/Profile"/>;
     }
 
     return (
         <Box display="flex" justifyContent="center" alignItems="center" style={{margin: 30}}>
             <Grid container variant="contained">
                 <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
-                <Box p={3}>
-                    <CardContent className={classes.cardActions}>
-                        <BrandLogo/>
-                    </CardContent>
+                    <Box p={3}>
+                        <CardContent className={classes.cardActions}>
+                            <BrandLogo/>
+                        </CardContent>
 
-                    <Grid container spacing={3}>
-                        <Grid item xs={6}>
-                            <TextField
-                                error={emptyValues.firstName}
-                                fullWidth
-                                required
-                                value={values.firstName}
-                                id="First-Name"
-                                label="First Name"
-                                variant="outlined"
-                                color="primary"
-                                onChange={handleChange("firstName")}
-                            />
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    error={emptyValues.firstName}
+                                    fullWidth
+                                    required
+                                    value={values.firstName}
+                                    id="First-Name"
+                                    label="First Name"
+                                    variant="outlined"
+                                    color="primary"
+                                    onChange={handleChange("firstName")}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    error={emptyValues.lastName}
+                                    fullWidth
+                                    required
+                                    value={values.lastName}
+                                    id="Last-Name"
+                                    label="Last Name"
+                                    variant="outlined"
+                                    color="primary"
+                                    onChange={handleChange("lastName")}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                error={emptyValues.lastName}
-                                fullWidth
-                                required
-                                value={values.lastName}
-                                id="Last-Name"
-                                label="Last Name"
-                                variant="outlined"
-                                color="primary"
-                                onChange={handleChange("lastName")}
-                            />
-                        </Grid>
-                    </Grid>
-                    <TextField
-                        error={emptyValues.email}
-                        fullWidth
-                        required
-                        value={values.email}
-                        id="Email"
-                        label="Academic Email Address"
-                        variant="outlined"
-                        color="primary"
-                        style={{marginTop: 10}}
-                        onChange={handleChange("email")}
-                    />
-                    <TextField
-                        error={emptyValues.password}
-                        fullWidth
-                        required
-                        value={values.password}
-                        type="password"
-                        id="Password"
-                        label="Password"
-                        variant="outlined"
-                        color="primary"
-                        style={{marginTop: 10}}
-                        onChange={handleChange("password")}
-                    />
-                    <TextField
-                        error={emptyValues.passwordConfirm}
-                        fullWidth
-                        required
-                        type="password"
-                        value={values.passwordConfirm}
-                        id="Password-Confirm"
-                        label="Re-enter Password"
-                        variant="outlined"
-                        color="primary"
-                        style={{marginTop: 10}}
-                        onChange={handleChange("passwordConfirm")}
-                    />
-                    <Autocomplete
-                        id="University"
-                        options={unis}
-                        getOptionLabel={(option) => option.name}
-                        style={{ marginTop: 10 }}
-                        renderInput={(params) =>
-                            <TextField {...params} label="University" variant="outlined"
-                                       required
-                                       error={emptyValues.passwordConfirm}
-                                       value={values.university}
-                                       onChange={handleChange("university")}/>}
-                        onChange={handleChangeUni("university")}
+                        <TextField
+                            error={emptyValues.email}
+                            fullWidth
+                            required
+                            value={values.email}
+                            id="Email"
+                            label="Academic Email Address"
+                            variant="outlined"
+                            color="primary"
+                            style={{marginTop: 10}}
+                            onChange={handleChange("email")}
+                        />
+                        <TextField
+                            error={emptyValues.password}
+                            fullWidth
+                            required
+                            value={values.password}
+                            type="password"
+                            id="Password"
+                            label="Password"
+                            variant="outlined"
+                            color="primary"
+                            style={{marginTop: 10}}
+                            onChange={handleChange("password")}
+                        />
+                        <TextField
+                            error={emptyValues.passwordConfirm}
+                            fullWidth
+                            required
+                            type="password"
+                            value={values.passwordConfirm}
+                            id="Password-Confirm"
+                            label="Re-enter Password"
+                            variant="outlined"
+                            color="primary"
+                            style={{marginTop: 10}}
+                            onChange={handleChange("passwordConfirm")}
+                        />
+                        <Autocomplete
+                            id="University"
+                            options={unis}
+                            getOptionLabel={(option) => option.name}
+                            style={{marginTop: 10}}
+                            renderInput={(params) =>
+                                <TextField {...params} label="University" variant="outlined"
+                                           required
+                                           error={emptyValues.passwordConfirm}
+                                           value={values.university}
+                                           onChange={handleChange("university")}/>}
+                            onChange={handleChangeUni("university")}
 
-                    />
-                    <Button variant="outlined" color="primary"
-                            style={{ marginTop: 10 }}
-                            onClick={() => {
-                       handleSubmit()}}
-                    >
-                        Register
-                    </Button>
-                </Box>
+                        />
+                        <Button variant="outlined" color="primary"
+                                style={{marginTop: 10}}
+                                onClick={() => {
+                                    handleSubmit()
+                                }}
+                        >
+                            Register
+                        </Button>
+                    </Box>
                 </Paper>
             </Grid>
         </Box>
