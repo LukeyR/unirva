@@ -260,11 +260,7 @@ function DisplayProduct(props) {
             <Box p={1} m={1}
                  className={classes.container}
             >
-                <Grid container
-                      spacing={3}
-                >
-                    <Grid item xs={12}>
-                        <Paper>
+                <Paper>
                             <Box p={3} display="flex" justifyContent="space-between" alignItems="center">
                                 <Typography
                                     variant="h1"
@@ -281,8 +277,9 @@ function DisplayProduct(props) {
                                 </Typography>
                             </Box>
                             <Divider variant="middle"/>
+                            <Box display="flex" justifyContent="center" alignItems="center" >
                             <Grid container spacing={3}>
-                                <Grid item xs={12} md={3} lg={4}>
+                                <Grid item xs={12} md={6} lg={4}>
                                     <Box p={3} display="flex" justifyContent="center" alignItems="center">
                                         <img src={allImages !== [] ? allImages[selectedImageIndex] : emptyFrame}
                                              style={{
@@ -291,14 +288,17 @@ function DisplayProduct(props) {
                                              }}/>
                                     </Box>
                                 </Grid>
-                                <Grid container spacing={3} item xs={12} md={3} lg={4}>
-                                    <Box display="flex" justifyContent="flex-start" alignItems="center" flexWrap="wrap">
-                                        {smallImages}
+                                <Grid item xs={12} md={6} lg={4}>
+                                    <Box display="flex" justifyContent="space-evenly" justifyItems="center" alignItems="center" flexWrap="wrap">
+                                        <Grid container spacing={1}>
+                                            {smallImages}
+                                        </Grid>
                                     </Box>
                                 </Grid>
-                                <Grid container spacing={3} item xs={12} md={3} lg={4}>
-                                    <Box display="flex" justifyContent="center" alignItems="center" flexWrap="wrap"
+                                <Grid item xs={12} lg={4}>
+                                    <Box display="flex" justifyContent="space-around" alignItems="center" flexWrap="wrap"
                                          m={2} p={2}>
+                                        <Grid container spacing={4}>
                                         <Grid item xs={12}>
                                             <Box display="flex" justifyContent="center" alignItems="center"
                                                  flexDirection="column">
@@ -335,7 +335,6 @@ function DisplayProduct(props) {
                                                     variant="outlined"
                                                     color="primary"
                                                     onClick={() => {
-                                                        console.log(stateMyProduct)
                                                         history.push(path, stateMyProduct)
                                                     }}
                                                 >
@@ -357,7 +356,6 @@ function DisplayProduct(props) {
                                                     variant="outlined"
                                                     color="primary"
                                                     onClick={() => {
-                                                        console.log("Pushing from here");
                                                         history.push(userPath,
                                                             state)
                                                     }}
@@ -366,10 +364,12 @@ function DisplayProduct(props) {
                                                 </Button>
                                             </Box>
                                         </Grid>
+                                        </Grid>
                                     </Box>
                                 </Grid>
 
                             </Grid>
+                            </Box>
                             <Divider variant="middle"/>
                             <Box p={3} display="flex" justifyContent="space-between" alignItems="center">
                                 <Grid item xs={12}>
@@ -391,9 +391,6 @@ function DisplayProduct(props) {
                                 </Grid>
                             </Box>
                         </Paper>
-                    </Grid>
-                </Grid>
-
             </Box>
         </>
     )
