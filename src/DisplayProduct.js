@@ -126,10 +126,10 @@ function DisplayProduct(props) {
             url: listingUrl[0],
             extraUrls: listingExtraUrls,
         }
-        state = [{
+        state = {
             targetUserID: SellerID,
             currentUserID: userID
-        }]
+        }
     } else {
         msg = "Message Seller";
         gotoSeller = "Goto Seller Profile";
