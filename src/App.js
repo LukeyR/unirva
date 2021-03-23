@@ -25,7 +25,7 @@ import pink from "@material-ui/core/colors/pink";
 import {useDocumentData} from "react-firebase-hooks/firestore";
 import Favourites from "./Favourites";
 import SignUp from "./authentication/signup"
-import LogIn from "./authentication/login"
+import LogIn from "./authentication/Login"
 
 const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat", "/chatroom"]
 

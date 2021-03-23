@@ -63,6 +63,7 @@ var sortNewestToOldest = true;
 var listings = [];
 var listingsPrice = [];
 var docsID = [];
+var docPriceID = [];
 
 const options = [
     "Date: Newest - Oldest",
@@ -93,7 +94,6 @@ function Home() {
         setOpen(true);
     };
 
-    console.log(location.state)
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -186,7 +186,7 @@ function Home() {
 
         return (
             <Grid item>
-                <HomeListingCard {...props} />
+                <HomeListingCard key={listingObj.createdAt} {...props} />
             </Grid>
         )
     }
@@ -207,6 +207,7 @@ function Home() {
 
         // changes string-prices to float-prices. if not parseable, it sets it to 0
         var index = 0;
+
         listings.forEach(doc => {
             doc.price = parseFloat(doc.price);
             if (isNaN(doc.price)) {
@@ -247,6 +248,7 @@ function Home() {
             </Card>
         </>)
     }
+
 
     return (
         <div>
@@ -311,11 +313,11 @@ function Home() {
                     {!loading ?
                         ((showNew || showOld) ?
                                 ((showNew ? listings : listings.reverse()).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
+                                        getListingCard(listingObj, docsID[showNew ? index : docsID.length - 1 - index])
                                 ))
                                 :
                                 ((showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index])
+                                        getListingCard(listingObj, docsID[showLow ? index : docsID.length - 1 - index])
                                 ))
 
 
