@@ -97,7 +97,7 @@ function DisplayProduct(props) {
         sold = myListing.sold;
         if (sold == null) sold = "false";
     } else {
-        console.log("Still loading");
+
     }
 
     var userRef = firestore.collection('users').where("ID", "==", listingSeller);
@@ -206,7 +206,7 @@ function DisplayProduct(props) {
 
     for (let i = 0; i < 6; ++i) {
         smallImages.push(
-            <Grid item xs={4}>
+            <Grid item xs={6} sm={4}>
                 <Box p={3} display="flex" justifyContent="space-between" alignItems="center">
                     <img src={allImages !== [] && allImages[i] !== undefined ? allImages[i] : emptyFrame}
                          className={allImages !== [] && allImages[i] !== undefined ? classes.smallImages : classes.emptyFrame}

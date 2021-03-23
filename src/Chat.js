@@ -216,7 +216,7 @@ function Chat() {
                     numberOfResults++;
                 }
             })
-        } else console.log("Still loading");
+        } else {}
         return results;
     }
 
