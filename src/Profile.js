@@ -371,10 +371,10 @@ function Buyers(props)
                     <>
                         <><Link to={{
                             pathname: "/Profile",
-                            state: [{
+                            state: {
                                 targetUserID: buyer.id,
                                 currentUserID: userID
-                            }]
+                            }
                         }}>
                             <button>{buyer.name}</button>
                         </Link>: <button onClick={SendOffer}>Accept Offer</button></>
@@ -480,10 +480,10 @@ function DisplayReview()
                             {index == limit && credibilityScoreSeller != 0 ? <h1>Reviews as a seller</h1> : <></>}
                             <p className='Review test'><Link to={{
                                 pathname: "/Profile",
-                                state: [{
+                                state: {
                                     targetUserID: review.senderID,
                                     currentUserID: userID
-                                }]
+                                }
                             }}>
                                 <button>{review.sender}</button>
                             </Link>:{review.editable == "true" ?
