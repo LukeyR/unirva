@@ -1,9 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import {useHistory} from "react-router-dom";
-import {Button, Tooltip} from "@material-ui/core";
+import {Tooltip} from "@material-ui/core";
 import {auth} from "../firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
 

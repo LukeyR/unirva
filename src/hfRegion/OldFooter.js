@@ -3,8 +3,8 @@ import {Link} from 'react-router-dom';
 import './Footer.css';
 
 
-function OldFooter(){
-    return(
+function OldFooter() {
+    return (
         <div className="Footer">
             <div className="left">
                 <Link className="link" to="">Home</Link>

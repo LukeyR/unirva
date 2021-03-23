@@ -1,14 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import "./NavBar.css"
-import AccountCircleTwoToneIcon from "@material-ui/icons/AccountCircleTwoTone";
 import {makeStyles} from "@material-ui/styles";
 import auth from "../firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
 
 const profilePictureSize = "35"
 
-const useStyles = makeStyles( () => ({
+const useStyles = makeStyles(() => ({
     circle: {
         borderRadius: "50%",
         height: {profilePictureSize},
@@ -20,12 +19,12 @@ const useStyles = makeStyles( () => ({
     },
 }));
 
-function NavBar(){
+function NavBar() {
     const [user, loading, error] = useAuthState(auth);
 
     const classes = useStyles();
 
-    return(
+    return (
         <div className="NavBar">
             <div className="leftSide">
                 <input type="text" placeholder="Search.."/>

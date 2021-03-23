@@ -1,7 +1,9 @@
 import React from 'react';
 import {
-    AppBar, Avatar, Badge,
-    Button, createMuiTheme,
+    AppBar,
+    Avatar,
+    Badge,
+    Button,
     fade,
     Grid,
     IconButton,
@@ -28,10 +30,8 @@ import Fab from "@material-ui/core/Fab";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
-import App from "../App";
 import {ExitToApp, Favorite} from "@material-ui/icons";
 import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
-import {deepOrange} from "@material-ui/core/colors";
 
 
 const profilePictureSize = "35px"
@@ -118,7 +118,7 @@ const Header = ({theme}) => {
 
     let userID = null;
 
-    if(user != null) {
+    if (user != null) {
         userID = user.uid;
     }
 
@@ -126,7 +126,7 @@ const Header = ({theme}) => {
     var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
     let userDocRef = null;
-    if(user) {
+    if (user) {
         userID = user.uid;
         const usersRef = firestore.collection("users");
         userDocRef = usersRef.doc(userID)
@@ -189,7 +189,7 @@ const Header = ({theme}) => {
                             </Grid>
 
                             <Grid item xs={7} sm={10}>
-                                <div >
+                                <div>
                                     <div className={classes.search}>
                                         <div className={classes.searchIcon}>
                                             <SearchIcon/>
@@ -224,8 +224,9 @@ const Header = ({theme}) => {
                                                                 history.push("/chat")
                                                             }}
                                                 >
-                                                    <Badge badgeContent={!loadingMes ? unseenMessages.length : 0} color="secondary" >
-                                                    <Forum/>
+                                                    <Badge badgeContent={!loadingMes ? unseenMessages.length : 0}
+                                                           color="secondary">
+                                                        <Forum/>
                                                     </Badge>
                                                 </IconButton>
                                             </Tooltip>
@@ -235,7 +236,8 @@ const Header = ({theme}) => {
                                                 }
                                                             className={classes.profile}
                                                 >
-                                                    <Avatar alt="Profile Image" src={user.photoURL} style={{backgroundColor: theme.palette.secondary.main}}>
+                                                    <Avatar alt="Profile Image" src={user.photoURL}
+                                                            style={{backgroundColor: theme.palette.secondary.main}}>
                                                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                     </Avatar>
                                                     <ArrowDropDownIcon/>
@@ -244,9 +246,10 @@ const Header = ({theme}) => {
                                         </div>
                                     )
                                     : (
-                                        <Button style={{color: "white", display: "flex", justifyContent: "flex-end"}} onClick={() => {
-                                            history.push("/menu")
-                                        }}>Sign in</Button>
+                                        <Button style={{color: "white", display: "flex", justifyContent: "flex-end"}}
+                                                onClick={() => {
+                                                    history.push("/menu")
+                                                }}>Sign in</Button>
                                     )}
                                 <Menu
                                     id="menu-appbar"

@@ -1,35 +1,35 @@
-.Footer{
+.Footer {
     background-color: #3274b3;
     width: 100%;
     height: 80px;
     display: flex;
     position: sticky;
     bottom: 0;
-  }
-  
-  .Footer .left {
+}
+
+.Footer .left {
     flex: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .Footer .middle {
+}
+
+.Footer .middle {
     flex: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .Footer .right {
+}
+
+.Footer .right {
     flex: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  
-  .Footer .link {
+}
+
+.Footer .link {
     text-decoration: none;
     color: white;
     font-size: 25px;
-  }
+}

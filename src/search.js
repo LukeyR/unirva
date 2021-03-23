@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useLocation, Link } from "react-router-dom";
+import React, {useState} from 'react';
+import {Link, useLocation} from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import {useCollection} from 'react-firebase-hooks/firestore';
 import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
 
@@ -12,9 +12,9 @@ var listings = [];
 var listingsPrice = [];
 var docsID = [];
 
-function Search(){
+function Search() {
 
-    var searchTerm = useLocation().pathname.replace('/search=',''); // uses this so can enter dedicated URL - not only search from navbar
+    var searchTerm = useLocation().pathname.replace('/search=', ''); // uses this so can enter dedicated URL - not only search from navbar
     //var searchTerm = useLocation().state[0].iD; 
 
     var foundResults = false;
@@ -22,15 +22,15 @@ function Search(){
 
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // sort by time - newest
-    
+
     // retrieving them
     const [listingsBig, loading] = useCollection(query);
 
     // check if data is still being loaded
-    if(!loading){
+    if (!loading) {
         var index = 0;
         listingsBig.forEach(doc => {
-            if (doc.data().name.toLowerCase().includes(searchTerm.toLowerCase())){
+            if (doc.data().name.toLowerCase().includes(searchTerm.toLowerCase())) {
                 foundResults = true;
                 listings[index] = doc.data();
                 docsID[index] = doc.id;
@@ -42,7 +42,7 @@ function Search(){
         index = 0;
         listings.forEach(doc => {
             doc.price = parseFloat(doc.price);
-            if (isNaN(doc.price)){
+            if (isNaN(doc.price)) {
                 doc.price = 0;
             }
             listingsPrice[index] = doc;
@@ -52,7 +52,7 @@ function Search(){
         // sorts listings by price
         listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
-    } else{
+    } else {
         console.log("Still loading");
     }
 
@@ -81,18 +81,21 @@ function Search(){
         setShowLow(false);
         setShowHigh(false);
     }
+
     function refreshTimeOld() {
         setShowNew(false);
         setShowOld(true);
         setShowLow(false);
         setShowHigh(false);
     }
+
     function refreshPriceLow() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(true);
         setShowHigh(false);
     }
+
     function refreshPriceHigh() {
         setShowNew(false);
         setShowOld(false);
@@ -100,17 +103,21 @@ function Search(){
         setShowHigh(true);
     }
 
-    return(
+    return (
         <div>
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
                     <div className="sortingRow">
                         <ButtonGroup color="primary" aria-label="contained primary button group">
-                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date: Oldest - Newest</Button>
-                            <Button variant={showNew? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date: Newest - Oldest</Button>
-                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price: Low - High</Button>
-                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price: High - Low</Button>
+                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date:
+                                Oldest - Newest</Button>
+                            <Button variant={showNew ? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date:
+                                Newest - Oldest</Button>
+                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price:
+                                Low - High</Button>
+                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price:
+                                High - Low</Button>
                         </ButtonGroup>
                     </div>
                     {!loading ?
@@ -118,38 +125,38 @@ function Search(){
                             <Grid container justify="flex-start" spacing={4}>
                                 {(showNew || showOld) ?
                                     (showNew ? listings.reverse() : listings).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index]))
+                                        getListingCard(listingObj, docsID[index]))
                                     :
                                     (showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
-                                    getListingCard(listingObj, docsID[index]))
+                                        getListingCard(listingObj, docsID[index]))
                                 }
                             </Grid>
                         </Box>
-                    : <h1>Listings Loading...</h1>
+                        : <h1>Listings Loading...</h1>
                     }
                 </div>
-                ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
+            ) : (<h1>We did not find any results for '{searchTerm}'</h1>)}
         </div>
     )
 }
 
-function listingsRow(listings){
+function listingsRow(listings) {
     return (
         <div className="listingRow">
-            {listings.map((listing, index) =>{
+            {listings.map((listing, index) => {
                 return (
                     <Link to={{
-                    pathname:"/DisplayProduct",
-                    state:[{iD: docsID[index]}]
+                        pathname: "/DisplayProduct",
+                        state: [{iD: docsID[index]}]
                     }}>
-                        <div key={docsID[index].toString()} className="product">    
-                            <img src={listing.imgUrl} className='productImage' />
-                            <p className='productTitle' >{listing.name}</p>
-                            <p className='productPrice' >Price: £{listing.price}</p>    
+                        <div key={docsID[index].toString()} className="product">
+                            <img src={listing.imgUrl} className='productImage'/>
+                            <p className='productTitle'>{listing.name}</p>
+                            <p className='productPrice'>Price: £{listing.price}</p>
                         </div>
                     </Link>
                 )
-            })} 
+            })}
         </div>
     )
 }

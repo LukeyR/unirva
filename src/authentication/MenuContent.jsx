@@ -1,8 +1,7 @@
 import React from "react";
-import {makeStyles} from "@material-ui/styles";
 import {Grid} from "@material-ui/core";
 import MenuCard from "./MenuCard";
-import { useStyles } from "./Menu";
+import {useStyles} from "./Menu";
 
 const Content = () => {
 
