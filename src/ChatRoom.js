@@ -142,10 +142,10 @@ function ChatRoom(props) {
     targetID = props.location.state.targetUserID;
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;
+
     chatWindow = document.getElementById("chat-window");
-    // console.log(chatWindow)
     if (chatWindow) {
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+        chatWindow.scrollBottom = chatWindow.scrollHeight;
     }
 
     const colours = [deepOrange[500], pink[400], blue[300], red[500], green[500], yellow[500]];
@@ -281,6 +281,11 @@ function Chatroom() {
         return out
     }
 
+    
+    useEffect(() => {
+        dummy.current?.scrollIntoView({behavior: "smooth"});
+    });
+
     const messagesDivided = divideMessages(messages);
 
     function handleMsgClump(clump) {
@@ -303,6 +308,8 @@ function Chatroom() {
         return out
     }
 
+
+
     // console.log(messages)
     // console.log(messagesDivided)
 
@@ -320,8 +327,9 @@ function Chatroom() {
     return (
             <Box p={1} style={{width: "100%"}}>
                 {messages && messagesDivided.map(msgs => handleMsgClump(msgs).map(msg => msg))}
+                <div ref={dummy}/>
             </Box>
-    )
+        )
 }
 
 function MessageBox() {
@@ -371,6 +379,7 @@ function MessageBox() {
 
             if (chatWindow) {
                 chatWindow.scrollTop = chatWindow.scrollHeight;
+                //dummy.scrollIntoView({behavior: "smooth"});
             }
         }
 
@@ -398,7 +407,6 @@ function MessageBox() {
                            onChange={handleChange}
                            onKeyPress={onKeyPress}
                 />
-
                             {/*<input type="text" value={msgVal} onChange={(e) => setMsgVal(e.target.value)}></input>*/}
 
 
