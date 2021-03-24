@@ -144,6 +144,7 @@ function Upload(props) {
 
         index += 1
         setDisableUpload(index > 5)
+        console.log("image uploaded locally")
     }
 
     // generates random alphanumeric file name of length 25
@@ -208,54 +209,74 @@ function Upload(props) {
 
             let fileExtension = getFileExtension(image);
 
-            const uploadImg = storage.ref('images/' + fileName + fileExtension).put(image);
-            await uploadImg.on("state_changed", snapshot => {
-                }, error => {
-                    console.log(error);
-                },
-                () => {
-                    storage.ref('images').child(fileName + fileExtension).getDownloadURL().then(url => {
+            let storageRef = storage.ref('images/' + fileName + fileExtension);
 
-                        if (firstImage && lastImage) {
-                            listingsRef.add({
-                                name: values.name,
-                                description: values.description,
-                                price: values.price,
-                                imgUrl: url,
-                                seller: user.uid,
-                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                likedBy: [user.uid],
-                                interestedUsers: "",
-                                allPhotos: imageUrls
-                            }).then(() => {
-                                //TODO
-                                //  Snackbar success
-                                console.log('product submitted. redirecting...');
-                                history.push("/", {successful: true})
-                            });
-                        } else if (lastImage) {
-                            imageUrls.push(url)
-                            listingsRef.add({
-                                name: values.name,
-                                description: values.description,
-                                price: values.price,
-                                imgUrl: primaryUrl,
-                                seller: user.uid,
-                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                likedBy: [user.uid],
-                                interestedUsers: "",
-                                allPhotos: imageUrls
-                            }).then(() => {
-                                console.log('product submitted. redirecting...');
-                                history.push("/", {successful: true})
-                            });
-                        } else if (firstImage) {
-                            primaryUrl = url;
-                        } else {
-                            imageUrls.push(url)
-                        }
-                    });
+            return new Promise(function (resolve, reject) {
+                    const uploadImg = storageRef.put(image);
+
+                uploadImg.on("state_changed",
+                    (snapshot) => {
+                        console.log("uploading")
+                    }, (error) => {
+                        return reject(error)
+                    },
+                    () => {
+                        return resolve(uploadImg)
+                    }
+                    );
+                }).then(function (uploadImg) {
+                console.log(uploadImg)
+                uploadImg.ref.getDownloadURL().then(url => {
+
+                    if (firstImage && lastImage) {
+                        console.log("last image uploading: " + url)
+                        listingsRef.add({
+                            name: values.name,
+                            description: values.description,
+                            price: values.price,
+                            imgUrl: url,
+                            seller: user.uid,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            likedBy: [user.uid],
+                            interestedUsers: "",
+                            allPhotos: imageUrls
+                        }).then(() => {
+                            history.push("/", {successful: true})
+                            return('product submitted. redirecting...');
+                        });
+                    } else if (lastImage) {
+                        console.log("last image uploading: " + url)
+                        imageUrls.push(url)
+                        listingsRef.add({
+                            name: values.name,
+                            description: values.description,
+                            price: values.price,
+                            imgUrl: primaryUrl,
+                            seller: user.uid,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            likedBy: [user.uid],
+                            interestedUsers: "",
+                            allPhotos: imageUrls
+                        }).then(() => {
+                            console.log('product submitted. redirecting...');
+                            history.push("/", {successful: true})
+                            return('product submitted. redirecting...');
+                        });
+                    } else if (firstImage) {
+                        console.log("first image uploaded: " + url)
+                        primaryUrl = url;
+                        return('product submitted.');
+                    } else {
+                        console.log("next image uploading: " + url)
+                        imageUrls.push(url)
+                        return('product submitted.');
+                    }
                 });
+                }
+
+            )
+
+
         }
 
 
@@ -326,14 +347,18 @@ function Upload(props) {
             let counter = 0
             for (const image of values.images) {
                 if (values.images.length === 1) {
+                    console.log("only image")
                     await uploadImage(image, true, true)
                 } else if (counter === 0) {
+                    console.log("first image")
                     await uploadImage(image, true, false)
 
                 } else if (counter === values.images.length - 1) {
+                    console.log("last image")
                     await uploadImage(image, false, true)
 
                 } else {
+                    console.log("middle image")
                     await uploadImage(image, false, false)
 
                 }

@@ -143,9 +143,11 @@ const Profile = (theme) => {
             <div className="about">
                 {user ?
                     <>
+                        <Box display="flex" justifyContent="center">
                         <Avatar className={classes.profilePicture} alt="Profile Image" src={targetUser.photoURL}>
                             {targetName ? targetName.charAt(0).toUpperCase() : "?"}
                         </Avatar>
+                        </Box>
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
                         <p>

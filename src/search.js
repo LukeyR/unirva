@@ -3,8 +3,43 @@ import {Link, useLocation} from "react-router-dom";
 import './Home.css';
 import firebase from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
-import {Box, Button, ButtonGroup, Grid} from "@material-ui/core";
+import {Box, Button, ButtonGroup, Grid, makeStyles, Menu, MenuItem, Typography} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
+import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
+
+const useStyles = makeStyles((theme) => (
+    {
+        root: {
+            width: "300px",
+            margin: theme.spacing(2),
+        },
+        list: {
+            maxWidth: "300px"
+        },
+        moreIcon: {
+            color: theme.palette.text.primary
+        },
+        sorting: {
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: "30px",
+            alignItems: "center",
+        },
+        media: {
+            height: 200
+        },
+        title_price: {
+            display: "flex",
+            justifyContent: "flex-start",
+        },
+        icons: {
+            display: "flex",
+            justifyContent: "flex-end",
+        },
+        icon: {
+            margin: "5px",
+        },
+    }));
 
 const firestore = firebase.firestore();
 
@@ -12,7 +47,15 @@ var listings = [];
 var listingsPrice = [];
 var docsID = [];
 
+const options = [
+    "Date: Newest - Oldest",
+    "Date: Oldest - Newest",
+    "Price: High - Low",
+    "Price: Low - High",
+];
+
 function Search() {
+    const classes = useStyles();
 
     var searchTerm = useLocation().pathname.replace('/search=', ''); // uses this so can enter dedicated URL - not only search from navbar
     //var searchTerm = useLocation().state[0].iD; 
@@ -75,57 +118,116 @@ function Search() {
     const [showLow, setShowLow] = useState(false);
     const [showHigh, setShowHigh] = useState(false);
 
-    function refreshTimeNew() {
+    function listingsTimeNew() {
         setShowNew(true);
         setShowOld(false);
         setShowLow(false);
         setShowHigh(false);
     }
 
-    function refreshTimeOld() {
+    function listingsTimeOld() {
         setShowNew(false);
         setShowOld(true);
         setShowLow(false);
         setShowHigh(false);
     }
 
-    function refreshPriceLow() {
+    function listingsPriceLow() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(true);
         setShowHigh(false);
     }
 
-    function refreshPriceHigh() {
+    function listingsPriceHigh() {
         setShowNew(false);
         setShowOld(false);
         setShowLow(false);
         setShowHigh(true);
     }
 
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+
+    const handleClickListItem = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+
+    const handleMenuItemClick = (event, index) => {
+        setSelectedIndex(index);
+        setAnchorEl(null);
+        switch (index) {
+            case 0:
+                listingsTimeNew()
+                break;
+
+            case 1:
+                listingsTimeOld()
+                break;
+
+            case 2:
+                listingsPriceHigh()
+                break;
+
+            case 3:
+                listingsPriceLow()
+                break;
+            default:
+                console.log("Error Occourred: unkown index in Home.js/handleMenuItemClick")
+
+        }
+
+    };
+
     return (
         <div>
             {foundResults ? (
                 <div>
                     <h1>Search results for '{searchTerm}'</h1>
-                    <div className="sortingRow">
-                        <ButtonGroup color="primary" aria-label="contained primary button group">
-                            <Button variant={showOld ? "contained" : "outlined"} onClick={() => refreshTimeOld()}>Date:
-                                Oldest - Newest</Button>
-                            <Button variant={showNew ? "contained" : "outlined"} onClick={() => refreshTimeNew()}>Date:
-                                Newest - Oldest</Button>
-                            <Button variant={showLow ? "contained" : "outlined"} onClick={() => refreshPriceLow()}>Price:
-                                Low - High</Button>
-                            <Button variant={showHigh ? "contained" : "outlined"} onClick={() => refreshPriceHigh()}>Price:
-                                High - Low</Button>
-                        </ButtonGroup>
-                    </div>
+                    <Box className="sortingRow">
+                        <div className={classes.sorting}>
+                            <Typography display="inline" style={{marginRight: "10px"}}>
+                                Sort By:
+                            </Typography>
+                            <Button onClick={handleClickListItem} variant="outlined" color="primary">
+                                <Typography>
+                                    {options[selectedIndex]}
+                                </Typography>
+                                <UnfoldMoreIcon className={classes.moreIcon}/>
+                            </Button>
+                        </div>
+                        <Menu
+                            id="lock-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            {options.map((option, index) => (
+                                <MenuItem
+                                    key={option}
+                                    selected={index === selectedIndex}
+                                    onClick={(event) => handleMenuItemClick(event, index)}
+                                >
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+
+                    </Box>
                     {!loading ?
                         <Box p={2} m={2}>
                             <Grid container justify="flex-start" spacing={4}>
                                 {(showNew || showOld) ?
-                                    (showNew ? listings.reverse() : listings).map((listingObj, index) =>
-                                        getListingCard(listingObj, docsID[index]))
+                                    (showNew ? listings : listings.reverse()).map((listingObj, index) =>
+                                        getListingCard(listingObj, docsID[showNew ? index : docsID.length - 1 - index]))
                                     :
                                     (showLow ? listingsPrice : listingsPrice.reverse()).map((listingObj, index) =>
                                         getListingCard(listingObj, docsID[index]))
