@@ -175,7 +175,7 @@ const Header = ({theme}) => {
                             alignItems="center"
                             align="center"
                         >
-                            <Grid item xs={2} sm={1}
+                            <Grid item xs={1} sm={1}
                                   container
                                   diaply="flex"
                                   alignItems="flex-start">
@@ -215,7 +215,7 @@ const Header = ({theme}) => {
 
                             </Grid>
 
-                            <Grid item xs={3} sm={1}>
+                            <Grid item xs={4} sm={1}>
                                 {user ? (
                                         <div style={{display: "flex", alignItems: "center", justifyContent: "flex-end"}}>
                                             <Tooltip title="Chats" aria-label="Chats">
