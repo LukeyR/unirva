@@ -126,25 +126,27 @@ function Upload(props) {
 
 
     function handleChangeImage() {
-        const preview = document.getElementById(`image_output_${index}`)
-        const file = document.querySelector('input[type=file]').files[0]
-        const reader = new FileReader();
+        for (let i = 0; i < document.querySelector('input[type=file]').files.length; ++i) {
+            const preview = document.getElementById(`image_output_${index}`)
+            const file = document.querySelector('input[type=file]').files[i]
+            const reader = new FileReader();
 
 
-        reader.addEventListener('load', function () {
-            preview.src = reader.result;
-        }, false);
+            reader.addEventListener('load', function () {
+                preview.src = reader.result;
+            }, false);
 
-        if (file && file.type.match('image.*')) {
-            reader.readAsDataURL(file)
-            values.images.push(file);
-        } else {
-            alert('Please only upload images');
+            if (file && file.type.match('image.*')) {
+                reader.readAsDataURL(file)
+                values.images.push(file);
+            } else {
+                alert('Please only upload images');
+            }
+
+            index += 1
+            setDisableUpload(index > 5)
+            console.log("image uploaded locally")
         }
-
-        index += 1
-        setDisableUpload(index > 5)
-        console.log("image uploaded locally")
     }
 
     // generates random alphanumeric file name of length 25
@@ -478,6 +480,7 @@ function Upload(props) {
                                                 name="upload-photo"
                                                 type="file"
                                                 hidden
+                                                multiple
                                                 onChange={handleChangeImage}
                                             />
                                             Upload Image
