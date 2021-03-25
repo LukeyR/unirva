@@ -18,13 +18,36 @@ import {
 import {Chat, Edit, Favorite, FavoriteBorder} from "@material-ui/icons";
 import {useDocumentData} from "react-firebase-hooks/firestore";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: "300px",
     },
     icons: {
     },
-})
+    soldText: {
+        color: (theme.mode === "dark" ? "white" : "black"),
+        position: "absolute",
+        top: "30%",
+        left: "50%",
+        webkitTransform: "translate(-50%, -50%)",
+        // textStroke: "1px white",
+        msTransform: "translate(-50%, -50%)",
+        transform: "translate(-50%, -50%)",
+        textAlign: "center",
+        opacity: 1,
+    },
+    soldOverlay: {
+        borderRadius: "4px", position: "absolute",
+        top: "0",
+        bottom: "0",
+        left: "0",
+        right: "0",
+        height: "100%",
+        width: "100%",
+        transition: ".5s ease",
+        backgroundColor: (theme.mode === "dark" ? "rgba(0,0,0,0.5)" : "rgba(255,255,255,0.5)"),
+    }
+}))
 
 const firestore = firebase.firestore();
 
@@ -32,10 +55,11 @@ const firestore = firebase.firestore();
 //3.1+
 
 function HomeListingCard(props) {
-    const {name, price, imgUrl, seller, description, likedBy, allPhotos, categories, createdAt} = props.listingObj
+    const {name, price, imgUrl, seller, description, likedBy, allPhotos, categories, createdAt, sold} = props.listingObj
     const classes = useStyles();
     const history = useHistory();
     const [user] = useAuthState(auth);
+    console.log(sold)
 
     const date2 = new Date()
     const diffTime = Math.abs((date2.getTime() / 1000) - createdAt.seconds);
@@ -77,12 +101,15 @@ function HomeListingCard(props) {
         liked = false
     }
 
+
     return (
         // <Link to={{
         //     pathname:"/DisplayProduct",
         //     state:[{iD: props.iD}]
         // }}
         //       style={{textDecoration: "none"}}>
+
+        <Box position="relative">
         <Card className={classes.root}>
             <CardActionArea onClick={() => {
                 history.push({pathname: "/DisplayProduct", state: {iD: props.iD}})
@@ -98,7 +125,7 @@ function HomeListingCard(props) {
                             {name}
                         </Typography>
                         <Typography gutterBottom variant="subtitle1" component="h3" display="inline" align="right">
-                            £{price}
+                            {price === 0 ? "FREE" : "£" + price}
                         </Typography>
                     </Box>
                     <Divider variant="middle"/>
@@ -167,8 +194,23 @@ function HomeListingCard(props) {
                 </Tooltip>
             </Box>
             </Box>
+            <Box className={(sold ? classes.soldOverlay : {})}>
+                <Box className={classes.soldText}>
+                    { sold ?
+                        <Typography variant="h5" style={{fontSize: "25px"}}>
+                            <Box fontWeight="fontWeightBold">
+                                We're sorry, this listing is no longer available
+                            </Box>
+                        </Typography>
+                        :
+                        <></>
+                    }
+                </Box>
+            </Box>
+
         </Card>
-        // </Link>
+        </Box>
+
     )
 }
 

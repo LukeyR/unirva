@@ -54,6 +54,7 @@ function App() {
 
 
     const lightTheme = () => ({
+        mode: "light",
         palette: {
             type: "light",
             primary: {
@@ -70,6 +71,7 @@ function App() {
 
 
     const darkTheme = () => ({
+        mode: "dark",
         palette: {
             type: "dark",
             primary: {

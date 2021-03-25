@@ -352,7 +352,7 @@ function Home() {
             <Box p={1} m={1} style={{ marginRight: "56px", marginLeft: "56px",}}>
                 <Grid container justify="center" spacing={4}>
                     <Grid item xs={12} md={4}>
-                <Box display="flex" justifyContent="flex-start">
+                <Box display="flex" justifyContent="flex-start" alignItems="center">
                     <Typography display="inline" style={{marginRight: "10px"}}>
                         Filter:
                     </Typography>
@@ -365,7 +365,7 @@ function Home() {
                 </Box>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                <Box display="flex" justifyContent="center">
+                <Box display="flex" justifyContent="center" alignItems="center">
                     <Typography display="inline" style={{marginRight: "10px"}}>
                         Price Range:
                     </Typography>
@@ -378,7 +378,7 @@ function Home() {
                 </Box>
                     </Grid>
                     <Grid item xs={12} md={4}>
-                <Box display="flex" justifyContent="flex-end">
+                <Box display="flex" justifyContent="flex-end" alignItems="center">
                     <Typography display="inline" style={{marginRight: "10px"}}>
                         Sort By:
                     </Typography>
