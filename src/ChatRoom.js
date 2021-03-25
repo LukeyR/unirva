@@ -26,7 +26,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import {Send} from "@material-ui/icons";
 
 const firestore = firebase.firestore();
-var myID, target, targetID, senderIDDB, receiverIDDB, targetName;
+var myID, target, targetID, senderIDDB, receiverIDDB, targetName, interestedProduct;
 var oldText = "";
 
 var chatWindow = document.getElementById("chat-window");
@@ -140,6 +140,7 @@ function ChatRoom(props) {
     myID = props.location.state.myUID;
     target = props.location.state.targetUserName;
     targetID = props.location.state.targetUserID;
+    interestedProduct = props.location.state.interestedProduct
     var [me, loading] = useCollection(firestore.collection('users').where("ID", "==", myID));
     var chatNo;
 
@@ -160,6 +161,9 @@ function ChatRoom(props) {
     const history = useHistory();
 
     if (!loading) {
+        firestore.collection("users").doc(myID).update({
+            chattingWith: firebase.firestore.FieldValue.arrayUnion(targetID),
+        })
         me.forEach(me => {
             chatNo = me.data().chatsNo;
             if (chatNo == 0) {
@@ -218,18 +222,12 @@ function ChatRoom(props) {
                        <Chatroom/>
                    </Box>
                    <Divider variant="middle" style={{marginTop: "10px"}}/>
-                   <MessageBox/>
+                   <MessageBox interestedProduct={interestedProduct}/>
                </Paper>
            </Box>
         </>
     )
 
-}
-
-class SendIcon extends React.Component {
-    render() {
-        return null;
-    }
 }
 
 function Chatroom() {
@@ -332,7 +330,7 @@ function Chatroom() {
         )
 }
 
-function MessageBox() {
+function MessageBox(props) {
     const classes = useStyles();
 
     const [message, setMessage] = useState("");
@@ -359,7 +357,6 @@ function MessageBox() {
                 .catch((error) => {
                     console.error("Error adding document: ", error);
                 });
-            console.log("here")
 
             await messagesRef2.add({
                 msg: message,
@@ -395,6 +392,10 @@ function MessageBox() {
 
     const handleChange = (event) => {
         setMessage(event.target.value);
+    }
+
+    if (props.interestedProduct && message === "") {
+        setMessage("Hi, im interested in: " + props.interestedProduct + ". Is it still available");
     }
 
     return (

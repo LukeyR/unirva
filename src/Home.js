@@ -37,8 +37,6 @@ const useStyles = makeStyles((theme) => (
         },
         sorting: {
             display: "flex",
-            justifyContent: "flex-end",
-            marginRight: "30px",
             alignItems: "center",
         },
         media: {
@@ -72,6 +70,21 @@ const options = [
     "Price: Low - High",
 ];
 
+
+let categoryOptions = []
+const priceOptions = [
+    "None",
+    "< £10",
+    "£10 - £20",
+    "£20 - £50",
+    "£50 - £100",
+    "£100+",
+];
+
+const prices = [
+    -Infinity, 10, 20, 50, 100, Infinity
+]
+
 function Home() {
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
@@ -83,7 +96,11 @@ function Home() {
     const [showHigh, setShowHigh] = useState(false);
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorElCategory, setAnchorElCategory] = useState(null);
+    const [anchorElPrice, setAnchorElPrice] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+    const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
 
     const location = useLocation();
 
@@ -113,6 +130,16 @@ function Home() {
         setAnchorEl(event.currentTarget);
     };
 
+
+    const handleClickListItemCategory = (event) => {
+        setAnchorElCategory(event.currentTarget);
+    };
+
+
+    const handleClickListItemPrice = (event) => {
+        setAnchorElPrice(event.currentTarget);
+    };
+
     const handleMenuItemClick = (event, index) => {
         setSelectedIndex(index);
         setAnchorEl(null);
@@ -139,8 +166,20 @@ function Home() {
 
     };
 
+    const handleMenuItemClickCategory = (event, index) => {
+        setSelectedCategoryIndex(index);
+        setAnchorElCategory(null);
+    };
+
+    const handleMenuItemClickPrice = (event, index) => {
+        setSelectedPriceIndex(index);
+        setAnchorElPrice(null);
+    };
+
     const handleClose = () => {
         setAnchorEl(null);
+        setAnchorElCategory(null);
+        setAnchorElPrice(null);
     };
 
     function listingsTimeNew() {
@@ -184,11 +223,31 @@ function Home() {
             iD: iD,
         }
 
-        return (
-            <Grid item>
-                <HomeListingCard key={listingObj.createdAt} {...props} />
-            </Grid>
-        )
+        if (
+            (
+                categoryOptions[selectedCategoryIndex] === "None"
+                ||
+                listingObj.categories.includes(categoryOptions[selectedCategoryIndex])
+            )
+            &&
+            (
+                selectedPriceIndex === 0
+                ||
+                (
+                    prices[selectedPriceIndex-1] < listingObj.price
+                    &&
+                    listingObj.price < prices[selectedPriceIndex]
+                )
+            )
+        ) {
+            return (
+                <Grid item>
+                    <HomeListingCard key={listingObj.createdAt} {...props} />
+                </Grid>
+            )
+        } else {
+            return (<></>)
+        }
     }
 
     const buttonClicked = (button) => {
@@ -199,7 +258,13 @@ function Home() {
     if (!loading) {
         var index = 0;
         listingsBig.forEach(doc => {
+            for (const category of doc.data().categories) {
+                if (!categoryOptions.includes(category)) {
+                    categoryOptions.push(category)
+                }
+            }
             listings[index] = doc.data();
+            categoryOptions.push()
             docsID[index] = doc.id;
             index++;
         })
@@ -220,6 +285,14 @@ function Home() {
         // sorts listings by price
         listingsPrice = listingsPrice.sort((a, b) => (a.price > b.price) ? 1 : -1);
 
+    }
+
+    categoryOptions.sort()
+    if (!categoryOptions.includes("None")) {
+        categoryOptions.unshift("None")
+    } else if (categoryOptions[0] !== "None") {
+        categoryOptions = categoryOptions.filter(e => e !== 'None');
+        categoryOptions.unshift("None");
     }
 
     let emptyCards = []
@@ -251,7 +324,7 @@ function Home() {
 
 
     return (
-        <div>
+        <div style={{ marginBottom: "100px" }}>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity="success" variant="filled">
                     Your product was successfully submitted!
@@ -275,8 +348,37 @@ function Home() {
             {/*    </ButtonGroup>*/}
             {/*<h2>Listings in Bath</h2>*/}
             {/*<h2>Sorting</h2>*/}
-            <Box className="sortingRow">
-                <div className={classes.sorting}>
+
+            <Box p={1} m={1} style={{ marginRight: "56px", marginLeft: "56px",}}>
+                <Grid container justify="center" spacing={4}>
+                    <Grid item xs={12} md={4}>
+                <Box display="flex" justifyContent="flex-start">
+                    <Typography display="inline" style={{marginRight: "10px"}}>
+                        Filter:
+                    </Typography>
+                    <Button onClick={handleClickListItemCategory} variant="outlined" color="primary">
+                        <Typography>
+                            {categoryOptions[selectedCategoryIndex]}
+                        </Typography>
+                        <UnfoldMoreIcon className={classes.moreIcon}/>
+                    </Button>
+                </Box>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                <Box display="flex" justifyContent="center">
+                    <Typography display="inline" style={{marginRight: "10px"}}>
+                        Price Range:
+                    </Typography>
+                    <Button onClick={handleClickListItemPrice} variant="outlined" color="primary">
+                        <Typography>
+                            {priceOptions[selectedPriceIndex]}
+                        </Typography>
+                        <UnfoldMoreIcon className={classes.moreIcon}/>
+                    </Button>
+                </Box>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                <Box display="flex" justifyContent="flex-end">
                     <Typography display="inline" style={{marginRight: "10px"}}>
                         Sort By:
                     </Typography>
@@ -286,9 +388,11 @@ function Home() {
                         </Typography>
                         <UnfoldMoreIcon className={classes.moreIcon}/>
                     </Button>
-                </div>
+                </Box>
+                    </Grid>
+                </Grid>
                 <Menu
-                    id="lock-menu"
+                    id="filter-menu"
                     anchorEl={anchorEl}
                     keepMounted
                     open={Boolean(anchorEl)}
@@ -299,6 +403,40 @@ function Home() {
                             key={option}
                             selected={index === selectedIndex}
                             onClick={(event) => handleMenuItemClick(event, index)}
+                        >
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Menu>
+                <Menu
+                    id="category-menu"
+                    anchorEl={anchorElCategory}
+                    keepMounted
+                    open={Boolean(anchorElCategory)}
+                    onClose={handleClose}
+                >
+                    {categoryOptions.map((option, index) => (
+                        <MenuItem
+                            key={option}
+                            selected={index === selectedCategoryIndex}
+                            onClick={(event) => handleMenuItemClickCategory(event, index)}
+                        >
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Menu>
+                <Menu
+                    id="price-menu"
+                    anchorEl={anchorElPrice}
+                    keepMounted
+                    open={Boolean(anchorElPrice)}
+                    onClose={handleClose}
+                >
+                    {priceOptions.map((option, index) => (
+                        <MenuItem
+                            key={option}
+                            selected={index === selectedPriceIndex}
+                            onClick={(event) => handleMenuItemClickPrice(event, index)}
                         >
                             {option}
                         </MenuItem>

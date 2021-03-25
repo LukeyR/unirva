@@ -85,10 +85,12 @@ const max_index = 7
  * Tbh, I am not entirely sure what all the lines do, but it seems to work.
  */
 function Upload(props) {
+    console.log(props)
     const editing = props.location.state !== undefined
     const name = editing ? props.location.state.name : "";
     const price = editing ? props.location.state.price : "";
     const url = editing ? [props.location.state.url] : [];
+    const tags = editing ? props.location.state.categories.join(", ") : "";
     const extraPhotos = editing ? props.location.state.extraUrls : [];
     const description = editing ? props.location.state.description : "";
     const id = editing ? props.location.state.iDListing : "";
@@ -101,6 +103,7 @@ function Upload(props) {
         price: price,
         images: url.concat(extraPhotos),
         description: description,
+        tags: tags,
     })
     const [emptyValues, setEmptyValues] = useState({
         name: false,
@@ -241,7 +244,8 @@ function Upload(props) {
                             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                             likedBy: [user.uid],
                             interestedUsers: "",
-                            allPhotos: imageUrls
+                            allPhotos: imageUrls,
+                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
                         }).then(() => {
                             history.push("/", {successful: true})
                             return('product submitted. redirecting...');
@@ -258,7 +262,8 @@ function Upload(props) {
                             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                             likedBy: [user.uid],
                             interestedUsers: "",
-                            allPhotos: imageUrls
+                            allPhotos: imageUrls,
+                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
                         }).then(() => {
                             console.log('product submitted. redirecting...');
                             history.push("/", {successful: true})
@@ -290,6 +295,7 @@ function Upload(props) {
                     name: values.name,
                     description: values.description,
                     price: values.price,
+                    categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
                 })
                 console.log("listing updated")
                 history.push("/")
@@ -314,7 +320,8 @@ function Upload(props) {
                                 name: values.name,
                                 description: values.description,
                                 price: values.price,
-                                allPhotos: imageUrls
+                                allPhotos: imageUrls,
+                                categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
                             }).then(() => {
                                 console.log('product submitted. redirecting...');
                                 history.push("/", {successful: true})
@@ -369,8 +376,6 @@ function Upload(props) {
         }
 
     }
-
-    console.log(values.description)
 
     const getImageName = (url) => {
         let baseUrl = 'https://firebasestorage.googleapis.com/v0/b/ipproject-27ae8.appspot.com/o/images%2F';
@@ -516,6 +521,20 @@ function Upload(props) {
                                     helperText="Enter a good description for your product"
                                     className={classes.name}
                                     onChange={handleChange("description")}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    value={values.tags}
+                                    id="Product-Tags"
+                                    label="Product Tags"
+                                    variant="outlined"
+                                    color="primary"
+                                    helperText="Enter some tags for your product (seperate with commas (,)"
+                                    className={classes.name}
+                                    onChange={handleChange("tags")}
                                 />
                             </Grid>
                             <LinearProgress style={{width: `${loadingBar}%`}} color="secondary"/>

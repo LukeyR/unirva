@@ -23,8 +23,6 @@ const useStyles = makeStyles({
         width: "300px",
     },
     icons: {
-        display: "flex",
-        justifyContent: "flex-end",
     },
 })
 
@@ -34,10 +32,14 @@ const firestore = firebase.firestore();
 //3.1+
 
 function HomeListingCard(props) {
-    const {name, price, imgUrl, seller, description, likedBy, allPhotos} = props.listingObj
+    const {name, price, imgUrl, seller, description, likedBy, allPhotos, categories, createdAt} = props.listingObj
     const classes = useStyles();
     const history = useHistory();
     const [user] = useAuthState(auth);
+
+    const date2 = new Date()
+    const diffTime = Math.abs((date2.getTime() / 1000) - createdAt.seconds);
+    const diffDays = Math.floor(diffTime / (60 * 60 * 24));
 
 
     const [sellerDoc, loadingSellerDoc] = useDocumentData(firestore.collection("users").doc(seller))
@@ -109,7 +111,21 @@ function HomeListingCard(props) {
                 </CardContent>
 
             </CardActionArea>
-            <div className={classes.icons}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" justifyContent="flex-start" alignItems="center" style={{marginLeft: "15px"}}>
+                <Typography variant="body2" color="textSecondary" component="p" noWrap>
+
+                    {diffDays === 0 ?
+                        "Added today"
+                        :
+                        ( diffDays === 1 ?
+                            "Added Yesterday" :
+                            `Added ${diffDays} days ago.`
+                        )
+                    }
+                </Typography>
+            </Box>
+            <Box display="flex" justifyContent="flex-end" className={classes.icons} alignItems="center">
                 <Tooltip title={user && seller === user.uid ? "Edit your listing" : "Message seller"}>
                     <IconButton onClick={() => {
                         user && seller === user.uid ?
@@ -122,6 +138,7 @@ function HomeListingCard(props) {
                                     price: price,
                                     url: imgUrl,
                                     extraUrls: allPhotos,
+                                    categories: categories,
                                 },
                             })
                             : (user) ?
@@ -148,7 +165,8 @@ function HomeListingCard(props) {
                             <FavoriteBorder/>}
                     </IconButton>
                 </Tooltip>
-            </div>
+            </Box>
+            </Box>
         </Card>
         // </Link>
     )

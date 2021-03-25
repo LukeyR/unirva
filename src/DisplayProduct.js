@@ -71,7 +71,7 @@ function DisplayProduct(props) {
     const listingsRef = firestore.collection('listings').doc(id);
     var [document, loading] = useCollection(listingsRef);
 
-    var listingName = "Loading", listingDes = "Loading", listingPrice = "Loading", listingSeller = "Loading";
+    var listingName = "Loading", listingDes = "Loading", listingPrice = "Loading", listingSeller = "Loading", listingTags = [];
     var listingUrl = [];
     var userName = "Loading";
     var myListing = null;
@@ -90,6 +90,7 @@ function DisplayProduct(props) {
         listingSeller = myListing.seller;
         listingPrice = myListing.price;
         listingUrl = [myListing.imgUrl];
+        listingTags = myListing.categories;
         listingExtraUrls = myListing.allPhotos;
         oldVal = myListing.interestedUsers;
         allImages = listingUrl.concat(listingExtraUrls)
@@ -125,6 +126,7 @@ function DisplayProduct(props) {
             price: listingPrice,
             url: listingUrl[0],
             extraUrls: listingExtraUrls,
+            categories: listingTags,
         }
         state = {
             targetUserID: SellerID,
@@ -138,7 +140,8 @@ function DisplayProduct(props) {
         stateMyProduct = {
             targetUserName: userName,
             targetUserID: SellerID,
-            myUID: userID
+            myUID: userID,
+            interestedProduct: listingName,
         }
         state = {
             targetUserID: SellerID,
@@ -390,6 +393,22 @@ function DisplayProduct(props) {
                                     </Paper>
                                 </Grid>
                             </Box>
+
+                         <Box p={3}>
+                             <Box display="flex" justifyContent="space-between" alignItems="center">
+                                 <Typography variant="body2" color="textSecondary"
+                                 >
+                                     Tags:
+                                 </Typography>
+                             </Box>
+                             <Box display="flex" justifyContent="space-between" alignItems="center">
+                             <Typography variant="body2" color="textSecondary"
+                                         >
+                                 {listingTags.join(", ")}
+                             </Typography>
+                             </Box>
+                         </Box>
+
                         </Paper>
             </Box>
         </>

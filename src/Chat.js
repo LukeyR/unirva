@@ -170,6 +170,7 @@ function ProfileCard(props) {
 function Chat() {
 
     const classes = useStyles();
+    const history = useHistory();
     const [user] = useAuthState(auth);
     const [searchTerm, setSearchTerm] = useState("")
 
@@ -184,9 +185,10 @@ function Chat() {
     var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
     var [me, loading] = useCollectionData(userRef);
-    var myChats = "Loading";
+    var myChats = [];
+    if (!loading) myChats = me[0].chattingWith;
     const [searchVal, setSearch] = useState("");
-    if (!loading) myChats = me[0].chatsNo;
+
     var unseen = 0;
 
     if (!loadingMes) {
@@ -199,7 +201,6 @@ function Chat() {
         setSearch(e.target.value);
     }
 
-
     // Searching for a user
     const search = () => {
         results = [];
@@ -207,7 +208,7 @@ function Chat() {
         if (!loadingUsers) {
             users.forEach(usr => {
                 let name = usr.data().Name;
-                if (name.toLowerCase().includes(searchVal.toLowerCase()) && usr.id != user.uid) {
+                if (name.toLowerCase().includes(searchVal.toLowerCase()) && usr.id != user.uid && myChats.includes(usr.id)) {
                     var count = 0
                     unseenMessages.forEach(msg => {
                         if (msg.SenderID == usr.data().ID) count++;
@@ -222,52 +223,50 @@ function Chat() {
 
 
     return (
-        <div className={classes.root}>
-            {/*<h1>Chat</h1>*/}
-            {/*<p>Right, let's get going!</p>*/}
-            {/*<h1>You have {myChats} chats open.</h1>*/}
-            {/*<h1>You have {unseen} unseen messages.</h1>*/}
-            <Box m={3} stlye={{marginBottom: "-30px"}}>
-                <Typography variant="h2">
-                    Your Chats
-                </Typography>
-            </Box>
-            <Divider variant="middle" style={{marginBottom: "20px"}}/>
-            <Box className="sortingRow">
-                <div className={classes.sorting}>
-                    <Typography variant="subtitle1" display="inline"
-                                stlye={{marginLeft: "20px", justifyContent: "flex-start",}}>
-                        {unseen} unseen messages
+        <>
+            {!user ? history.push("./menu") : <div className={classes.root}>
+                <Box m={3} stlye={{marginBottom: "-30px"}}>
+                    <Typography variant="h2">
+                        Your Chats
                     </Typography>
-                    <Box className={classes.searchBox}>
-                        <Typography display="inline" style={{marginRight: "10px"}}>
-                            Filter:
+                </Box>
+                <Divider variant="middle" style={{marginBottom: "20px"}}/>
+                <Box className="sortingRow">
+                    <div className={classes.sorting}>
+                        <Typography variant="subtitle1" display="inline"
+                                    stlye={{marginLeft: "20px", justifyContent: "flex-start",}}>
+                            {unseen} unseen messages
                         </Typography>
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
-                                <SearchIcon/>
-                            </div>
-                            <InputBase
-                                fullWidth={true}
-                                placeholder="Search…"
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
+                        <Box className={classes.searchBox}>
+                            <Typography display="inline" style={{marginRight: "10px"}}>
+                                Filter:
+                            </Typography>
+                            <div className={classes.search}>
+                                <div className={classes.searchIcon}>
+                                    <SearchIcon/>
+                                </div>
+                                <InputBase
+                                    fullWidth={true}
+                                    placeholder="Search…"
+                                    classes={{
+                                        root: classes.inputRoot,
+                                        input: classes.inputInput,
+                                    }}
+                                    style={{
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
 
-                                inputProps={{'aria-label': 'search'}}
-                                onChange={editSearchTerm}
-                            />
-                        </div>
-                    </Box>
-                </div>
-            </Box>
-            <ResultContainer names={search()}/>
-        </div>
+                                    inputProps={{'aria-label': 'search'}}
+                                    onChange={editSearchTerm}
+                                />
+                            </div>
+                        </Box>
+                    </div>
+                </Box>
+                <ResultContainer names={search()}/>
+            </div>}
+        </>
     )
 }
 
