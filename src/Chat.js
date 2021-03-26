@@ -208,7 +208,7 @@ function Chat() {
         if (!loadingUsers) {
             users.forEach(usr => {
                 let name = usr.data().Name;
-                if (name.toLowerCase().includes(searchVal.toLowerCase()) && usr.id != user.uid && myChats.includes(usr.id)) {
+                if (name.toLowerCase().includes(searchVal.toLowerCase()) && usr.id != user.uid && myChats && myChats.includes(usr.id)) {
                     var count = 0
                     unseenMessages.forEach(msg => {
                         if (msg.SenderID == usr.data().ID) count++;
