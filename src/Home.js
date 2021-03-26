@@ -257,6 +257,7 @@ function Home() {
     // check if data is still being loaded
     if (!loading) {
         var index = 0;
+        listings = [];
         listingsBig.forEach(doc => {
             for (const category of doc.data().categories) {
                 if (!categoryOptions.includes(category)) {
