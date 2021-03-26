@@ -22,7 +22,9 @@ const Register = () => {
                         LastName: lastname.value,
                         University: university.value,
                         chatsNo: 0,
-                        chattingWith: []
+                        chattingWith: [],
+                        darkModeEnable: false,
+
                     });
                     if (new_user.user != null) {
                         new_user.user.sendEmailVerification();
