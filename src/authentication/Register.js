@@ -21,7 +21,8 @@ const Register = () => {
                         Name: firstname.value,
                         LastName: lastname.value,
                         University: university.value,
-                        chatsNo: 0
+                        chatsNo: 0,
+                        chattingWith: []
                     });
                     if (new_user.user != null) {
                         new_user.user.sendEmailVerification();
@@ -40,6 +41,7 @@ const Register = () => {
             }
         } catch (error) {
             alert(error);
+            return <Reditect to ="/Register"/>;
         }
     };
     if (currentUser) {
