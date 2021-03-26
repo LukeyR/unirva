@@ -334,6 +334,7 @@ function MessageBox(props) {
     const classes = useStyles();
 
     const [message, setMessage] = useState("");
+    const [templateLoaded, setTemplateLoaded] = useState(false);
 
     const messagesRef1 = firestore.collection('users/' + senderIDDB + "/chats"); // me
     const messagesRef2 = firestore.collection('users/' + receiverIDDB + "/chats"); // the other person
@@ -394,8 +395,10 @@ function MessageBox(props) {
         setMessage(event.target.value);
     }
 
-    if (props.interestedProduct && message === "") {
+    console.log(templateLoaded)
+    if (props.interestedProduct && message === "" && !templateLoaded) {
         setMessage("Hi, im interested in: " + props.interestedProduct + ". Is it still available");
+        setTemplateLoaded(true);
     }
 
     return (
