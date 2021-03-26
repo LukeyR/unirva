@@ -234,9 +234,9 @@ function Home() {
                 selectedPriceIndex === 0
                 ||
                 (
-                    prices[selectedPriceIndex-1] < listingObj.price
+                    prices[selectedPriceIndex-1] <= listingObj.price
                     &&
-                    listingObj.price < prices[selectedPriceIndex]
+                    listingObj.price <= prices[selectedPriceIndex]
                 )
             )
         ) {
@@ -256,6 +256,7 @@ function Home() {
 
     // check if data is still being loaded
     if (!loading) {
+        listings = []
         var index = 0;
         listings = [];
         listingsBig.forEach(doc => {
