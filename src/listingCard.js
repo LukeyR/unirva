@@ -80,9 +80,6 @@ function HomeListingCard(props) {
             firestore.collection("listings").doc(props.iD).update({
                 likedBy: firebase.firestore.FieldValue.arrayUnion(user.uid),
             })
-            firestore.collection("users").doc(user.uid).update({
-                likes: firebase.firestore.FieldValue.arrayUnion(props.iD),
-            })
         }
         liked = true
     }
