@@ -245,7 +245,7 @@ function Upload(props) {
                             likedBy: [user.uid],
                             interestedUsers: "",
                             allPhotos: imageUrls,
-                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
+                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')).map(str => str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()),
                         }).then(() => {
                             history.push("/", {successful: true})
                             return('product submitted. redirecting...');
@@ -263,7 +263,7 @@ function Upload(props) {
                             likedBy: [user.uid],
                             interestedUsers: "",
                             allPhotos: imageUrls,
-                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
+                            categories: values.tags.split(",").map(str => str.replace(/\s/g, '')).map(str => str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()),
                         }).then(() => {
                             console.log('product submitted. redirecting...');
                             history.push("/", {successful: true})
@@ -295,7 +295,7 @@ function Upload(props) {
                     name: values.name,
                     description: values.description,
                     price: values.price,
-                    categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
+                    categories: values.tags.split(",").map(str => str.replace(/\s/g, '')).map(str => str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()),
                 })
                 console.log("listing updated")
                 history.push("/")
@@ -321,7 +321,7 @@ function Upload(props) {
                                 description: values.description,
                                 price: values.price,
                                 allPhotos: imageUrls,
-                                categories: values.tags.split(",").map(str => str.replace(/\s/g, '')),
+                                categories: values.tags.split(",").map(str => str.replace(/\s/g, '')).map(str => str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()),
                             }).then(() => {
                                 console.log('product submitted. redirecting...');
                                 history.push("/", {successful: true})
