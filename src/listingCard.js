@@ -174,7 +174,8 @@ function HomeListingCard(props) {
                                 state: {
                                     targetUserID: seller,
                                     targetUserName: sellerDoc.Name,
-                                    myUID: user.uid
+                                    myUID: user.uid,
+                                    interestedProduct: name,
                                 },
                             }))
                             :
