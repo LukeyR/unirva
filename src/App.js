@@ -27,7 +27,7 @@ import Favourites from "./Favourites";
 import SignUp from "./authentication/signup"
 import LogIn from "./authentication/Login"
 
-const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat", "/ChatRoom"]
+const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat", "/ChatRoom", "/chatroom"]
 
 
 function HideFooter() {
