@@ -395,7 +395,6 @@ function MessageBox(props) {
         setMessage(event.target.value);
     }
 
-    console.log(templateLoaded)
     if (props.interestedProduct && message === "" && !templateLoaded) {
         setMessage("Hi, im interested in: " + props.interestedProduct + ". Is it still available");
         setTemplateLoaded(true);

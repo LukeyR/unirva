@@ -59,7 +59,6 @@ function HomeListingCard(props) {
     const classes = useStyles();
     const history = useHistory();
     const [user] = useAuthState(auth);
-    console.log(sold)
 
     const date2 = new Date()
     const diffTime = Math.abs((date2.getTime() / 1000) - createdAt.seconds);
@@ -174,7 +173,8 @@ function HomeListingCard(props) {
                                 state: {
                                     targetUserID: seller,
                                     targetUserName: sellerDoc.Name,
-                                    myUID: user.uid
+                                    myUID: user.uid,
+                                    interestedProduct: name,
                                 },
                             }))
                             :
@@ -194,7 +194,7 @@ function HomeListingCard(props) {
                 </Tooltip>
             </Box>
             </Box>
-            <Box className={(sold ? classes.soldOverlay : {})}>
+            <Box className={(sold ? classes.soldOverlay : "")}>
                 <Box className={classes.soldText}>
                     { sold ?
                         <Typography variant="h5" style={{fontSize: "25px"}}>
