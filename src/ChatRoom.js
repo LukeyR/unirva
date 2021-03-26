@@ -164,6 +164,9 @@ function ChatRoom(props) {
         firestore.collection("users").doc(myID).update({
             chattingWith: firebase.firestore.FieldValue.arrayUnion(targetID),
         })
+        firestore.collection("users").doc(targetID).update({
+            chattingWith: firebase.firestore.FieldValue.arrayUnion(myID),
+        })
         me.forEach(me => {
             chatNo = me.data().chatsNo;
             if (chatNo == 0) {
