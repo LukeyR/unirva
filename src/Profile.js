@@ -488,7 +488,7 @@ function DisplayReview()
                                 }
                             }}>
                                 <button>{review.sender}</button>
-                            </Link>:{review.editable == "true" ?
+                            </Link>:{review.editable == "true" && review.senderID == userID?
                                 <>
                                     <form className='reviewForm' onSubmit={updateReview}>
                                         <label>Review text: </label><input type="text" placeholder={review.reviewDescr}
