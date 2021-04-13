@@ -42,7 +42,7 @@ function Signup() {
             firebaseConfig.auth().sendPasswordResetEmail(
                 values.email)
                 .then(function() {
-                    alert("If an account wirh this email exists, an email has been sent to " + values.email + " to request a reset of your password.\n" +
+                    alert("If an account with this email exists, an email has been sent to " + values.email + " to request a reset of your password.\n" +
                         "It may take a few minutes to arrive. Remember to check your spam folder.")
                     history.push("/login")
                 })
