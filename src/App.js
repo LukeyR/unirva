@@ -26,6 +26,7 @@ import {useDocumentData} from "react-firebase-hooks/firestore";
 import Favourites from "./Favourites";
 import SignUp from "./authentication/signup"
 import LogIn from "./authentication/Login"
+import RequestPasswordReset from "./authentication/RequestPasswordReset";
 
 const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat", "/ChatRoom", "/chatroom"]
 
@@ -121,6 +122,7 @@ function App() {
                     <Route exact path="/Logout" component={Logout}/>
                     <Route exact path="/signout" component={Logout}/>
                     <Route exact path="/SellerProfile" component={SellerProfile}/>
+                    <Route exact path="/ResetPassword" component={RequestPasswordReset}/>
                     {location.pathname === "/" ? <Home/> : <></>}
                     {HideFooter()}
                 </div>

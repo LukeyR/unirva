@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {Box, Button, CardContent, Grid, Paper, TextField} from "@material-ui/core";
+import {Box, Button, CardContent, Grid, Paper, TextField, Typography} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import BrandLogo from "../BrandLogo";
 import firebaseConfig from "../firebase";
@@ -52,7 +52,7 @@ function Signup() {
     return (
         <Box display="flex" justifyContent="center" alignItems="center" style={{margin: 30}}>
             <Grid container variant="contained">
-                <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
+                <Paper className={classes.root}> {/*Need outline as we remove border in css*/}
                     <Box p={3}>
                         <CardContent className={classes.cardActions}>
                             <BrandLogo/>
@@ -82,14 +82,20 @@ function Signup() {
                             style={{marginTop: 10}}
                             onChange={handleChange("password")}
                         />
+                        <Box display={"flex"} alignItems="center" justifyContent={"space-between"} style={{marginTop: 10}}>
                         <Button variant="outlined" color="primary"
-                                style={{marginTop: 10}}
                                 onClick={() => {
                                     handleSubmit()
                                 }}
                         >
                             Log in
                         </Button>
+                            <Typography variant="body2" color="textSecondary" onClick={() => {
+                                history.push("/ResetPassword")
+                            }}>
+                                Forgot your password?
+                            </Typography>
+                        </Box>
                     </Box>
                 </Paper>
             </Grid>

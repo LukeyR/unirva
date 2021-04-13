@@ -55,23 +55,23 @@ function SignIn() {
                 </ButtonGroup>
             </CardActions>
 
-            <CardContent>
-                <Typography className={classes.typography}>
-                    or sign in with:
-                </Typography>
-            </CardContent>
+            {/*<CardContent>*/}
+            {/*    <Typography className={classes.typography}>*/}
+            {/*        or sign in with:*/}
+            {/*    </Typography>*/}
+            {/*</CardContent>*/}
 
             {/*sign in with google button*/}
-            <CardActions className={classes.cardActions}>
-                <ButtonGroup>
-                    <Button startIcon={googleIcon()} onClick={() => {
-                        signInWithGoogle()
-                    }} aria-label="Sign in with google" className={classes.button}
-                            style={{width: 125, marginBottom: 5,}}>
-                        Google
-                    </Button>
-                </ButtonGroup>
-            </CardActions>
+            {/*<CardActions className={classes.cardActions}>*/}
+            {/*    <ButtonGroup>*/}
+            {/*        <Button startIcon={googleIcon()} onClick={() => {*/}
+            {/*            signInWithGoogle()*/}
+            {/*        }} aria-label="Sign in with google" className={classes.button}*/}
+            {/*                style={{width: 125, marginBottom: 5,}}>*/}
+            {/*            Google*/}
+            {/*        </Button>*/}
+            {/*    </ButtonGroup>*/}
+            {/*</CardActions>*/}
 
             {/*New user text*/}
             <CardContent>
