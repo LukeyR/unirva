@@ -13,6 +13,8 @@ In order for this to work you need to do the following:
 (Note: you may also have to run `sudo apt-get update` if nodejs cannot be found)
 
 Navigate to the directory containing your copy of `package.json` and run `npm install` to install all dependencies required to run the program.
+
+Lastly, to connect to firebase, you must create your own firebase project and fill in the information in the .env file (be sure to rename it to .env, donot leave it as .env.template)
 ___ 
 
 # Getting Started with Create React App
