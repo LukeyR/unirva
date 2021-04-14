@@ -223,42 +223,6 @@ function DisplayProduct(props) {
     }
 
     return (
-        // <div>
-        //     <h1>{ listingName }</h1>
-        //     <h1> { listingPrice } </h1>
-        //     <Paper><Typography style={{whiteSpace: 'pre-line'}}> { listingDes} </Typography></Paper>
-        //     <h1> { userName } </h1>
-        //     <img src={listingUrl} alt='react logo' className='productImage' />
-        //     {listingExtraUrls !== undefined && listingExtraUrls !== [] ? listingExtraUrls.map(url => <img src={url} alt='react logo' className='productImage' />) : <></>}
-        //     <div>
-        //     <Button
-        //         variant="outlined"
-        //         color="primary"
-        //         onClick={() => {
-        //             history.push("/product", stateMyProduct)
-        //     }}>{msg}</Button>
-        //     </div>
-        //
-        //     <h1><Link to={{
-        //         pathname:us7.......erPath,
-        //         state:state
-        //     }}><button>{gotoSeller}</button></Link></h1>
-        //     { globalUserID != sellerID?
-        //         <>{sold == "false" ?
-        //             <button onClick={updateInterested}>{
-        //             oldVal.includes(globalUserID)?
-        //                 "Cancel request"
-        //                 :
-        //                 "Request to buy"
-        //             }</button>
-        //             :
-        //             <h1>Sorry, this listing has been sold.</h1>
-        //         }</>
-        //         :
-        //         <></>
-        //     }
-        // </div>
-
         <>
             <Box p={1} m={1}
                  className={classes.container}
