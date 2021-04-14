@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import './Home.css';
-import firebase from './firebase';
+import {useAuthState} from "react-firebase-hooks/auth";
+import firebase, {auth} from './firebase';
 import {useCollection} from 'react-firebase-hooks/firestore';
 import {
     Box,
@@ -85,7 +86,13 @@ const prices = [
     -Infinity, 10, 20, 50, 100, Infinity
 ]
 
+var verified = false; // use this variable to check whether the user is verified or not
+
 function Home() {
+    const user = useAuthState(auth);
+    if (user != null){
+        if (user.emailVerified) verified = true;
+    }
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
