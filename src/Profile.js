@@ -5,7 +5,7 @@ import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
-import {Avatar, Box, Grid} from "@material-ui/core";
+import {Avatar, Box, Button, Grid} from "@material-ui/core";
 import HomeListingCard from "./listingCard";
 import {makeStyles} from '@material-ui/styles';
 
@@ -220,9 +220,20 @@ const Profile = (theme) => {
                     <p>User has no listings</p>
                 }
             </div>
+            <div>
+                {userID == profileID ?
+                    <Button onClick = {editProfile}>Edit profile</Button>
+                    :
+                    <p></p>
+                }
+            </div>
         </div>
 
     )
+}
+
+function editProfile(){
+    alert("Button clicked");
 }
 
 function CheckMatchSeller()
