@@ -38,15 +38,14 @@ function Signup() {
 
     const [currentUser, setCurrentUser] = useState(null);
     const handleSubmit = async () => {
-
         try {
             if ((values.email.includes(".ac") || values.email.includes(".edu"))) {
                 if (values.password === values.passwordConfirm) {
                     const new_user = await firebaseConfig.auth().createUserWithEmailAndPassword(values.email, values.password);
                     await auth.currentUser.updateProfile({displayName: values.firstName + " " + values.lastName})
-                    var userid = auth.currentUser.uid;
-                    var db = firebase.firestore();
-                    db.collection('users').doc(userid).set({
+                    const userid = auth.currentUser.uid;
+                    const db = firebase.firestore();
+                    await db.collection('users').doc(userid).set({
                         ID: userid,
                         Name: values.firstName,
                         LastName: values.lastName,
@@ -54,7 +53,7 @@ function Signup() {
                         chatsNo: 0
                     });
                     if (new_user.user != null) {
-                        new_user.user.sendEmailVerification();
+                        await new_user.user.sendEmailVerification();
                         alert("Verification email sent.");
                     } else {
                         alert('user null');

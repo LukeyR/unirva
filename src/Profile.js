@@ -32,9 +32,9 @@ const useStyles = makeStyles((theme) => ({
     profilePicture: {
         display: "flex",
         justifyContent: "center",
-        margin: "28px",
-        padding: "28px",
         border: "0px solid black",
+        marginTop: "20px",
+        marginBottom: "20px",
         width: "185px",
         height: "185px",
         backgroundColor: theme.palette.secondary.main
@@ -148,6 +148,11 @@ const Profile = (theme) => {
                             {targetName ? targetName.charAt(0).toUpperCase() : "?"}
                         </Avatar>
                         </Box>
+                        {userID == profileID ?
+                            <Button variant={"outlined"} color={"primary"} onClick = {editProfile}>Edit profile</Button>
+                            :
+                            <p></p>
+                        }
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
                         <p>
@@ -218,13 +223,6 @@ const Profile = (theme) => {
 
                     :
                     <p>User has no listings</p>
-                }
-            </div>
-            <div>
-                {userID == profileID ?
-                    <Button onClick = {editProfile}>Edit profile</Button>
-                    :
-                    <p></p>
                 }
             </div>
         </div>
