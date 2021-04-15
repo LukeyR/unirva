@@ -218,11 +218,6 @@ const Profile = (theme) => {
                     :
                     <p>User has no listings</p>
                 }
-                {userID == profileID ?
-                    <Button onClick = {editProfile}>Edit profile</Button>
-                    :
-                    <p></p>
-                }
             </div>
         </div>
 
