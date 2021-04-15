@@ -89,10 +89,12 @@ const prices = [
 var verified = false; // use this variable to check whether the user is verified or not
 
 function Home() {
-    const user = useAuthState(auth);
+    const [user] = useAuthState(auth);
     if (user != null){
         if (user.emailVerified) verified = true;
+        //console.log(verified);
     }
+    console.log(verified);
     // Getting the listings from the database.
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
