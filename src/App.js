@@ -4,6 +4,7 @@ import Product from './Product';
 import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
+import EditProfile from './EditProfile';
 import {Route, useLocation} from 'react-router-dom';
 import Search from './search'
 import Header from './hfRegion/Header';
@@ -113,6 +114,7 @@ function App() {
                     <Route exact path="/Product" component={Product}/>
                     <Route exact path="/Chat" component={Chat}/>
                     <Route exact path="/Favourites" component={Favourites}/>
+                    <Route exact path="/EditProfile" component={EditProfile}/>
                     <Route exact path="/search:results" component={Search}/>
                     <Route exact path="/DisplayProduct" component={DisplayProduct}/>
                     <Route exact path="/LogIn" component={LogIn}/>
