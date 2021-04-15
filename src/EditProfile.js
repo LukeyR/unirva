@@ -70,7 +70,7 @@ function EditProfile() {
     const handleDelete = async () => {
         // Should first delete all that has to do with this user ID
         // First delete their listings + images
-        if(!loading2 && listings){
+        if(!loading2){
             listings.forEach(listing => {
                 var imgName = getImageName(listing.data().imgUrl);
                 let storageRef = storage.ref('images').child(imgName);
@@ -79,7 +79,7 @@ function EditProfile() {
             });
         }
         // in reviews for buyers and sellers (replace sellerID with "" where sellerID == user.id)
-        if(!loading3 && reviews1){
+        if(!loading3){
             reviews1.forEach(review => {
                 let revRef = firestore.collection("reviewsForBuyers").doc(review.id);
                 revRef.update({
@@ -87,7 +87,7 @@ function EditProfile() {
                 })
             })
         }
-        if(!loading4 && reviews2){
+        if(!loading4){
             reviews2.forEach(review => {
                 let revRef = firestore.collection("reviewsForSellers").doc(review.id);
                 revRef.update({
