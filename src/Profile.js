@@ -95,10 +95,10 @@ const Profile = (theme) => {
 
     var [result1, loadingOffer] = useCollectionData(userOffersSeller);
     var [result2, loadingOfferB] = useCollectionData(userOffersBuyer);
-    if (!loadingOffer) {
+    if (!loadingOffer && result1) {
         offersSel = result1;
     }
-    if (!loadingOfferB) {
+    if (!loadingOfferB && result2) {
         offersBuy = result2;
     }
     matchedSeller = CheckMatchSeller(); // if true then seller accepted offer of current user
@@ -215,12 +215,9 @@ const Profile = (theme) => {
                             )}
                         </Grid>
                     </Box>
-
                     :
                     <p>User has no listings</p>
                 }
-            </div>
-            <div>
                 {userID == profileID ?
                     <Button onClick = {editProfile}>Edit profile</Button>
                     :
@@ -415,7 +412,7 @@ function DisplayReview()
     const [reviewDescription, setReviewDescription] = useState('');
     const [stars, setStars] = useState('');
 
-    if (!loadingB) {
+    if (!loadingB && reviewsRefBuyer) {
         reviewsRefBuyer.forEach(doc => {
             reviews[index] = doc.data();
             docsID[index] = doc.id;
@@ -426,7 +423,7 @@ function DisplayReview()
         })
     }
     var limit = index // this marks the point where reviews as a buyer end and begin as a seller
-    if (!loadingS) {
+    if (!loadingS && reviewsRefSeller) {
         reviewsRefSeller.forEach(doc => {
             reviews[index] = doc.data();
             docsID[index] = doc.id;
@@ -491,7 +488,8 @@ function DisplayReview()
                         <div key={docsID[index].toString()} className="review">
                             {index == 0 && credibilityScoreBuyer != 0 ? <h1>Reviews as a buyer</h1> : <></>}
                             {index == limit && credibilityScoreSeller != 0 ? <h1>Reviews as a seller</h1> : <></>}
-                            <p className='Review test'><Link to={{
+                            <p className='Review test'>{review.senderID != ""?
+                            <Link to={{
                                 pathname: "/Profile",
                                 state: {
                                     targetUserID: review.senderID,
@@ -499,7 +497,10 @@ function DisplayReview()
                                 }
                             }}>
                                 <button>{review.sender}</button>
-                            </Link>:{review.editable == "true" && review.senderID == userID?
+                            </Link>
+                            :
+                            <>Deleted Account</>
+                            }:{review.editable == "true" && review.senderID == userID?
                                 <>
                                     <form className='reviewForm' onSubmit={updateReview}>
                                         <label>Review text: </label><input type="text" placeholder={review.reviewDescr}
