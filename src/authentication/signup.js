@@ -73,7 +73,7 @@ function Signup() {
         }
     };
     if (currentUser) {
-        return <Redirect to="/Profile"/>;
+        return <Redirect to="/"/>; // better to redirect to homepage in my opinion
     }
 
     return (
