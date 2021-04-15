@@ -34,7 +34,6 @@ function NavBar() {
             <div className="rightSide">
                 <Link className="link" to="/menu">Sign in</Link>
                 <Link className="link" to="/Profile">Profile</Link>
-
             </div>
         </div>
     )
