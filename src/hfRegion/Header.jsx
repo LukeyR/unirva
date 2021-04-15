@@ -14,6 +14,7 @@ import {
     Typography
 } from "@material-ui/core";
 import AccountCircleTwoToneIcon from '@material-ui/icons/AccountCircleTwoTone';
+import SettingsIcon from '@material-ui/icons/Settings';
 import HomeIcon from '@material-ui/icons/Home';
 import SearchIcon from '@material-ui/icons/Search';
 import {makeStyles} from "@material-ui/core/styles";
@@ -32,6 +33,7 @@ import Brightness7Icon from '@material-ui/icons/Brightness7';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import {ExitToApp, Favorite} from "@material-ui/icons";
 import {useCollectionData, useDocumentData} from "react-firebase-hooks/firestore";
+import AccountCircleTwoTone from '@material-ui/icons/AccountCircleTwoTone';
 
 
 const profilePictureSize = "35px"
@@ -224,7 +226,7 @@ const Header = ({theme}) => {
                                                                 history.push("/chat")
                                                             }}
                                                 >
-                                                    <Badge badgeContent={!loadingMes ? unseenMessages.length : 0}
+                                                    <Badge badgeContent={!loadingMes && unseenMessages ? unseenMessages.length : 0}
                                                            color="secondary">
                                                         <Forum/>
                                                     </Badge>
@@ -287,6 +289,12 @@ const Header = ({theme}) => {
                                         <Typography>
                                             {(theme.palette.type === "dark" ? "Disable" : "Enable") + " Dark Mode"}
                                         </Typography>
+                                    </MenuItem>
+                                    <MenuItem onClick = {() => handleMenuClick("/EditProfile")}>
+                                        <ListItemIcon className={classes.listIcon}>
+                                            <SettingsIcon/>
+                                        </ListItemIcon>
+                                        Edit profile
                                     </MenuItem>
                                     <MenuItem onClick={() => {
                                         user ? handleMenuClick("/signout") : handleMenuClick("/menu")
