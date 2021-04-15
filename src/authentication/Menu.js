@@ -44,6 +44,11 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         marginBottom: -10,
     },
+    forgotPassword: {
+        '&:hover': {
+            cursor: "pointer",
+        }
+    }
 }));
 
 function Menu() {

@@ -33,6 +33,8 @@ function Signup() {
     }
 
     const handleChangeUni = (prop) => (event) => {
+        console.log(event.target.innerHTML)
+        console.log(event.target.value)
         setValues({...values, [prop]: event.target.innerHTML});
     }
 

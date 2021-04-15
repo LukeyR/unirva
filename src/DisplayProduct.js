@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: "100px",
     },
     media: {
-
         display: 'flex',
         justifyContent: 'center',
         objectFit: "cover",
