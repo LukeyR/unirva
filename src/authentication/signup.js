@@ -1,13 +1,11 @@
 import React, {useState} from 'react';
-import {Avatar, Box, Button, CardContent, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {Avatar, Box, Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
 import {useStyles} from "./Menu";
-import BrandLogo from "../BrandLogo";
 import {Autocomplete} from "@material-ui/lab";
 import firebaseConfig, {auth, storage} from "../firebase";
 import firebase from "firebase";
 import {Redirect} from "react-router-dom";
 import brandLogo from "../img/Brandlogo.svg";
-import {PublishOutlined} from "@material-ui/icons";
 
 function Signup() {
     const classes = useStyles()
@@ -97,7 +95,6 @@ function Signup() {
                     ppUrl = url
                 });
             }
-
         )
 
 
@@ -143,25 +140,25 @@ function Signup() {
         }
     };
     if (currentUser) {
-        return <Redirect to="/" />; // better to redirect to homepage in my opinion
+        return <Redirect to="/"/>; // better to redirect to homepage in my opinion
     }
 
     function handleChangeImage() {
-            const preview = document.getElementById(`profilePicture`)
-            const file = document.querySelector('input[type=file]').files[0]
+        const preview = document.getElementById(`profilePicture`)
+        const file = document.querySelector('input[type=file]').files[0]
         console.log(preview, file)
-            const reader = new FileReader();
+        const reader = new FileReader();
 
-            reader.addEventListener('load', function () {
-                setPPFile(reader.result);
-            }, false);
+        reader.addEventListener('load', function () {
+            setPPFile(reader.result);
+        }, false);
 
-            if (file && file.type.match('image.*')) {
-                reader.readAsDataURL(file)
-                setPP(file)
-            } else {
-                alert('Please only upload images');
-            }
+        if (file && file.type.match('image.*')) {
+            reader.readAsDataURL(file)
+            setPP(file)
+        } else {
+            alert('Please only upload images');
+        }
     }
 
     return (
@@ -170,49 +167,61 @@ function Signup() {
                 <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
                     <Box p={3}>
                         <Box display={"flex"} justifyContent={"center"}>
-                        <img src={brandLogo} alt="brand logo" width={40} height={40} />
-                        <Typography variant="h2" style={{fontSize: "35px", marginLeft: "10px"}}>
-                            unirva
-                        </Typography>
+                            <img src={brandLogo} alt="brand logo" width={40} height={40}/>
+                            <Typography variant="h2" style={{fontSize: "35px", marginLeft: "10px"}}>
+                                unirva
+                            </Typography>
                         </Box>
 
 
-                        <Box textAlign="center" alignItems="center">
-                            <Button
-                                id="upload_button"
-                                variant="text"
-                                component="label"
-                                style={{margin: "auto", marginBottom: "10px"}}
-                            >
-                                <input
-                                    id="upload-photo"
-                                    name="upload-photo"
-                                    type="file"
-                                    multiple
-                                    hidden
-                                    onChange={() => {
-                                        handleChangeImage()
-                                    }}
-                                />
-                                <Avatar alt="brand logo" className={classes.uploadImage} id={"profilePicture"} src={ppFile}/>
-                            </Button>
+                        <Box style={{margin: "auto", marginBottom: "10px"}}>
+                            <Box display="flex" textAlign="center" alignItems="center" flexDirection={"column"}>
+                                <Button
+                                    id="upload_button"
+                                    variant="text"
+                                    component="label"
+                                >
+                                    <input
+                                        id="upload-photo"
+                                        name="upload-photo"
+                                        type="file"
+                                        hidden
+                                        onChange={() => {
+                                            handleChangeImage()
+                                        }}
+                                    />
+                                    <Box display="flex" textAlign="center" alignItems="center" flexDirection={"column"}>
+                                    <Avatar alt="brand logo" className={classes.uploadImage} id="profilePicture"
+                                            src={ppFile} style={{display: "inline-block"}}/>
+                                    <Typography variant={"body2"} style={{
+                                        marginTop: "-32px",
+                                        marginBottom: "15px",
+                                        zIndex: 5,
+                                        color: "#fafafa",
+                                        display: "inline-block"
+                                    }}>
+                                        Edit
+                                    </Typography>
+                                    </Box>
+                                </Button>
+                            </Box>
                         </Box>
 
                         <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        error={emptyValues.firstName}
-                                        fullWidth
-                                        required
-                                        value={values.firstName}
-                                        id="First-Name"
-                                        label="First Name"
-                                        variant="outlined"
-                                        color="primary"
-                                        onChange={handleChange("firstName")}
-                                    />
-                                </Grid>
-                                <Grid item xs={6}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    error={emptyValues.firstName}
+                                    fullWidth
+                                    required
+                                    value={values.firstName}
+                                    id="First-Name"
+                                    label="First Name"
+                                    variant="outlined"
+                                    color="primary"
+                                    onChange={handleChange("firstName")}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
                                 <TextField
                                     error={emptyValues.lastName}
                                     fullWidth
