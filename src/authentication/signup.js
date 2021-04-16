@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
-import {Box, Button, CardContent, Grid, Paper, TextField} from "@material-ui/core";
+import {Avatar, Box, Button, CardContent, Grid, Paper, TextField, Typography} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import BrandLogo from "../BrandLogo";
 import {Autocomplete} from "@material-ui/lab";
-import firebaseConfig, {auth} from "../firebase";
+import firebaseConfig, {auth, storage} from "../firebase";
 import firebase from "firebase";
 import {Redirect} from "react-router-dom";
+import brandLogo from "../img/Brandlogo.svg";
+import {PublishOutlined} from "@material-ui/icons";
 
 function Signup() {
     const classes = useStyles()
@@ -28,6 +30,10 @@ function Signup() {
         university: "",
     })
 
+    const [pp, setPP] = useState(null)
+    const [ppFile, setPPFile] = useState("")
+    let ppUrl = "";
+
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
     }
@@ -38,6 +44,65 @@ function Signup() {
         setValues({...values, [prop]: event.target.innerHTML});
     }
 
+
+    // generates random alphanumeric file name of length 25
+    const generateFileName = () => {
+        let fileName = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < 25; i++) {
+            fileName += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return fileName;
+    }
+
+    //gets the file extension from the image name
+    const getFileExtension = (image) => {
+        let fileExtension = '';
+        for (let i = image.name.length; i > 0; i--) {
+            if (image.name.charAt(i) === '.') {
+                fileExtension = image.name.charAt(i) + fileExtension;
+                break;
+            } else {
+                fileExtension = image.name.charAt(i) + fileExtension;
+            }
+        }
+        return fileExtension;
+    }
+
+    async function uploadImage(image, firstImage, lastImage) {
+
+        let fileName = generateFileName();
+
+        let fileExtension = getFileExtension(image);
+
+        let storageRef = storage.ref('profilePictures/' + fileName + fileExtension);
+
+        return new Promise(function (resolve, reject) {
+            const uploadImg = storageRef.put(image);
+
+            uploadImg.on("state_changed",
+                (snapshot) => {
+                    console.log("uploading")
+                }, (error) => {
+                    return reject(error)
+                },
+                () => {
+                    return resolve(uploadImg)
+                }
+            );
+        }).then(async function (uploadImg) {
+                console.log(uploadImg)
+                await uploadImg.ref.getDownloadURL().then(url => {
+                    ppUrl = url
+                });
+            }
+
+        )
+
+
+    }
+
     const [currentUser, setCurrentUser] = useState(null);
     const handleSubmit = async () => {
         try {
@@ -45,6 +110,9 @@ function Signup() {
                 if (values.password === values.passwordConfirm) {
                     const new_user = await firebaseConfig.auth().createUserWithEmailAndPassword(values.email, values.password);
                     await auth.currentUser.updateProfile({displayName: values.firstName + " " + values.lastName})
+                    if (pp != null) {
+                        await uploadImage(pp, true, true)
+                    }
                     const userid = auth.currentUser.uid;
                     const db = firebase.firestore();
                     await db.collection('users').doc(userid).set({
@@ -52,7 +120,8 @@ function Signup() {
                         Name: values.firstName,
                         LastName: values.lastName,
                         University: values.university,
-                        chatsNo: 0
+                        chatsNo: 0,
+                        profilePicture: ppUrl,
                     });
                     if (new_user.user != null) {
                         await new_user.user.sendEmailVerification();
@@ -74,7 +143,25 @@ function Signup() {
         }
     };
     if (currentUser) {
-        return <Redirect to="/"/>; // better to redirect to homepage in my opinion
+        return <Redirect to="/" />; // better to redirect to homepage in my opinion
+    }
+
+    function handleChangeImage() {
+            const preview = document.getElementById(`profilePicture`)
+            const file = document.querySelector('input[type=file]').files[0]
+        console.log(preview, file)
+            const reader = new FileReader();
+
+            reader.addEventListener('load', function () {
+                setPPFile(reader.result);
+            }, false);
+
+            if (file && file.type.match('image.*')) {
+                reader.readAsDataURL(file)
+                setPP(file)
+            } else {
+                alert('Please only upload images');
+            }
     }
 
     return (
@@ -82,25 +169,50 @@ function Signup() {
             <Grid container variant="contained">
                 <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
                     <Box p={3}>
-                        <CardContent className={classes.cardActions}>
-                            <BrandLogo/>
-                        </CardContent>
+                        <Box display={"flex"} justifyContent={"center"}>
+                        <img src={brandLogo} alt="brand logo" width={40} height={40} />
+                        <Typography variant="h2" style={{fontSize: "35px", marginLeft: "10px"}}>
+                            unirva
+                        </Typography>
+                        </Box>
 
-                        <Grid container spacing={3}>
-                            <Grid item xs={6}>
-                                <TextField
-                                    error={emptyValues.firstName}
-                                    fullWidth
-                                    required
-                                    value={values.firstName}
-                                    id="First-Name"
-                                    label="First Name"
-                                    variant="outlined"
-                                    color="primary"
-                                    onChange={handleChange("firstName")}
+
+                        <Box textAlign="center" alignItems="center">
+                            <Button
+                                id="upload_button"
+                                variant="text"
+                                component="label"
+                                style={{margin: "auto", marginBottom: "10px"}}
+                            >
+                                <input
+                                    id="upload-photo"
+                                    name="upload-photo"
+                                    type="file"
+                                    multiple
+                                    hidden
+                                    onChange={() => {
+                                        handleChangeImage()
+                                    }}
                                 />
-                            </Grid>
-                            <Grid item xs={6}>
+                                <Avatar alt="brand logo" className={classes.uploadImage} id={"profilePicture"} src={ppFile}/>
+                            </Button>
+                        </Box>
+
+                        <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <TextField
+                                        error={emptyValues.firstName}
+                                        fullWidth
+                                        required
+                                        value={values.firstName}
+                                        id="First-Name"
+                                        label="First Name"
+                                        variant="outlined"
+                                        color="primary"
+                                        onChange={handleChange("firstName")}
+                                    />
+                                </Grid>
+                                <Grid item xs={6}>
                                 <TextField
                                     error={emptyValues.lastName}
                                     fullWidth

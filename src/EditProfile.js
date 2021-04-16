@@ -26,7 +26,7 @@ function EditProfile() {
     })
 
     const [user] = useAuthState(auth);
-    var first="", last="", mail=user.email, uni="", url = "";
+    var first="", last="", mail=user.email, uni="", url = "", pp="";
     var id = user.uid;
     var [userData, loading] = useCollectionData(firestore.collection("users").where("ID", "==", id));
     var chattingWith = [];
@@ -37,6 +37,7 @@ function EditProfile() {
         uni = userData[0].University;
         url = userData[0].photoURL;
         chattingWith = userData[0].chattingWith;
+        pp = userData[0].profilePicture
     }
 
     const [values, setValues] = useState({
@@ -142,11 +143,9 @@ function EditProfile() {
             <Grid container variant="contained">
                 <Paper style={{margin: "auto"}}> {/*Need outline as we remove border in css*/}
                     <Box p={3}>
-                    <CardContent className={classes.cardActions}>
-                        <Avatar className={classes.profilePicture} alt="Profile Image" src={url}>
+                        <Avatar src={pp} className={classes.profilePicture} alt="Profile Image">
                             {first ? first.charAt(0).toUpperCase() : "?"}
                         </Avatar>
-                    </CardContent>
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <TextField
@@ -218,7 +217,5 @@ function EditProfile() {
     </div>
     )
 }
-
-
 
 export default EditProfile;

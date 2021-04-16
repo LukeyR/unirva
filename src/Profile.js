@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './Profile.css';
 import firebase from 'firebase/app';
-import {useCollection, useCollectionData} from 'react-firebase-hooks/firestore';
+import {useCollection, useCollectionData, useDocumentData} from 'react-firebase-hooks/firestore';
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase";
 import {Link, useHistory, useLocation} from 'react-router-dom';
@@ -78,6 +78,15 @@ const Profile = (theme) => {
             })
         }
     }
+
+    let userDocRef = null;
+    if (user) {
+        userID = user.uid;
+        const usersRef = firestore.collection("users");
+        userDocRef = usersRef.doc(userID)
+    }
+    const [userDoc, loadingUserDoc] = useDocumentData(userDocRef);
+
     var [current, loadingUser] = useCollectionData(currentUser);
     if (!loadingUser) {
         current.forEach(usr => {
@@ -134,7 +143,7 @@ const Profile = (theme) => {
         )
     }
 
-    var displayInfo = targetName + " " + targetLastName;
+    var displayInfo = userDoc && (userDoc.Name + " " + userDoc.LastName);
     var uni = targetUni;
 
 
@@ -144,15 +153,10 @@ const Profile = (theme) => {
                 {user ?
                     <>
                         <Box display="flex" justifyContent="center">
-                        <Avatar className={classes.profilePicture} alt="Profile Image" src={targetUser.photoURL}>
+                        <Avatar className={classes.profilePicture} alt="Profile Image" src={userDoc && userDoc.profilePicture}>
                             {targetName ? targetName.charAt(0).toUpperCase() : "?"}
                         </Avatar>
                         </Box>
-                        {userID == profileID ?
-                            <Button variant={"outlined"} color={"primary"} onClick = {editProfile}>Edit profile</Button>
-                            :
-                            <p></p>
-                        }
                         <h1>{displayInfo}</h1>
                         <h1>{uni}</h1>
                         <p>

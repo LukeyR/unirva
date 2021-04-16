@@ -12,12 +12,29 @@ export const useStyles = makeStyles((theme) => ({
         border: 0,
         boxShadow: 0,
     },
+    profilePicture: {
+        display: "flex",
+        border: "0px solid black",
+        marginBottom: "25px",
+        width: "75px",
+        height: "75px",
+        '&:hover': {
+            cursor: "pointer",
+        }
+    },
     div: {
         margin: 0,
         position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
+    },
+    uploadImage: {
+        display: 'flex',
+        justifyContent: 'center',
+        width: "120px",
+        height: "120px",
+        margin: "auto",
     },
     cardActions: {
         justifyContent: 'center',

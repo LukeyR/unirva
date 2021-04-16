@@ -484,8 +484,8 @@ function Upload(props) {
                                                 id="upload-photo"
                                                 name="upload-photo"
                                                 type="file"
-                                                hidden
                                                 multiple
+                                                hidden
                                                 onChange={handleChangeImage}
                                             />
                                             Upload Image

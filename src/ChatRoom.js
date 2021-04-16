@@ -26,7 +26,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import {Send} from "@material-ui/icons";
 
 const firestore = firebase.firestore();
-var myID, target, targetID, senderIDDB, receiverIDDB, targetName, interestedProduct;
+var myID, target, targetID, senderIDDB, receiverIDDB, targetName, interestedProduct, pp;
 var oldText = "";
 
 var chatWindow = document.getElementById("chat-window");
@@ -49,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         margin: "10px",
-        padding: "10px",
         border: "0px solid black",
         width: "50px",
         height: "50px",
@@ -184,6 +183,7 @@ function ChatRoom(props) {
         receiver.forEach(receiver => {
             receiverIDDB = receiver.id;
             targetName = receiver.data().Name;
+            pp = receiver.data().profilePicture
         })
     }
 
@@ -200,7 +200,7 @@ function ChatRoom(props) {
 
                            <Box display="flex" alignItems="center" >
                            <Box>
-                           <Avatar className={classes.profilePicture} alt="Profile Image"
+                           <Avatar src={pp} className={classes.profilePicture} alt="Profile Image"
                                    style={{backgroundColor: `${avatarColour}`}}>
                                {targetName ? targetName.charAt(0) : "?"}
                            </Avatar>

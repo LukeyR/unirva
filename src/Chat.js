@@ -28,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         justifyContent: "center",
         margin: "10px",
-        padding: "10px",
         border: "0px solid black",
         width: "50px",
         height: "50px",
@@ -116,7 +115,7 @@ function ProfileCard(props) {
                 <Box p={1}>
                     <Grid container>
                         <Grid item xs={3}>
-                            <Avatar className={classes.profilePicture} alt="Profile Image"
+                            <Avatar src={props.pp} className={classes.profilePicture} alt="Profile Image"
                                     style={{backgroundColor: `${avatarColour}`}} onClick={() => {
                                 redirect("/profile", {
                                     targetUserID: props.targetUserID,
@@ -208,12 +207,13 @@ function Chat() {
         if (!loadingUsers) {
             users.forEach(usr => {
                 let name = usr.data().Name;
+                let profilePicture = usr.data().profilePicture;
                 if (name.toLowerCase().includes(searchVal.toLowerCase()) && usr.id != user.uid && myChats && myChats.includes(usr.id)) {
                     var count = 0
                     unseenMessages.forEach(msg => {
                         if (msg.SenderID == usr.data().ID) count++;
                     })
-                    results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID, unseenMes: count}];
+                    results[numberOfResults] = [{name: usr.data().Name, id: usr.data().ID, unseenMes: count, pp: profilePicture}];
                     numberOfResults++;
                 }
             })
@@ -290,6 +290,7 @@ function Name(name) {
             unread: unread,
             targetUserID: name.name[0].id,
             myUid: userID,
+            pp: name.name[0].pp
 
         }} />
     )
