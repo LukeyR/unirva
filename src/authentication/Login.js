@@ -2,9 +2,10 @@ import React, {useContext, useState} from 'react';
 import {Box, Button, CardContent, Grid, Paper, TextField, Typography} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import BrandLogo from "../BrandLogo";
-import firebaseConfig from "../firebase";
+import firebaseConfig, {auth} from "../firebase";
 import {useHistory} from "react-router-dom";
 import {AuthContext} from "../Auth";
+import {useAuthState} from "react-firebase-hooks/auth";
 
 function Signup() {
     const history = useHistory();
@@ -46,7 +47,10 @@ function Signup() {
     };
     const {currentUser} = useContext(AuthContext);
     if (currentUser) {
-        history.push("./")
+        if(currentUser.emailVerified) history.push("./");
+        else{
+            firebaseConfig.auth().signOut();
+        }
     }
 
     return (
