@@ -7,7 +7,7 @@ function Logout() {
 
     const logout = () => {
         auth.signOut().then(() => {
-            history.push("/")
+            history.push("/menu");
         })
     }
 
