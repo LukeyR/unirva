@@ -485,7 +485,7 @@ function Home() {
                     </Box>
                 </div>
                 :
-                <Redirect to="/login"></Redirect>
+                <Redirect to="/menu" />
             }
         </div>
     )
