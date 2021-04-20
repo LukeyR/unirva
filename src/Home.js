@@ -23,6 +23,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import brandLogo from "./img/Brandlogo.svg";
 import {useLocation} from "react-router-dom";
 import {Alert} from "@material-ui/lab";
+import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => (
     {
@@ -87,15 +88,30 @@ const prices = [
 ]
 
 var verified = false; // use this variable to check whether the user is verified or not
+var universityTarget = "University of Bath";
+var sellersMatched = []
+
 
 function Home() {
     const [user] = useAuthState(auth);
     if (user != null){
+        console.log(user);
         if (user.emailVerified) verified = true;
+        firestore.collection("users").doc(user.uid).get().then(doc => {
+            if(doc.data()) universityTarget = doc.data().University;
+        })
         //console.log(verified);
     }
     console.log(verified);
     // Getting the listings from the database.
+    firestore.collection("users").get().then(snapshot => {
+        snapshot.forEach(doc => {
+            if(doc.data().University == universityTarget && sellersMatched.includes(doc.id) == false){
+                sellersMatched.push(doc.id);
+            }
+        })
+    })
+    console.log(sellersMatched);
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
 
@@ -248,6 +264,10 @@ function Home() {
                     listingObj.price <= prices[selectedPriceIndex]
                 )
             )
+            && 
+            (
+                sellersMatched.includes(listingObj.seller)
+            )
         ) {
             return (
                 <Grid item>
@@ -335,6 +355,8 @@ function Home() {
 
 
     return (
+        <div>
+        {user?
         <div style={{ marginBottom: "100px" }}>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleCloseSnackbar}>
                 <Alert onClose={handleCloseSnackbar} severity="success" variant="filled">
@@ -350,15 +372,6 @@ function Home() {
                     unirva
                 </Typography>
             </Box>
-            {/*<h2>Categories</h2>*/}
-            {/*    <ButtonGroup variant="outlined" color="primary" aria-label="contained primary button group">*/}
-            {/*        <Button onClick={() => buttonClicked("A")}>A</Button>*/}
-            {/*        <Button onClick={() => buttonClicked("B")}>B</Button>*/}
-            {/*        <Button onClick={() => buttonClicked("C")}>C</Button>*/}
-            {/*        <Button onClick={() => buttonClicked("More Categories")}>More Categories</Button>*/}
-            {/*    </ButtonGroup>*/}
-            {/*<h2>Listings in Bath</h2>*/}
-            {/*<h2>Sorting</h2>*/}
 
             <Box p={1} m={1} style={{ marginRight: "56px", marginLeft: "56px",}}>
                 <Grid container justify="center" spacing={4}>
@@ -474,6 +487,10 @@ function Home() {
                     }
                 </Grid>
             </Box>
+        </div>
+        :
+        <Redirect to="/login"></Redirect>
+        }
         </div>
     )
 }
