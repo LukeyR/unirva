@@ -71,7 +71,7 @@ function EditProfile() {
     const handleDelete = async () => {
         // Should first delete all that has to do with this user ID
         // First delete their listings + images
-        if(!loading2){
+        if(!loading2 && listings){
             listings.forEach(listing => {
                 var imgName = getImageName(listing.data().imgUrl);
                 let storageRef = storage.ref('images').child(imgName);
@@ -80,7 +80,7 @@ function EditProfile() {
             });
         }
         // in reviews for buyers and sellers (replace sellerID with "" where sellerID == user.id)
-        if(!loading3){
+        if(!loading3 && reviews1){
             reviews1.forEach(review => {
                 let revRef = firestore.collection("reviewsForBuyers").doc(review.id);
                 revRef.update({
@@ -88,7 +88,7 @@ function EditProfile() {
                 })
             })
         }
-        if(!loading4){
+        if(!loading4 && reviews2){
             reviews2.forEach(review => {
                 let revRef = firestore.collection("reviewsForSellers").doc(review.id);
                 revRef.update({
@@ -97,7 +97,7 @@ function EditProfile() {
             })
         }
         // delete the chats with all the other users
-        if(!loading5){
+        if(!loading5 && chattingWith){
             chattingWith.forEach(usr => {
                 firestore.collection("users/" + usr + "/chats").where("SenderID","==",id).get().then(snapshot => {
                     snapshot.forEach(doc => {
@@ -124,14 +124,10 @@ function EditProfile() {
             msg && msg.forEach(message => {
                 message.ref.delete();
             })
-        // delete my profile
-        firestore.collection("users").where("ID","==", id).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                doc.ref.delete();
-            })
-            user.delete().then(history.push("./"));
-        })
         }
+        // delete my profile
+        firestore.collection("users").doc(user.uid).delete().then(deleted = true);
+        user.delete().then(history.push("/menu"));
     };
 
     return (
