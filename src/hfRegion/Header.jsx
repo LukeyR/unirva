@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     AppBar,
     Avatar,
@@ -127,6 +127,18 @@ const Header = ({theme}) => {
     const unseenMessagesRef = firestore.collection('users/' + userID + "/chats").where('seen', "==", "false");
     var [unseenMessages, loadingMes] = useCollectionData(unseenMessagesRef);
 
+    const buyReqsRef = firestore.collection('listings/').where('seller', "==", userID);
+    var [buyReqs, loadingBuyReqs] = useCollectionData(buyReqsRef);
+    // const [nBuyReqs, setNBuyReqs] = useState(0)
+    let nBuyReqs = 0
+
+
+    if (!loadingBuyReqs) {
+        buyReqs.forEach(lis => {
+            if (lis.interestedUsers !== "") nBuyReqs += lis.interestedUsers.split(",").length
+        })
+    }
+
     let userDocRef = null;
     if (user) {
         userID = user.uid;
@@ -238,10 +250,13 @@ const Header = ({theme}) => {
                                                 }
                                                             className={classes.profile}
                                                 >
+                                                    <Badge badgeContent={!loadingBuyReqs ? nBuyReqs : 0}
+                                                           color="secondary">
                                                     <Avatar alt="Profile Image" src={userDoc && userDoc.profilePicture}
                                                             style={{backgroundColor: theme.palette.secondary.main}}>
                                                         {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                                                     </Avatar>
+                                                    </Badge>
                                                     <ArrowDropDownIcon/>
                                                 </IconButton>
                                             </Tooltip>
