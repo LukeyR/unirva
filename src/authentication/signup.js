@@ -1,11 +1,23 @@
 import React, {useState} from 'react';
-import {Avatar, Box, Button, Grid, Paper, TextField, Typography} from "@material-ui/core";
+import {
+    Avatar,
+    Box,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    Grid,
+    Paper,
+    TextField,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
 import {useStyles} from "./Menu";
 import {Autocomplete} from "@material-ui/lab";
 import firebaseConfig, {auth, storage} from "../firebase";
 import firebase from "firebase";
 import {Redirect} from "react-router-dom";
 import brandLogo from "../img/Brandlogo.svg";
+import Zoom from '@material-ui/core/Zoom';
 
 function Signup() {
     const classes = useStyles()
@@ -17,6 +29,7 @@ function Signup() {
         password: false,
         passwordConfirm: false,
         university: false,
+        privacyPolicy: false,
     })
 
     const [values, setValues] = useState({
@@ -26,6 +39,7 @@ function Signup() {
         password: "",
         passwordConfirm: "",
         university: "",
+        privacyPolicy: false,
     })
 
     const [pp, setPP] = useState(null)
@@ -34,11 +48,14 @@ function Signup() {
 
     const handleChange = (prop) => (event) => {
         setValues({...values, [prop]: event.target.value});
+        setEmptyValues({...emptyValues, [prop]: false});
+    }
+    const handleChangeCheckbox = (prop) => (event) => {
+        setValues({...values, [prop]: event.target.checked});
+        setEmptyValues({...emptyValues, [prop]: false});
     }
 
     const handleChangeUni = (prop) => (event) => {
-        console.log(event.target.innerHTML)
-        console.log(event.target.value)
         setValues({...values, [prop]: event.target.innerHTML});
     }
 
@@ -102,6 +119,19 @@ function Signup() {
 
     const [currentUser, setCurrentUser] = useState(null);
     const handleSubmit = async () => {
+
+        let anyEmpty = false;
+
+        for (let i in values) {
+            if (values[i] === false || values[i] === "") {
+                setEmptyValues(prevState => ({...prevState, [i]: true}))
+                anyEmpty=true
+            }
+        }
+
+        console.log(anyEmpty)
+        if (anyEmpty) return;
+
         try {
             if ((values.email.includes(".ac") || values.email.includes(".edu") || values.email.includes("drept.unibuc.ro")
                     || values.email.includes("utcluj.didatec.ro"))) {
@@ -286,20 +316,41 @@ function Signup() {
                             renderInput={(params) =>
                                 <TextField {...params} label="University" variant="outlined"
                                            required
-                                           error={emptyValues.passwordConfirm}
+                                           error={emptyValues.university}
                                            value={values.university}
                                            onChange={handleChange("university")}/>}
                             onChange={handleChangeUni("university")}
 
                         />
+                        <Box justifyContent="center" alignItems="center" style={{marginTop: 10}}>
                         <Button variant="outlined" color="primary"
-                                style={{marginTop: 10}}
                                 onClick={() => {
                                     handleSubmit()
                                 }}
                         >
                             Register
                         </Button>
+                            <FormControlLabel
+                                control={<Checkbox color={"primary"} checked={values.privacyPolicy} onChange={handleChangeCheckbox("privacyPolicy")} />}
+                                label={
+                                    <>
+                                        <Typography style={{display: "inLine", marginRight: "4px"}} color={emptyValues.privacyPolicy ? "error" : "textSecondary" }>
+                                            I agree with the
+                                        </Typography>
+                                        <Tooltip TransitionComponent={Zoom} title={"By checking the box you agree to our terms and conditions regarding personal data collection in accord to the General Data Protection Act. Our team will need your university email account and name. This data will be stored in order to ensure a safe environment for our users when interacting with each other. This data will not be publicly made anywhere else. Other users will have access (be able to see on the platform) your name but nothing else. The email will be available only to us. Please note that if you have any concerns regarding the data collected about yourself, or if you wish to see all data which has been collected about yourself, you can email us at pap36@bath.ac.uk . If you decide to delete your profile, all the data about you will be deleted, but you can also request this personally by mailing us at the above address. Finally, we will delete all data stored about you after the 30th of April 2021 (30.04.2021), unless you specifically ask us to by emailing the above address."}  style={{display: "inLine", textDecoration: 'underline'}}>
+                                            <Typography color={emptyValues.privacyPolicy ? "error" : "textSecondary" } >
+                                                 privacy policy
+                                            </Typography>
+                                        </Tooltip>
+                                        <Typography style={{display: "inLine", marginLeft: "4px"}} color={emptyValues.privacyPolicy ? "error" : "textSecondary" }>
+                                            *
+                                        </Typography>
+                                    </>
+                                }
+                                style={{marginLeft: "10px"}}
+                                labelPlacement="end"
+                                />
+                        </Box>
                     </Box>
                 </Paper>
             </Grid>

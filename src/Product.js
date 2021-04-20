@@ -186,7 +186,7 @@ function Upload(props) {
         } else {
             setEmptyValues(prevState => ({...prevState, name: false}))
         }
-        if (values.price === "") {
+        if (values.price === "" || values.price < 0) {
             setEmptyValues(prevState => ({...prevState, price: true}))
             returnEarly = true;
         } else {
@@ -199,6 +199,7 @@ function Upload(props) {
             setEmptyValues(prevState => ({...prevState, description: false}))
         }
 
+        if (values.images.length === 0) alert("You must upload at least 1 image.")
 
         if (returnEarly) {
             return;
