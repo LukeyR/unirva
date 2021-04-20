@@ -26,7 +26,7 @@ var alreadyLeftReviewBuyer = false;
 
 var index = 0;
 var offersSel = [];
-var offersBuy = []
+var offersBuy = [];
 
 const useStyles = makeStyles((theme) => ({
     profilePicture: {
@@ -81,9 +81,9 @@ const Profile = (theme) => {
 
     let userDocRef = null;
     if (user) {
-        userID = profileID;
+        //userID = profileID;
         const usersRef = firestore.collection("users");
-        userDocRef = usersRef.doc(userID)
+        userDocRef = usersRef.doc(profileID)
     }
     const [userDoc, loadingUserDoc] = useDocumentData(userDocRef);
 
