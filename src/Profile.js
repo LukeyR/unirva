@@ -51,6 +51,7 @@ const Profile = (theme) => {
     var targetName = null;
     var targetUni = null;
     var targetLastName = null;
+    var targetPP = null;
 
     if (location.state) {
         profileID = location.state.targetUserID;
@@ -75,6 +76,7 @@ const Profile = (theme) => {
                 targetName = usr.Name;
                 targetUni = usr.University;
                 targetLastName = usr.LastName;
+                targetPP = usr.profilePicture
             })
         }
     }
@@ -92,7 +94,7 @@ const Profile = (theme) => {
         current.forEach(usr => {
             currentName = usr.Name;
 
-            if (profileID == user.uid) {
+            if (profileID === user.uid) {
                 targetName = usr.Name;
                 targetLastName = usr.LastName;
                 targetUni = usr.University;
@@ -144,8 +146,8 @@ const Profile = (theme) => {
     }
 
     var displayInfo = userDoc && (userDoc.Name + " " + userDoc.LastName);
+    var targetInfo = targetName + " " + targetLastName
     var uni = targetUni;
-
 
     return (
         <div className="container">
@@ -153,14 +155,14 @@ const Profile = (theme) => {
                 {user ?
                     <>
                         <Box display="flex" justifyContent="center">
-                        <Avatar className={classes.profilePicture} alt="Profile Image" src={userDoc && userDoc.profilePicture}>
+                        <Avatar className={classes.profilePicture} alt="Profile Image" src={profileID === user.uid ? (userDoc && userDoc.profilePicture) : (targetPP)}>
                             {targetName ? targetName.charAt(0).toUpperCase() : "?"}
                         </Avatar>
                         </Box>
-                        <h1>{displayInfo}</h1>
+                        <h1>{profileID === user.uid ? displayInfo : targetInfo}</h1>
                         <h1>{uni}</h1>
                         <p>
-                            {profileID == user.uid ?
+                            {profileID === user.uid ?
                                 <InterestedBuyers/>
                                 :
                                 <></>}

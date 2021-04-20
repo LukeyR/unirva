@@ -68,6 +68,7 @@ function EditProfile() {
     var [reviews1, loading3] = useCollection(firestore.collection("reviewsForBuyers").where("senderID","==",id));
     var [reviews2, loading4] = useCollection(firestore.collection("reviewsForSellers").where("senderID","==",id));
     var [msg, loading5] = useCollection(firestore.collection("users/" + id + "/chats"));
+
     const handleDelete = async () => {
         // Should first delete all that has to do with this user ID
         // First delete their listings + images
@@ -129,6 +130,16 @@ function EditProfile() {
         firestore.collection("users").doc(user.uid).delete();
         user.delete().then(history.push("/menu"));
     };
+
+
+    const areYouSure = () => {
+        if (window.confirm('Are you sure you want to delete your profile?')) {
+            handleDelete()
+        } else {
+            // Do nothing!
+            return
+        }
+    }
 
     return (
         <div>
@@ -192,7 +203,7 @@ function EditProfile() {
                         <Button variant="outlined" color="primary"
                                 style={{marginTop: 10}}
                                 onClick={() => {
-                                    handleDelete()
+                                    areYouSure()
                                 }}
                         >
                             Delete Profile
