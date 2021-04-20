@@ -81,7 +81,7 @@ const Profile = (theme) => {
 
     let userDocRef = null;
     if (user) {
-        userID = user.uid;
+        userID = profileID;
         const usersRef = firestore.collection("users");
         userDocRef = usersRef.doc(userID)
     }
