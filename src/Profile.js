@@ -468,7 +468,6 @@ function DisplayReview()
                     const editReview = () => {
                         editable[index] = true;
                         var path = "";
-                        console.log(index, limit);
                         if (index < limit) path = "reviewsForBuyers";
                         else path = "reviewsForSellers";
                         firestore.collection(path).doc(docsID[index]).update({
@@ -542,7 +541,6 @@ function AddReview(option)
 {
     var value = option.option;
     var path = "";
-    console.log(value);
     if (value == 0) path = "reviewsForSellers";
     else path = "reviewsForBuyers"
     const reviewsRef = firestore.collection(path);

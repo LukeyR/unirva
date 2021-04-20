@@ -94,14 +94,12 @@ var sellersMatched = []
 function Home() {
     const [user] = useAuthState(auth);
     if (user != null) {
-        console.log(user);
         if (user.emailVerified) verified = true;
         firestore.collection("users").doc(user.uid).get().then(doc => {
             if (doc.data()) universityTarget = doc.data().University;
         })
         //console.log(verified);
     }
-    console.log(verified);
     // Getting the listings from the database.
     firestore.collection("users").get().then(snapshot => {
         snapshot.forEach(doc => {
@@ -110,7 +108,6 @@ function Home() {
             }
         })
     })
-    console.log(sellersMatched);
     const listingsRef = firestore.collection('listings');
     var query = listingsRef.orderBy('createdAt', "desc"); // ordering by time
 

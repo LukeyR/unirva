@@ -172,7 +172,6 @@ const Header = ({theme}) => {
     };
 
     const onKeyPress = (event) => {
-        // console.log(`Pressed keyCode ${event.key}`);
         if (event.key === 'Enter') {
             history.push(`/search=${event.target.value}`)
         }

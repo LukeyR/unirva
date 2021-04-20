@@ -43,7 +43,6 @@ function EditProduct(props) {
             },
             () => {
                 storage.ref('images').child(image.name).getDownloadURL().then(url => {
-                    console.log("url: ", url);
                     setUrl(url);
                 });
             });

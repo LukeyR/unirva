@@ -48,7 +48,7 @@ function Signup() {
                     history.push("/login")
                 })
                 .catch(function (error) {
-                    console.log(error)
+                    console.log("Whoops there was an error")
                 });
         } catch (error) {
             alert(error);
