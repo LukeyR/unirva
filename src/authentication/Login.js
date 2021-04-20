@@ -61,6 +61,7 @@ function Signup() {
                         <CardContent className={classes.cardActions}>
                             <BrandLogo/>
                         </CardContent>
+
                         <TextField
                             error={emptyValues.email}
                             fullWidth
@@ -94,12 +95,21 @@ function Signup() {
                         >
                             Log in
                         </Button>
+                            <Box justifyContent={"flex-end"}>
+
+                                <Typography variant="body2" color="textSecondary" onClick={() => {
+                                    history.push("/signup")
+                                }}
+                                            className={classes.forgotPassword}>
+                                    Create an account
+                                </Typography>
                             <Typography variant="body2" color="textSecondary" onClick={() => {
                                 history.push("/ResetPassword")
                             }}
                             className={classes.forgotPassword}>
                                 Forgot your password?
                             </Typography>
+                            </Box>
                         </Box>
                     </Box>
                 </Paper>

@@ -64,6 +64,7 @@ export const useStyles = makeStyles((theme) => ({
     forgotPassword: {
         '&:hover': {
             cursor: "pointer",
+            textDecoration: "underline",
         }
     }
 }));
