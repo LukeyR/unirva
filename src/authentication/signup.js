@@ -103,7 +103,8 @@ function Signup() {
     const [currentUser, setCurrentUser] = useState(null);
     const handleSubmit = async () => {
         try {
-            if ((values.email.includes(".ac") || values.email.includes(".edu"))) {
+            if ((values.email.includes(".ac") || values.email.includes(".edu") || values.email.includes("drept.unibuc.ro")
+                    || values.email.includes("utcluj.didatec.ro"))) {
                 if (values.password === values.passwordConfirm) {
                     const new_user = await firebaseConfig.auth().createUserWithEmailAndPassword(values.email, values.password);
                     await auth.currentUser.updateProfile({displayName: values.firstName + " " + values.lastName})
@@ -138,9 +139,13 @@ function Signup() {
         } catch (error) {
             alert(error);
         }
+
+        firebaseConfig.auth().signOut();
+
     };
-    if (currentUser) {
-        return <Redirect to="/"/>; // better to redirect to homepage in my opinion
+
+    if(currentUser){
+        return <Redirect to="/menu"></Redirect>
     }
 
     function handleChangeImage() {
@@ -325,6 +330,7 @@ const unis = [
     {name: "Dartington College of Arts",},
     {name: "De Montfort University",},
     {name: "Edge Hill University",},
+    {name: "Faculty of Law - University of Bucharest"},
     {name: "Falmouth University",},
     {name: "Goldsmiths College, University of London",},
     {name: "Guildhall School of Music and Drama",},
@@ -369,6 +375,7 @@ const unis = [
     {name: "St Martin's College",},
     {name: "St Mary's University, Twickenham",},
     {name: "Staffordshire University",},
+    {name: "Technical University of Cluj-Napoca"},
     {name: "Teesside University",},
     {name: "The Manchester Metropolitan University",},
     {name: "The Nottingham Trent University",},
