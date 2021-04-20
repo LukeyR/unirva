@@ -126,7 +126,7 @@ function EditProfile() {
             })
         }
         // delete my profile
-        firestore.collection("users").doc(user.uid).delete().then(deleted = true);
+        firestore.collection("users").doc(user.uid).delete();
         user.delete().then(history.push("/menu"));
     };
 
