@@ -100,7 +100,6 @@ function App() {
 
     let muiTheme = createMuiTheme(lightTheme())
     if (!loadingUserDoc && user && userDoc !== undefined) muiTheme = (userDoc.darkModeEnable) ? createMuiTheme(darkTheme()) : createMuiTheme(lightTheme())
-    // console.log(muiTheme)
 
     // I used react-router-dom for switching between the pages so far (note that it should be installed using npm install)
     return (

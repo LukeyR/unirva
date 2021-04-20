@@ -107,7 +107,6 @@ function Signup() {
                 }
             );
         }).then(async function (uploadImg) {
-                console.log(uploadImg)
                 await uploadImg.ref.getDownloadURL().then(url => {
                     ppUrl = url
                 });
@@ -129,7 +128,6 @@ function Signup() {
             }
         }
 
-        console.log(anyEmpty)
         if (anyEmpty) return;
 
         try {
@@ -159,8 +157,6 @@ function Signup() {
                     }
                     setCurrentUser(true);
                 } else {
-                    console.log(values.password);
-                    console.log(values.passwordConfirm);
                     throw 'Passwords do not match';
                 }
             } else {
@@ -181,7 +177,6 @@ function Signup() {
     function handleChangeImage() {
         const preview = document.getElementById(`profilePicture`)
         const file = document.querySelector('input[type=file]').files[0]
-        console.log(preview, file)
         const reader = new FileReader();
 
         reader.addEventListener('load', function () {

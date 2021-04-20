@@ -34,8 +34,6 @@ const Register = () => {
                     }
                     setCurrentUser(true);
                 } else {
-                    console.log(password);
-                    console.log(password2);
                     throw 'Passwords do not match';
                 }
             } else {

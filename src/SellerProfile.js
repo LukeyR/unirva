@@ -15,7 +15,6 @@ var docsID = [];
 function SellerProfile() {
     target = useLocation().state[0].targetUserName;
     targetID = useLocation().state[0].targetUserID;
-    console.log(target, targetID);
 
     var [targetSeller, loadingSeller] = useCollection(firestore.collection('users').where("ID", "==", targetID));
 

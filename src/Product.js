@@ -65,7 +65,6 @@ function Product(props) {
 
 
     if (!user) {
-        console.log("here")
         history.push("./menu")
     }
 
@@ -85,7 +84,6 @@ const max_index = 7
  * Tbh, I am not entirely sure what all the lines do, but it seems to work.
  */
 function Upload(props) {
-    console.log(props)
     const editing = props.location.state !== undefined
     const name = editing ? props.location.state.name : "";
     const price = editing ? props.location.state.price : "";
@@ -231,11 +229,10 @@ function Upload(props) {
                     }
                     );
                 }).then(function (uploadImg) {
-                console.log(uploadImg)
                 uploadImg.ref.getDownloadURL().then(url => {
 
                     if (firstImage && lastImage) {
-                        console.log("last image uploading: " + url)
+                        console.log("last image uploading")
                         listingsRef.add({
                             name: values.name,
                             description: values.description,
@@ -252,7 +249,7 @@ function Upload(props) {
                             return('product submitted. redirecting...');
                         });
                     } else if (lastImage) {
-                        console.log("last image uploading: " + url)
+                        console.log("last image uploading")
                         imageUrls.push(url)
                         listingsRef.add({
                             name: values.name,
@@ -271,11 +268,11 @@ function Upload(props) {
                             return('product submitted. redirecting...');
                         });
                     } else if (firstImage) {
-                        console.log("first image uploaded: " + url)
+                        console.log("first image uploaded")
                         primaryUrl = url;
                         return('product submitted.');
                     } else {
-                        console.log("next image uploading: " + url)
+                        console.log("next image uploading")
                         imageUrls.push(url)
                         return('product submitted.');
                     }
@@ -383,7 +380,6 @@ function Upload(props) {
         let imageName = url.replace(baseUrl, '');
         let indexOfEnd = imageName.indexOf('?');
         imageName = imageName.substring(0, indexOfEnd);
-        console.log(imageName)
         return imageName
     }
 

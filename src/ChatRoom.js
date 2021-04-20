@@ -356,7 +356,7 @@ function MessageBox(props) {
                 seen: "true"
             })
                 .then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
+                    console.log("Document written");
                 })
                 .catch((error) => {
                     console.error("Error adding document: ", error);
@@ -370,7 +370,7 @@ function MessageBox(props) {
                 seen: "false"
             })
                 .then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
+                    console.log("Document written");
                 })
                 .catch((error) => {
                     console.error("Error adding document: ", error);
