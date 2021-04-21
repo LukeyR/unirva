@@ -97,6 +97,7 @@ function HomeListingCard(props) {
         liked = false
     }
 
+    if (sold) unlikeItem()
 
     return (
         // <Link to={{

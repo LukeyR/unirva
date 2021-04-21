@@ -122,6 +122,7 @@ function Home() {
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
     const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
+    let nListings = 0
 
     const location = useLocation();
 
@@ -271,6 +272,7 @@ function Home() {
                 </Grid>
             )
         } else {
+            nListings -= 1
             return (<></>)
         }
     }
@@ -295,7 +297,7 @@ function Home() {
             docsID[index] = doc.id;
             index++;
         })
-
+        nListings = index
 
         // changes string-prices to float-prices. if not parseable, it sets it to 0
         var index = 0;
@@ -349,7 +351,6 @@ function Home() {
         </>)
     }
 
-
     return (
         <div>
             {user ?
@@ -372,7 +373,7 @@ function Home() {
                     <Box p={1} m={1} style={{marginRight: "56px", marginLeft: "56px",}}>
                         <Grid container justify="center" spacing={4}>
                             <Grid item xs={12} md={4}>
-                                <Box  display="flex" justifyContent="center" alignItems="center">
+                                <Box display="flex" justifyContent="center" alignItems="center">
                                     <Typography display="inline" style={{marginRight: "10px"}}>
                                         Filter:
                                     </Typography>
@@ -398,7 +399,7 @@ function Home() {
                                 </Box>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <Box  display="flex" justifyContent="center" alignItems="center">
+                                <Box display="flex" justifyContent="center" alignItems="center">
                                     <Typography display="inline" style={{marginRight: "10px"}}>
                                         Sort By:
                                     </Typography>
@@ -479,13 +480,25 @@ function Home() {
                                         ))
 
 
-                                ) : emptyCards
+                                )
+                                : emptyCards
                             }
+
                         </Grid>
+                        {
+                            nListings === 0 ?
+                                <Box display="flex" justifyContent="center" alignItems="center"
+                                     flexDirection="column" style={{marginTop: "50px"}}>
+                                    <img src="https://media.giphy.com/media/xUA7b30EbtkaMHvRgk/giphy.gif"/>
+                                    <Typography variant="h1" style={{fontSize: "35px"}}>Seems there's nothing
+                                        here. Maybe try loosening some of them filtering options
+                                    </Typography>
+                                </Box> : <></>
+                        }
                     </Box>
                 </div>
                 :
-                <Redirect to="/menu" />
+                <Redirect to="/menu"/>
             }
         </div>
     )
