@@ -86,12 +86,12 @@ function HomeListingCard(props) {
 
     const unlikeItem = () => {
         if (user) {
-            firestore.collection("listings").doc(props.iD).update({
+            firestore.collection("listings").doc(props.iD).update(!sold ? {
                 likedBy: firebase.firestore.FieldValue.arrayRemove(user.uid),
-            })
-            firestore.collection("users").doc(user.uid).update({
+            } : {likedBy: ""})
+            firestore.collection("users").doc(user.uid).update(!sold ? {
                 likes: firebase.firestore.FieldValue.arrayRemove(props.iD),
-            })
+            } : {likedBy: ""})
 
         }
         liked = false
