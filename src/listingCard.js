@@ -122,7 +122,7 @@ function HomeListingCard(props) {
                             {name}
                         </Typography>
                         <Typography gutterBottom variant="subtitle1" component="h3" display="inline" align="right">
-                            {price === 0 ? "FREE" : "£" + price}
+                            {price === 0 ? "FREE" : "£" + price.toFixed(2)}
                         </Typography>
                     </Box>
                     <Divider variant="middle"/>
