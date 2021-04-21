@@ -156,6 +156,7 @@ function EditProfile() {
                         <Grid container spacing={3}>
                             <Grid item xs={6}>
                                 <TextField
+                                    disabled
                                     error={emptyValues.firstName}
                                     fullWidth
                                     required
@@ -168,6 +169,7 @@ function EditProfile() {
                             </Grid>
                             <Grid item xs={6}>
                                 <TextField
+                                    disabled
                                     error={emptyValues.lastName}
                                     fullWidth
                                     required
@@ -180,6 +182,7 @@ function EditProfile() {
                             </Grid>
                         </Grid>
                         <TextField
+                            disabled
                             error={emptyValues.email}
                             fullWidth
                             required
@@ -191,6 +194,7 @@ function EditProfile() {
                             style={{marginTop: 10}}
                         />
                         <TextField
+                            disabled
                             fullWidth
                             required
                             value={uni}

@@ -5,7 +5,7 @@ import Chat from './Chat';
 import Home from './Home';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
-import {Route, useLocation} from 'react-router-dom';
+import {Route, useLocation, Switch} from 'react-router-dom';
 import Search from './search'
 import Header from './hfRegion/Header';
 import Footer from './hfRegion/Footer';
@@ -28,8 +28,9 @@ import Favourites from "./Favourites";
 import SignUp from "./authentication/signup"
 import LogIn from "./authentication/Login"
 import RequestPasswordReset from "./authentication/RequestPasswordReset";
+import NotFound from "./NotFound"
 
-const ignorePages = ["/menu", "/login", "/register", "/signin", "/menu", "/product", "/chat", "/ChatRoom", "/chatroom"]
+const ignorePages = ["/menu", "/login", "/register", "/signin", "/product", "/chat", "/ChatRoom", "/chatroom"]
 
 
 function HideFooter() {
@@ -108,6 +109,8 @@ function App() {
                 <CssBaseline/>
                 <div className="App">
                     <Header theme={muiTheme}/>
+                    <Switch>
+                    <Route exact path="/Menu" component={Menu}/>
                     {/*<>Yes, whatever is put here is displayed on every page.</>*/}
                     <Route exact path="/Profile" render={() => (<Profile {...muiTheme} isAuthed={true}/>)}/>
                     <Route exact path="/Product" component={Product}/>
@@ -124,10 +127,11 @@ function App() {
                     <Route exact path="/signout" component={Logout}/>
                     <Route exact path="/SellerProfile" component={SellerProfile}/>
                     <Route exact path="/ResetPassword" component={RequestPasswordReset}/>
-                    {location.pathname === "/" ? <Home/> : <></>}
+                        <Route exact path="/" component={Home}/>
+                        <Route component={NotFound}/>
+                    </Switch>
                     {HideFooter()}
                 </div>
-                <Route exact path="/Menu" component={Menu}/>
             </ThemeProvider>
         </AuthProvider>
     );
