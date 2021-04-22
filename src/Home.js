@@ -288,12 +288,11 @@ function Home() {
         listings = [];
         listingsBig.forEach(doc => {
             for (const category of doc.data().categories) {
-                if (!categoryOptions.includes(category)) {
+                if (!categoryOptions.includes(category) && sellersMatched.includes(doc.data().seller) && category !== "") {
                     categoryOptions.push(category)
                 }
             }
             listings[index] = doc.data();
-            categoryOptions.push()
             docsID[index] = doc.id;
             index++;
         })
