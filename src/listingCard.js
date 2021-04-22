@@ -55,7 +55,7 @@ const firestore = firebase.firestore();
 //3.1+
 
 function HomeListingCard(props) {
-    const {name, price, imgUrl, seller, description, likedBy, allPhotos, categories, createdAt, sold} = props.listingObj
+    let {name, price, imgUrl, seller, description, likedBy, allPhotos, categories, createdAt, sold} = props.listingObj
     const classes = useStyles();
     const history = useHistory();
     const [user] = useAuthState(auth);
@@ -98,6 +98,7 @@ function HomeListingCard(props) {
     }
 
     if (sold) unlikeItem()
+    price = parseFloat(price)
 
     return (
         // <Link to={{
@@ -122,7 +123,7 @@ function HomeListingCard(props) {
                             {name}
                         </Typography>
                         <Typography gutterBottom variant="subtitle1" component="h3" display="inline" align="right">
-                            {price === 0 ? "FREE" : "£" + price.toFixed(2)}
+                            {price === 0 || price === "0" ? "FREE" : "£" + price.toFixed(2)}
                         </Typography>
                     </Box>
                     <Divider variant="middle"/>
