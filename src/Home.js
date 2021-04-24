@@ -93,6 +93,9 @@ var sellersMatched = []
 
 function Home() {
     const [user] = useAuthState(auth);
+
+    sellersMatched = []
+
     if (user != null) {
         if (user.emailVerified) verified = true;
         firestore.collection("users").doc(user.uid).get().then(doc => {
