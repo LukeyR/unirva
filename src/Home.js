@@ -94,7 +94,7 @@ var sellersMatched = []
 function Home() {
     const [user] = useAuthState(auth);
 
-    sellersMatched = []
+
 
     if (user != null) {
         if (user.emailVerified) verified = true;
@@ -105,6 +105,7 @@ function Home() {
     }
     // Getting the listings from the database.
     firestore.collection("users").get().then(snapshot => {
+        sellersMatched = []
         snapshot.forEach(doc => {
             if (doc.data().University == universityTarget && sellersMatched.includes(doc.id) == false) {
                 sellersMatched.push(doc.id);

@@ -106,7 +106,13 @@ const useStyles = makeStyles((theme) => ({
     },
     listIcon: {
         minWidth: '40px',
-    }
+    },
+    menuBadge: {
+        borderRadius: "6px",
+        height: "12px",
+        minWidth: "12px",
+        fontSize: "5px",
+    },
 }));
 
 const firestore = firebase.firestore();
@@ -286,7 +292,11 @@ const Header = ({theme}) => {
                                 >
                                     <MenuItem onClick={() => handleMenuClick("/Profile")}>
                                         <ListItemIcon className={classes.listIcon}>
+                                            <Badge  color="secondary"
+                                                    variant={!loadingBuyReqs && nBuyReqs !== 0 ? "dot" : ""}
+                                            >
                                             <AccountCircleTwoToneIcon/>
+                                            </Badge>
                                         </ListItemIcon>
                                         Profile
                                     </MenuItem>
