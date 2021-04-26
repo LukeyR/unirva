@@ -140,11 +140,11 @@ function Upload(props) {
             if (file && file.type.match('image.*')) {
                 reader.readAsDataURL(file)
                 values.images.push(file);
+                index += 1
             } else {
                 alert('Please only upload images');
             }
 
-            index += 1
             setDisableUpload(index > 5)
             console.log("image uploaded locally")
         }
