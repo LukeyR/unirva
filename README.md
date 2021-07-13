@@ -1,5 +1,5 @@
-# CM20257
-A Place for our CM20257 Group 25 code
+# Unirva
+A university project aimed at creating a student-to-student marketplace
 
 In order for this to work you need to do the following:
 #### Install node.js
